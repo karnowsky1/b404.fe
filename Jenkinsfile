@@ -45,7 +45,8 @@ pipeline {
       archiveArtifacts artifacts: 'b404.fe/build/*', fingerprint: true
     }
     always {
-      sh 'rm -rf b404.fe/node_modules'
-    }
+        sh "chmod -R 777 ."
+        cleanWs()
+    } 
   }
 }
