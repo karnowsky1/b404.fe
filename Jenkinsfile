@@ -1,47 +1,30 @@
 pipeline {
 
   agent {
-    docker {
-      image 'node'
+    docker { 
+      image 'node:erbium-alpine'
+      args '--rm -ti -w /home/node/app -v $PWD/b404.fe:/home/node/app'
     }
-  }
-
-  environment { 
-      CI = 'true'
   }
 
   stages {
-    stage('Setup') {
+    
+    stage('Stage 1: Setup') {
       steps {
-        sh '''
-        pushd b404.fe
-        npm install
-        popd
-        '''
+        sh 'npm install'
       }
     }
-    stage('Test') {
+    
+    stage('Stage 2: Build') {
       steps {
-          sh '''
-          pushd b404.fe
-          npm run test
-          popd
-          '''
-        }
-      }
-      stage('Deliver') { 
-        steps {
-          sh '''
-          pushd b404.fe
-          npm build
-          popd
-          '''
+        sh 'npm run build'
       }
     }
   }
+
   post {
     success {
-      archiveArtifacts artifacts: 'target/*.war', fingerprint: true
+      archiveArtifacts artifacts: 'b404.fe/build/*', fingerprint: true
     }
   }
 }
