@@ -1,23 +1,22 @@
 pipeline {
 
-  agent {
-    docker { 
-      image 'node:erbium-alpine'
-      args '--rm -ti -w /home/node/app -v $PWD/b404.fe:/home/node/app'
-    }
-  }
+  agent any
 
   stages {
     
     stage('Stage 1: Setup') {
       steps {
-        sh 'npm install'
+        sh '''
+        docker run --rm -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm install
+        '''
       }
     }
     
     stage('Stage 2: Build') {
       steps {
-        sh 'npm run build'
+        sh '''
+        docker run --rm -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm install
+        '''
       }
     }
   }
