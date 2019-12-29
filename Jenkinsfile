@@ -44,5 +44,8 @@ pipeline {
     success {
       archiveArtifacts artifacts: 'b404.fe/build/*', fingerprint: true
     }
+    always {
+      sh 'rm -rf b404.fe/node_modules'
+    }
   }
 }
