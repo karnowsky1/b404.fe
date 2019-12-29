@@ -4,15 +4,13 @@ pipeline {
 
   stages {
     
-    // NOTE: The `-u 1001` is for running the Docker image as the UID of 1001, who is bubba, a previous user on the box.
-
     stage('Stage 1: Echo Build Env') {
       steps {
         sh '''
         echo "NODE VERSION:"
-        docker run --rm -e CI=true -u 1001 -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine node --version
+        docker run --rm -e CI=true -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine node --version
         echo "NPM VERSION:"
-        docker run --rm -e CI=true -u 1001 -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm --version
+        docker run --rm -e CI=true -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm --version
         '''
       }
     }
@@ -20,7 +18,7 @@ pipeline {
     stage('Stage 2: Install Build Deps') {
       steps {
         sh '''
-        docker run --rm -e CI=true -u 1001 -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm install
+        docker run --rm -e CI=true -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm install
         '''
       }
     }
@@ -28,7 +26,7 @@ pipeline {
     stage('Stage 3: Test') {
       steps {
         sh '''
-        docker run --rm -e CI=true -u 1001 -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm run test
+        docker run --rm -e CI=true -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm run test
         '''
       }
     }
@@ -36,7 +34,7 @@ pipeline {
     stage('Stage 4: Build') {
       steps {
         sh '''
-        docker run --rm -e CI=true -u 1001 -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm run build
+        docker run --rm -e CI=true -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm run build
         '''
       }
     }
