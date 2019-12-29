@@ -38,12 +38,15 @@ pipeline {
         '''
       }
     }
+
+    stage('Stage 5: Archive Artifacts') {
+      steps {
+        archiveArtifacts artifacts: 'b404.fe/build/*', fingerprint: true
+      }
+    }
   }
 
   post {
-    success {
-      archiveArtifacts artifacts: 'b404.fe/build/*', fingerprint: true
-    }
     always {
         sh "sudo chmod -R 777 ."
         cleanWs()
