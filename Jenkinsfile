@@ -45,7 +45,7 @@ pipeline {
       archiveArtifacts artifacts: 'b404.fe/build/*', fingerprint: true
     }
     always {
-        sh "chmod -R 777 ."
+        sh "sudo chmod -R 777 ."
         cleanWs()
     } 
   }
