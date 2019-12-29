@@ -15,7 +15,7 @@ pipeline {
     stage('Stage 2: Build') {
       steps {
         sh '''
-        docker run --rm -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm install
+        docker run --rm -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm run build
         '''
       }
     }
