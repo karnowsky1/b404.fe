@@ -7,10 +7,10 @@ pipeline {
     stage('Stage 1: Echo Build Env') {
       steps {
         sh '''
-        echo "NODE VERSION"
-        docker run --rm -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm --version
-        echo "NPM VERSION"
-        docker run --rm -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm --version
+        echo "NODE VERSION:"
+        docker run --rm -e CI=true -u $UID:$GUID -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine node --version
+        echo "NPM VERSION:"
+        docker run --rm -e CI=true -u $UID:$GUID -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm --version
         '''
       }
     }
@@ -18,7 +18,7 @@ pipeline {
     stage('Stage 2: Install Build Deps') {
       steps {
         sh '''
-        docker run --rm -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm install
+        docker run --rm -e CI=true -u $UID:$GUID -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm install
         '''
       }
     }
@@ -26,7 +26,7 @@ pipeline {
     stage('Stage 3: Test') {
       steps {
         sh '''
-        docker run --rm -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine CI=true npm run build
+        docker run --rm -e CI=true -u $UID:$GUID -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm run test
         '''
       }
     }
@@ -34,7 +34,7 @@ pipeline {
     stage('Stage 4: Build') {
       steps {
         sh '''
-        docker run --rm -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm run build
+        docker run --rm -e CI=true -u $UID:$GUID -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm run build
         '''
       }
     }
