@@ -42,11 +42,22 @@ pipeline {
     }
 
     stage ('Stage 4: Build and Publish Docker Image'){
-      steps {
-        script {
-          docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-            app = docker.build("znl2181/b404.fe:"+env.BRANCH_NAME)
-            app.push()
+      stages {
+        stage ("When on Designated Branch") {
+          when {
+            anyOf{
+              branch 'master'
+              branch 'testing'
+              branch 'dev'
+            }
+          }
+          steps {
+            script {
+              docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                app = docker.build("znl2181/b404.fe:"+env.BRANCH_NAME)
+                app.push()
+              }
+            }
           }
         }
       }
