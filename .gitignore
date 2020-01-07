@@ -69,7 +69,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+# .env # This commented out by Bubba. This file type is needed for docker.
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)
