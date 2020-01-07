@@ -23,6 +23,7 @@ pipeline {
       }
     }
     
+    /*
     stage('Stage 3: Test') {
       steps {
         sh '''
@@ -30,8 +31,9 @@ pipeline {
         '''
       }
     }
+    */
 
-    stage('Stage 4: Build') {
+    stage('Stage 3: Build') {
       steps {
         sh '''
         docker run --rm -e CI=true -w /home/node/app -v $PWD/b404.fe:/home/node/app node:erbium-alpine npm run build
@@ -39,7 +41,7 @@ pipeline {
       }
     }
 
-    stage ('Stage 5: Build and Publish Docker Image'){
+    stage ('Stage 4: Build and Publish Docker Image'){
       steps {
         script {
           docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
@@ -50,7 +52,7 @@ pipeline {
       }
     }
 
-    stage('Stage 6: Archive Artifacts') {
+    stage('Stage 5: Archive Artifacts') {
       steps {
         archiveArtifacts artifacts: 'b404.fe/build/*', fingerprint: true
       }
