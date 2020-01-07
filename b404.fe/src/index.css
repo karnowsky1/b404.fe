@@ -18,6 +18,13 @@ code {
   padding-top: 25%;
 }
 
+#API_URL {
+  max-width: 400px;
+  margin: auto;
+  text-align: center;
+  padding-top: 1rem;
+}
+
 .login-form-forgot {
   float: right;
 }

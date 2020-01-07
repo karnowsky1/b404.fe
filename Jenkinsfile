@@ -39,7 +39,18 @@ pipeline {
       }
     }
 
-    stage('Stage 5: Archive Artifacts') {
+    stage ('Stage 5: Build and Publish Docker Image'){
+      steps {
+        script {
+          docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+            app = docker.build("znl2181/b404.fe:"+env.BRANCH_NAME)
+            app.push()
+          }
+        }
+      }
+    }
+
+    stage('Stage 6: Archive Artifacts') {
       steps {
         archiveArtifacts artifacts: 'b404.fe/build/*', fingerprint: true
       }

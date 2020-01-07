@@ -47,6 +47,7 @@ class NormalLoginForm extends React.Component {
             </Button>
           </Form.Item>
         </Form>
+      <p id="API_URL">API URL: {window.__env__.API_URL}</p>
       </div>
     );
   }
