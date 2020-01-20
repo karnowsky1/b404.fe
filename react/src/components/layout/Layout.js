@@ -16,7 +16,7 @@ class NavLayout extends React.Component {
 
   render() {
     return (
-      <Layout>
+      <Layout style={{ height: '100vh' }}>
         <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
           <div className="logo" />
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
@@ -50,8 +50,7 @@ class NavLayout extends React.Component {
             style={{
               margin: '24px 16px',
               padding: 24,
-              background: '#fff',
-              minHeight: 280,
+              background: '#fff'
             }}
           >
             Content
