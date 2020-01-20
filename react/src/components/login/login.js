@@ -5,6 +5,7 @@ import { setUser, setIsLoggedIn } from '../../actions/user'
 import axios from 'axios'
 import qs from 'qs'
 import { Redirect } from 'react-router-dom'
+import Logo from '../../img/VC1.png'
 
 class LoginForm extends React.Component {
 
@@ -43,10 +44,11 @@ class LoginForm extends React.Component {
         }
       }
     )
-    console.log(response.data)
+    console.log(response.headers.authorization)
     if (response.status === 200){
-      setUser(response.data)
-      setIsLoggedIn(true)
+      setUser(response.data);
+      localStorage.setItem("token", response.headers.authorization);
+      setIsLoggedIn(true);
     }
   };
 
@@ -63,6 +65,9 @@ class LoginForm extends React.Component {
       <Redirect to = '/dashboard' />
     ):(
       <div className="login-container">
+        <div className="img-container">
+        <img src={Logo} alt="Not Available"/>
+        </div>
         <Form onSubmit={this.handleSubmit} className="login-form" id="login-form">
           <Form.Item>
             {getFieldDecorator('username', {

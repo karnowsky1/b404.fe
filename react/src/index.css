@@ -11,11 +11,19 @@ code {
     monospace;
 }
 
+.img-container {
+  display: flex;
+}
+
+.img-container img {
+  width: 320px;
+  margin: 0 auto;
+}
+
 #login-form{
   max-width: 400px;
   /* text-align: center; */
   margin: auto;
-  padding-top: 50vh;
 }
 
 #API_URL {
@@ -33,6 +41,7 @@ code {
 }
 
 .login-container{
+  padding-top: 15vh;
   margin:auto;
 }
 
