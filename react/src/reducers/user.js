@@ -6,6 +6,7 @@ export function userReducer(state, action){
             return {...state, user: action.payload}
         case SET_IS_LOGGED_IN:
             return {...state, isLoggedIn: action.payload}
+        default: return state    
     }
 }
 

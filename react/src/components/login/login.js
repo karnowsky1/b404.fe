@@ -26,7 +26,7 @@ class LoginForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values)
+        console.log('Received values of form: ', values);
       }
     });
     const { username, password } = this.state
@@ -44,7 +44,7 @@ class LoginForm extends React.Component {
       }
     )
     console.log(response.data)
-    if (response.status == 200){
+    if (response.status === 200){
       setUser(response.data)
       setIsLoggedIn(true)
     }
@@ -56,7 +56,7 @@ class LoginForm extends React.Component {
   }
 
   render() {
-    const { errors, username, password, isLoading } = this.state
+    const { /**errors,*/ username, password, /**isLoading*/ } = this.state
     const { getFieldDecorator } = this.props.form
     const { isLoggedIn } = this.props
     return isLoggedIn?(
@@ -66,6 +66,7 @@ class LoginForm extends React.Component {
         <Form onSubmit={this.handleSubmit} className="login-form" id="login-form">
           <Form.Item>
             {getFieldDecorator('username', {
+              valuePropName: 'username',
               rules: [{ required: true, message: 'Please input your username!' }],
             })(
               <Input
@@ -79,6 +80,7 @@ class LoginForm extends React.Component {
           </Form.Item>
           <Form.Item>
             {getFieldDecorator('password', {
+              valuePropName: 'password',
               rules: [{ required: true, message: 'Please input your Password!' }],
             })(
               <Input

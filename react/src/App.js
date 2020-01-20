@@ -1,5 +1,5 @@
 import React from 'react'
-import {BrowserRouter, Route, Switch, Link, Redirect} from 'react-router-dom'
+import {BrowserRouter, Route, Switch/**, Link, Redirect*/} from 'react-router-dom'
 import Login from './components/login/login'
 import './App.css'
 import { Provider } from 'react-redux'
@@ -16,7 +16,7 @@ function App() {
       {/* initial state is the object after the reducer */}
       <BrowserRouter>
         <Switch>
-          <Route path="/" exact component = {Login}  /> 
+          <Route path="/" exact component = {Login}  />
           <Route path="/dashboard" exact component = {Dashboard}  />
         </Switch>
       </BrowserRouter>
