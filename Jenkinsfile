@@ -36,7 +36,7 @@ pipeline {
     stage('Stage 3: Build') {
       steps {
         sh '''
-        docker run --rm -e CI=true -w /home/node/app -v $PWD/react:/home/node/app node:erbium-alpine npm run build-nix
+        docker run --rm -e CI=true -w /home/node/app -v $PWD/react:/home/node/app node:erbium-alpine npm run build
         '''
       }
     }
