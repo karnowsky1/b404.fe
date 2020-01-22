@@ -22,7 +22,7 @@
     "redux": "^4.0.5"
   },
   "scripts": {
-    "dev-nix": "chmod +x ../env.sh && ./../env.sh && cp env-config.js ./public/ && react-app-rewired start",
+    "dev-nix": "chmod +x ../env.sh && ./../env.sh && mv env-config.js ./public/ && react-app-rewired start",
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
