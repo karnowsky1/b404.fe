@@ -1,9 +1,10 @@
 import React from 'react';
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon, Divider } from 'antd';
+import { NavLink } from 'react-router-dom';
 
 const { Header, Sider, Content } = Layout;
 
-class NavLayout extends React.Component {
+class SignaturesLayout extends React.Component {
   state = {
     collapsed: false,
   };
@@ -19,22 +20,44 @@ class NavLayout extends React.Component {
       <Layout style={{ height: '100vh' }}>
         <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
           <div className="logo" />
-          <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+          <Menu theme="dark" mode="inline" defaultSelectedKeys={['4']}>
             <Menu.Item key="1">
+            <NavLink to="/dashboard">
               <Icon type="dashboard" />
               <span>Dashboard</span>
+            </NavLink>   
             </Menu.Item>
             <Menu.Item key="2">
+            <NavLink to="/documents">
               <Icon type="form" />
               <span>Documents</span>
+            </NavLink>  
             </Menu.Item>
             <Menu.Item key="3">
+            <NavLink to="/workflow">
               <Icon type="snippets" />
               <span>Workflow</span>
+            </NavLink>  
             </Menu.Item>
             <Menu.Item key="4">
+            <NavLink to="/signatures">
               <Icon type="edit" />
               <span>Signatures</span>
+            </NavLink>
+            </Menu.Item>
+            <Divider style={{margin: "10px"}}/>
+            <div style={{padding: "10px"}}>Settings</div>
+            <Menu.Item key="5">
+            <NavLink to="/main-settings">
+              <Icon type="setting" />
+              <span>Main Settings</span>
+            </NavLink>  
+            </Menu.Item>
+            <Menu.Item key="6">
+            <NavLink to="/admin">
+              <Icon type="plus-square" />
+              <span>Admin</span>
+            </NavLink>
             </Menu.Item>
           </Menu>
         </Sider>
@@ -53,7 +76,7 @@ class NavLayout extends React.Component {
               background: '#fff'
             }}
           >
-            Content
+            Signatures
           </Content>
         </Layout>
       </Layout>
@@ -61,4 +84,4 @@ class NavLayout extends React.Component {
   }
 }
 
-export default NavLayout;
+export default SignaturesLayout;
