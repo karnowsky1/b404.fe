@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Icon, Input, Button, Checkbox } from 'antd'
+import { Form, Icon, Input, Button, Checkbox, message } from 'antd'
 import { connect } from 'react-redux'
 import { setUser, setIsLoggedIn } from '../../actions/user'
 import axios from 'axios'
@@ -32,7 +32,7 @@ class LoginForm extends React.Component {
     });
     const { username, password } = this.state
     const url = window.__env__.API_URL + '/blink/api/login'
-    const response = await axios.post(
+    await axios.post(
       url,
       qs.stringify({
         username,
@@ -43,13 +43,24 @@ class LoginForm extends React.Component {
           'Content-Type' : 'application/x-www-form-urlencoded'
         }
       }
-    )
-    console.log(response.headers.authorization)
-    if (response.status === 200){
-      setUser(response.data);
-      localStorage.setItem("token", response.headers.authorization);
-      setIsLoggedIn(true);
-    }
+    ).then(response => {
+      if (response.status === 200){
+        setUser(response.data);
+        localStorage.setItem("token", response.headers.UUID);
+        setIsLoggedIn(true);
+      }
+    }).catch(function (error) {
+      if (error.response) {
+        // Request made and server responded
+        message.error("Invalid credentials, please try again!");
+      } else if (error.request) {
+        // The request was made but no response was received
+        message.error("Something went wrong, please try again!");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        message.error("Something went wrong, please try again!");
+      }
+    });
   };
 
   handleChange = e =>{
