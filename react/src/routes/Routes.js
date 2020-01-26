@@ -33,5 +33,5 @@ class Routes extends Component {
 
 // const mapStateToProps = state => ({})
 
-export default connect((state={})=>({isLoggedIn: state.isLoggedIn}), {setIsLoggedIn})(Routes)
+export default Routes;
 // export default Routes
