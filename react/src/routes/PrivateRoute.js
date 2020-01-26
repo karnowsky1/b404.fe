@@ -8,7 +8,8 @@ import { setIsLoggedIn } from '../actions/user';
 import { Spin } from 'antd';
 
 const PrivateRoute = ({component: Component, authed, location, setIsLoggedIn, ...rest}) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true)
+
   useEffect(() => {
     const token = localStorage.getItem(TOKEN_KEY)
     const uuid = localStorage.getItem(UUID_KEY)
@@ -21,15 +22,17 @@ const PrivateRoute = ({component: Component, authed, location, setIsLoggedIn, ..
         })
         .then(response => {
           if (response.status === 200) {
-            setIsLoggedIn(true);
+            setIsLoggedIn(true)
           }
         })
         .catch(e => {
-          console.error(e);
+          console.error(e)
         })
         .finally(() => {
-          setLoading(false);
-        });
+          setLoading(false)
+        })
+    } else {
+      setLoading(false)
     }
   }, []);
   return loading ? (
