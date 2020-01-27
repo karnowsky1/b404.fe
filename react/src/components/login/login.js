@@ -5,14 +5,9 @@ import { setUser, setIsLoggedIn } from '../../actions/user'
 import axios from 'axios'
 import qs from 'qs'
 import { Redirect } from 'react-router-dom'
-<<<<<<< HEAD
-import Logo from '../../img/VC1.png'
-import { TOKEN_KEY, UUID_KEY } from '../../constants/auth'
-=======
 import Logo from '../../img/VC2.png'
 import { Card } from 'antd'
 import { Typography } from 'antd'
->>>>>>> dev
 
 class LoginForm extends React.Component {
 
