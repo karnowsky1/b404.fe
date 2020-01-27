@@ -1,23 +1,14 @@
 import React from "react";
-import {
-  Table,
-  Progress,
-  Icon,
-  Button,
-  Row,
-  Col,
-  Card,
-  Menu,
-  Dropdown
-} from "antd";
+import { Table, Progress, Icon, Button, Row, Col, Card } from "antd";
 import axios from "axios";
 
+/*
 const menu = (
   <Menu>
     <Menu.Item>
-      <a target="_blank" rel="" href="">
+      <button>
         View
-      </a>
+      </button>
     </Menu.Item>
     <Menu.Item>
       <a target="_blank" rel="" href="">
@@ -25,7 +16,7 @@ const menu = (
       </a>
     </Menu.Item>
   </Menu>
-);
+);*/
 
 const columns = [
   {
@@ -85,15 +76,7 @@ const columns = [
   {
     title: "More",
     dataIndex: "more",
-    render: more => (
-      <React.Fragment>
-        <Dropdown overlay={menu}>
-          <a className="ant-dropdown-link" href="#">
-            <Icon type="more" />
-          </a>
-        </Dropdown>
-      </React.Fragment>
-    )
+    render: more => <Icon type="more" />
   }
 ];
 

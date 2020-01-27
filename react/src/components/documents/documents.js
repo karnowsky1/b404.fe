@@ -9,14 +9,13 @@ import {
   Modal,
   Upload,
   message,
-  Menu,
-  Dropdown,
   Input
 } from "antd";
 import axios from "axios";
 
 const { Search } = Input;
 
+/*
 const menu = (
   <Menu>
     <Menu.Item>
@@ -30,7 +29,7 @@ const menu = (
       </a>
     </Menu.Item>
   </Menu>
-);
+);*/
 
 const props = {
   name: "file",
@@ -104,15 +103,7 @@ const columns = [
   {
     title: "More",
     dataIndex: "more",
-    render: more => (
-      <React.Fragment>
-        <Dropdown overlay={menu}>
-          <a className="ant-dropdown-link" href="#">
-            <Icon type="more" />
-          </a>
-        </Dropdown>
-      </React.Fragment>
-    )
+    render: more => <Icon type="more" />
   }
 ];
 
