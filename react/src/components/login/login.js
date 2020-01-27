@@ -8,6 +8,7 @@ import { Redirect } from 'react-router-dom'
 import Logo from '../../img/VC2.png'
 import { Card } from 'antd'
 import { Typography } from 'antd'
+import { TOKEN_KEY, UUID_KEY } from '../../constants/auth'
 
 class LoginForm extends React.Component {
 
