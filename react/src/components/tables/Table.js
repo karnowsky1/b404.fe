@@ -16,12 +16,12 @@ const menu = (
   <Menu>
     <Menu.Item>
       <a target="_blank" rel="" href="">
-        Delete
+        View
       </a>
     </Menu.Item>
     <Menu.Item>
       <a target="_blank" rel="" href="">
-        View
+        Delete
       </a>
     </Menu.Item>
   </Menu>
@@ -100,7 +100,8 @@ const columns = [
 class Tables extends React.Component {
   state = {
     data: [],
-    loading: true
+    loading: true,
+    pagination: {}
   };
 
   componentDidMount() {
@@ -130,9 +131,12 @@ class Tables extends React.Component {
           progress: entry.progress
         });
       }
+      const pagination = { ...this.state.pagination };
+      pagination.pageSize = 4;
       this.setState({
         loading: false,
-        data: conf
+        data: conf,
+        pagination
       });
     });
   };
@@ -146,8 +150,10 @@ class Tables extends React.Component {
             <Table
               columns={columns}
               dataSource={this.state.data}
-              pagination={false}
+              pagination={this.state.pagination}
+              //pagination={false}
               loading={this.state.loading}
+              size="middle"
             />
             <Button type="link" id="mWView">
               View All

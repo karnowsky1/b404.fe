@@ -1,11 +1,60 @@
 import React from "react";
-import { Table, Icon, Button, Row, Col, Card } from "antd";
+import {
+  Table,
+  Icon,
+  Button,
+  Row,
+  Col,
+  Card,
+  Modal,
+  Upload,
+  message,
+  Menu,
+  Dropdown,
+  Input
+} from "antd";
 import axios from "axios";
+
+const { Search } = Input;
+
+const menu = (
+  <Menu>
+    <Menu.Item>
+      <a target="_blank" rel="" href="">
+        View
+      </a>
+    </Menu.Item>
+    <Menu.Item>
+      <a target="_blank" rel="" href="">
+        Delete
+      </a>
+    </Menu.Item>
+  </Menu>
+);
+
+const props = {
+  name: "file",
+  action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+  headers: {
+    authorization: "authorization-text"
+  },
+  onChange(info) {
+    if (info.file.status !== "uploading") {
+      console.log(info.file, info.fileList);
+    }
+    if (info.file.status === "done") {
+      message.success(`${info.file.name} file uploaded successfully`);
+    } else if (info.file.status === "error") {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  }
+};
 
 const columns = [
   {
     title: "Document Details",
     dataIndex: "nameW",
+    sorter: true,
     render: nameW => (
       <React.Fragment>
         <Row>
@@ -55,7 +104,15 @@ const columns = [
   {
     title: "More",
     dataIndex: "more",
-    render: more => <Icon type="more" />
+    render: more => (
+      <React.Fragment>
+        <Dropdown overlay={menu}>
+          <a className="ant-dropdown-link" href="#">
+            <Icon type="more" />
+          </a>
+        </Dropdown>
+      </React.Fragment>
+    )
   }
 ];
 
@@ -63,7 +120,7 @@ class DocumentsTable extends React.Component {
   state = {
     data: [],
     pagination: {},
-    loading: false
+    loading: true
   };
 
   componentDidMount() {
@@ -92,13 +149,15 @@ class DocumentsTable extends React.Component {
       url: "https://demo7818297.mockable.io/",
       //TODO:Change to API...............................................................................
       response: {
-        results: 0,
+        results: 2,
         params
       },
       type: "json"
     }).then(response => {
       const pagination = { ...this.state.pagination };
-      pagination.total = 200;
+      pagination.total = 10;
+      pagination.size = "small";
+      pagination.pageSize = 4;
       this.setState({
         loading: false,
         data: response.data,
@@ -107,9 +166,38 @@ class DocumentsTable extends React.Component {
     });
   };
 
+  showModal = () => {
+    this.setState({
+      visible: true
+    });
+  };
+
+  handleOk = e => {
+    console.log(e);
+    this.setState({
+      visible: false
+    });
+    this.fetch();
+  };
+
+  handleCancel = e => {
+    console.log(e);
+    this.setState({
+      visible: false
+    });
+  };
+
   render() {
     return (
       <React.Fragment>
+        <div>
+          <Search
+            placeholder="Search..."
+            onSearch={value => console.log(value)}
+            enterButton="Search"
+          />
+        </div>
+        <br></br>
         <Card>
           <div>
             <h1>Your Documents</h1>
@@ -118,10 +206,24 @@ class DocumentsTable extends React.Component {
               dataSource={this.state.data}
               loading={this.state.loading}
               pagination={this.state.pagination}
+              onChange={this.handleTableChange}
+              size="middle"
             />
-            <Button type="primary" id="mWView">
+            <Button type="primary" onClick={this.showModal}>
               + Create
             </Button>
+            <Modal
+              title="Upload your document"
+              visible={this.state.visible}
+              onOk={this.handleOk}
+              onCancel={this.handleCancel}
+            >
+              <Upload {...props}>
+                <Button>
+                  <Icon type="upload" /> Click to Upload
+                </Button>
+              </Upload>
+            </Modal>
           </div>
         </Card>
       </React.Fragment>
