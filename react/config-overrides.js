@@ -8,6 +8,6 @@ module.exports = override(
   }),
   addLessLoader({
     javascriptEnabled: true,
-    modifyVars: { '@primary-color': '#F16E21', '@input-height-base': '32px', '@btn-height-base': '32px' },
+    modifyVars: { '@primary-color': '#F16E21', '@input-height-base': '40px', '@btn-height-base': '40px' },
   }),
 );

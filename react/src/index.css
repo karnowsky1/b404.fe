@@ -6,8 +6,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   /* using !important for now, but ant design uses LESS variables for colors, 
   so we may want to update the variable in the future */ 
-  background: rgb(241,110,33)!important;
-  background: linear-gradient(90deg, rgba(241,110,33,1) 0%, rgba(210,78,21,1) 100%)!important;
+  background: rgb(243,130,62);
+  background: linear-gradient(90deg, rgba(243,130,62,1) 0%, rgba(208,83,29,1) 100%);
 }
 
 code {
@@ -21,7 +21,7 @@ code {
 }
 
 .img-container img {
-  width: 70%;
+  width: 55%;
   max-width: 600px;
   margin: 0 auto;
   display: block;
@@ -32,6 +32,9 @@ code {
 #login-form{
   max-width: 400px;
   margin: auto;
+  position: relative;
+  display: block;
+  top: 20%;
 }
 
 #API_URL {
@@ -50,10 +53,9 @@ code {
 
 .login-container {
   margin: auto;
-  width: 80vw;
+  width: 85vw;
   height: 80vh;
-  margin-top: 5vh;
-  border: solid 1px;
+  margin-top: 8vh;
   border-radius: .5%;
   -webkit-box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); 
   -moz-box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); 
@@ -79,14 +81,16 @@ code {
   margin: 16px;
 }
 
-/* .ant-btn { 
-  height: 45px!important; 
-} */
-
 .ant-card-grid:nth-child(1) {
   padding: 0px;
-  background: #484848;
-  opacity: .85;
-  box-shadow: 0px!important;
+  background: url('img/GlobalPlaza.jpg') center center no-repeat;
+  background-size: cover;
+  box-shadow: 0 0 0 0;
+  height: 100.2%!important;
+}
+
+.bkg-container {
+  background: rgba(72, 72, 72, 0.85);
+  width: 100%;
   height: 100%;
 }

@@ -5,7 +5,7 @@ import { setUser, setIsLoggedIn } from '../../actions/user'
 import axios from 'axios'
 import qs from 'qs'
 import { Redirect } from 'react-router-dom'
-import Logo from '../../img/VC1.png'
+import Logo from '../../img/VC2.png'
 import { Card } from 'antd'
 import { Typography } from 'antd'
 
@@ -84,8 +84,10 @@ class LoginForm extends React.Component {
     ):(
       <div className="login-container">
           <Card.Grid hoverable={false} style={gridStyle}>
-            <div className="img-container">
-              <img src={Logo} alt="Not Available"/>
+            <div className="bkg-container">
+              <div className="img-container">
+                <img src={Logo} alt="Not Available"/>
+              </div>
             </div>
           </Card.Grid>
           <Card.Grid hoverable={false} style={gridStyle}>
@@ -130,8 +132,9 @@ class LoginForm extends React.Component {
                 Log in
               </Button>
             </Form.Item>
+            <p id="API_URL">API URL: {window.__env__.API_URL}</p>
           </Form>
-        <p id="API_URL">API URL: {window.__env__.API_URL}</p>
+        
         {/* <h1>{this.state.username}</h1> */}
         {/* <h1>{this.state.password}</h1> */}
         <h1>{this.props.user&&this.props.user.name}</h1>
