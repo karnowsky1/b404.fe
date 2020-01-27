@@ -1,6 +1,31 @@
 import React from "react";
-import { Table, Progress, Icon, Button, Row, Col, Card } from "antd";
+import {
+  Table,
+  Progress,
+  Icon,
+  Button,
+  Row,
+  Col,
+  Card,
+  Menu,
+  Dropdown
+} from "antd";
 import axios from "axios";
+
+const menu = (
+  <Menu>
+    <Menu.Item>
+      <a target="_blank" rel="" href="">
+        Delete
+      </a>
+    </Menu.Item>
+    <Menu.Item>
+      <a target="_blank" rel="" href="">
+        View
+      </a>
+    </Menu.Item>
+  </Menu>
+);
 
 const columns = [
   {
@@ -60,7 +85,15 @@ const columns = [
   {
     title: "More",
     dataIndex: "more",
-    render: more => <Icon type="more" />
+    render: more => (
+      <React.Fragment>
+        <Dropdown overlay={menu}>
+          <a className="ant-dropdown-link" href="#">
+            <Icon type="more" />
+          </a>
+        </Dropdown>
+      </React.Fragment>
+    )
   }
 ];
 
@@ -87,16 +120,19 @@ class Tables extends React.Component {
       },
       type: "json"
     }).then(response => {
-      let conf = {
-        id: response.data.id,
-        nameW: { title: response.data.title, updated: response.data.updated },
-        author: { name: response.data.name, createdA: response.data.createdA },
-        date: { createdD: response.data.createdD, time: response.data.time },
-        progress: response.data.progress
-      };
+      let conf = [];
+      for (let entry of response.data) {
+        conf.push({
+          id: entry.id,
+          nameW: { title: entry.title, updated: entry.updated },
+          author: { name: entry.name, createdA: entry.createdA },
+          date: { createdD: entry.createdD, time: entry.time },
+          progress: entry.progress
+        });
+      }
       this.setState({
         loading: false,
-        data: conf.data
+        data: conf
       });
     });
   };

@@ -1,7 +1,6 @@
 import React from "react";
 import { Table, Icon, Button, Row, Col, Card } from "antd";
 import axios from "axios";
-import ReactPaginate from 'react-paginate';
 
 const columns = [
   {
@@ -49,9 +48,8 @@ const columns = [
     render: modified => (
       <React.Fragment>
         {modified.created}
-    <p>{modified.time}</p>
-       </React.Fragment>   
-   
+        <p>{modified.time}</p>
+      </React.Fragment>
     )
   },
   {
@@ -76,14 +74,14 @@ class DocumentsTable extends React.Component {
     const pager = { ...this.state.pagination };
     pager.current = pagination.current;
     this.setState({
-      pagination: pager,
+      pagination: pager
     });
     this.fetch({
       results: pagination.pageSize,
       page: pagination.current,
       sortField: sorter.field,
       sortOrder: sorter.order,
-      ...filters,
+      ...filters
     });
   };
 
@@ -99,7 +97,7 @@ class DocumentsTable extends React.Component {
       },
       type: "json"
     }).then(response => {
-        const pagination = { ...this.state.pagination };
+      const pagination = { ...this.state.pagination };
       pagination.total = 200;
       this.setState({
         loading: false,
