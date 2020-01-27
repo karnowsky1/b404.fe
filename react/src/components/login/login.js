@@ -6,6 +6,8 @@ import axios from 'axios'
 import qs from 'qs'
 import { Redirect } from 'react-router-dom'
 import Logo from '../../img/VC1.png'
+import { Card } from 'antd'
+import { Typography } from 'antd'
 
 class LoginForm extends React.Component {
 
@@ -72,57 +74,68 @@ class LoginForm extends React.Component {
     const { /**errors,*/ username, password, /**isLoading*/ } = this.state
     const { getFieldDecorator } = this.props.form
     const { isLoggedIn } = this.props
+    const gridStyle = {
+      width: '50%',
+      height: '100%',
+    };
+    const { Title } = Typography;
     return isLoggedIn?(
       <Redirect to = '/dashboard' />
     ):(
       <div className="login-container">
-        <div className="img-container">
-        <img src={Logo} alt="Not Available"/>
-        </div>
-        <Form onSubmit={this.handleSubmit} className="login-form" id="login-form">
-          <Form.Item>
-            {getFieldDecorator('username', {
-              valuePropName: 'username',
-              rules: [{ required: true, message: 'Please input your username!' }],
-            })(
-              <Input
-                name = "username"
-                value = {username}
-                prefix = {<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                placeholder = "Username"
-                onChange = {this.handleChange}
-              />,
-            )}
-          </Form.Item>
-          <Form.Item>
-            {getFieldDecorator('password', {
-              valuePropName: 'password',
-              rules: [{ required: true, message: 'Please input your Password!' }],
-            })(
-              <Input
-                name = "password"
-                value = {password}
-                prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                type="password"
-                placeholder="Password"
-                onChange = {this.handleChange}
-              />,
-            )}
-          </Form.Item>
-          <Form.Item>
-            {getFieldDecorator('remember', {
-              valuePropName: 'checked',
-              initialValue: true,
-            })(<Checkbox>Remember me</Checkbox>)}
-            <Button type="primary" htmlType="submit" className="login-form-button">
-              Log in
-            </Button>
-          </Form.Item>
-        </Form>
-      <p id="API_URL">API URL: {window.__env__.API_URL}</p>
-      {/* <h1>{this.state.username}</h1> */}
-      {/* <h1>{this.state.password}</h1> */}
-       <h1>{this.props.user&&this.props.user.name}</h1>
+          <Card.Grid hoverable={false} style={gridStyle}>
+            <div className="img-container">
+              <img src={Logo} alt="Not Available"/>
+            </div>
+          </Card.Grid>
+          <Card.Grid hoverable={false} style={gridStyle}>
+            
+            <Form onSubmit={this.handleSubmit} className="login-form" id="login-form">
+            <Title level={3}>Login</Title>
+            <Form.Item>
+              {getFieldDecorator('username', {
+                valuePropName: 'username',
+                rules: [{ required: true, message: 'Please input your username!' }],
+              })(
+                <Input
+                  name = "username"
+                  value = {username}
+                  prefix = {<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  placeholder = "Username"
+                  onChange = {this.handleChange}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator('password', {
+                valuePropName: 'password',
+                rules: [{ required: true, message: 'Please input your Password!' }],
+              })(
+                <Input
+                  name = "password"
+                  value = {password}
+                  prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  type="password"
+                  placeholder="Password"
+                  onChange = {this.handleChange}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator('remember', {
+                valuePropName: 'checked',
+                initialValue: true,
+              })(<Checkbox>Remember me</Checkbox>)}
+              <Button type="primary" htmlType="submit" className="login-form-button">
+                Log in
+              </Button>
+            </Form.Item>
+          </Form>
+        <p id="API_URL">API URL: {window.__env__.API_URL}</p>
+        {/* <h1>{this.state.username}</h1> */}
+        {/* <h1>{this.state.password}</h1> */}
+        <h1>{this.props.user&&this.props.user.name}</h1>
+          </Card.Grid>,
       </div>
     );
   }
