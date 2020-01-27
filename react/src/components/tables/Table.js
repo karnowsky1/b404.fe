@@ -28,7 +28,7 @@ const columns = [
     render: author => (
       <React.Fragment>
         {author.name}
-        <p>{author.created}</p>
+        <p>{author.createdA}</p>
       </React.Fragment>
     )
   },
@@ -37,7 +37,7 @@ const columns = [
     dataIndex: "date",
     render: date => (
       <React.Fragment>
-        {date.created}
+        {date.createdD}
         <p>{date.time}</p>
       </React.Fragment>
     )
@@ -67,11 +67,12 @@ const columns = [
 class Tables extends React.Component {
   state = {
     data: [],
-    loading: false
+    loading: true
   };
 
   componentDidMount() {
     this.fetch();
+    console.log(this.state.data);
   }
 
   fetch = (params = {}) => {
@@ -81,14 +82,21 @@ class Tables extends React.Component {
       url: "https://demo1986594.mockable.io",
       //TODO:Change to API...............................................................................
       response: {
-        results: 5,
+        results: 4,
         params
       },
       type: "json"
     }).then(response => {
+      let conf = {
+        id: response.data.id,
+        nameW: { title: response.data.title, updated: response.data.updated },
+        author: { name: response.data.name, createdA: response.data.createdA },
+        date: { createdD: response.data.createdD, time: response.data.time },
+        progress: response.data.progress
+      };
       this.setState({
         loading: false,
-        data: response.data
+        data: conf.data
       });
     });
   };
