@@ -34,7 +34,8 @@ const PrivateRoute = ({component: Component, authed, location, setIsLoggedIn, ..
     } else {
       setLoading(false)
     }
-  }, []);
+  }, [setIsLoggedIn]);
+  // runs when it mounts or when a dependancy changes
   return loading ? (
     <div
       style={{

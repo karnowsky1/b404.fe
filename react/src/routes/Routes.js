@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import { setIsLoggedIn } from '../actions/user'
-import { connect } from 'react-redux'
 import PrivateRoute from './PrivateRoute'
 import Login from '../components/login/login'
 import Dashboard from '../pages/Dashboard'
