@@ -8,6 +8,7 @@ import { Redirect } from 'react-router-dom'
 import Logo from '../../img/VC2.png'
 import { Card } from 'antd'
 import { Typography } from 'antd'
+import { TOKEN_KEY, UUID_KEY } from '../../constants/auth'
 
 class LoginForm extends React.Component {
 
@@ -37,6 +38,8 @@ class LoginForm extends React.Component {
     await axios.post(
       url,
       qs.stringify({
+        // username: btoa(username),
+        // password: btoa(password)
         username,
         password
       }),
@@ -47,11 +50,13 @@ class LoginForm extends React.Component {
       }
     ).then(response => {
       if (response.status === 200){
-        setUser(response.data);
-        localStorage.setItem("token", response.headers.UUID);
-        setIsLoggedIn(true);
+        setUser(response.data)
+        localStorage.setItem(TOKEN_KEY, response.headers.authorization)
+        localStorage.setItem(UUID_KEY, response.data.UUID)
+        setIsLoggedIn(true)
       }
     }).catch(function (error) {
+      message.destroy()
       if (error.response) {
         // Request made and server responded
         message.error("Invalid credentials, please try again!");

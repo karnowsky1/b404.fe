@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import DocumentsLayout from '../components/layout/DocumentsLayout'
+import DocumentsTable from '../components/documents/documents'
 
 export default class Documents extends Component {
     render() {
         return (
-            <DocumentsLayout />
+          <DocumentsTable />
         )
     }
 }
