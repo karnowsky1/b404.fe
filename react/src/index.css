@@ -82,8 +82,6 @@ code {
   padding: 0px;
   background: url('img/GlobalPlaza.jpg') center center no-repeat;
   background-size: cover;
-  box-shadow: 0 0 0 0;
-  height: 100.2%!important;
 }
 
 .ant-card-grid {
