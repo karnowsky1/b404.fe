@@ -143,7 +143,7 @@ class LoginForm extends React.Component {
         {/* <h1>{this.state.username}</h1> */}
         {/* <h1>{this.state.password}</h1> */}
         <h1>{this.props.user&&this.props.user.name}</h1>
-          </Card.Grid>,
+          </Card.Grid>
       </div>
     );
   }
