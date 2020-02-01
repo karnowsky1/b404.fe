@@ -13,6 +13,7 @@ const PrivateRoute = ({component: Component, authed, location, setIsLoggedIn, ..
   useEffect(() => {
     const token = localStorage.getItem(TOKEN_KEY)
     const uuid = localStorage.getItem(UUID_KEY)
+    // checking the JWT token against the authorization header
     if (token && uuid) {
       axios
         .get(window.__env__.API_URL + `/blink/api/person/id/${uuid}`, {

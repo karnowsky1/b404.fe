@@ -59,7 +59,7 @@ class NavLayout extends React.Component {
               onClick={this.toggle}
             />
             <div className="logout">
-              <Logout style={{ float: 'right' }}/>
+              <Logout />
             </div>
           </Header>
           <Content
