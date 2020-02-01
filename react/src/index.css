@@ -96,3 +96,10 @@ code {
   height: 100%;
   border-radius: .5%;
 }
+
+.logout {
+  cursor: pointer;
+  position: absolute;
+  right: 3.5em;
+  top: 0px;
+}
