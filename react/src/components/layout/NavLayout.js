@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout, Menu, Icon, Divider } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { MAIN_ROUTES } from '../../constants/routes';
+import Logout from './Logout';
 
 const { Header, Sider, Content } = Layout;
 
@@ -57,6 +58,9 @@ class NavLayout extends React.Component {
               type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
               onClick={this.toggle}
             />
+            <div className="logout">
+              <Logout style={{ float: 'right' }}/>
+            </div>
           </Header>
           <Content
             style={{
