@@ -59,13 +59,13 @@ class LoginForm extends React.Component {
       message.destroy()
       if (error.response) {
         // Request made and server responded
-        message.error("Invalid credentials, please try again!");
+        message.error(error.response.data.error);
       } else if (error.request) {
         // The request was made but no response was received
-        message.error("Something went wrong, please try again!");
+        message.error(error.response.data.error);
       } else {
         // Something happened in setting up the request that triggered an Error
-        message.error("Something went wrong, please try again!");
+        message.error(error.response.data.error);
       }
     });
   };
