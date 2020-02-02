@@ -83,13 +83,12 @@ const columns = [
 class Tables extends React.Component {
   state = {
     data: [],
-    loading: true,
+    loading: false,
     pagination: {}
   };
 
   componentDidMount() {
     this.fetch();
-    console.log(this.state.data);
   }
 
   fetch = (params = {}) => {
@@ -103,25 +102,35 @@ class Tables extends React.Component {
         params
       },
       type: "json"
-    }).then(response => {
-      let conf = [];
-      for (let entry of response.data) {
-        conf.push({
-          id: entry.id,
-          nameW: { title: entry.title, updated: entry.updated },
-          author: { name: entry.name, createdA: entry.createdA },
-          date: { createdD: entry.createdD, time: entry.time },
-          progress: entry.progress
+    })
+      .then(response => {
+        let conf = [];
+        for (let entry of response.data) {
+          conf.push({
+            id: entry.id,
+            nameW: { title: entry.title, updated: entry.updated },
+            author: { name: entry.name, createdA: entry.createdA },
+            date: { createdD: entry.createdD, time: entry.time },
+            progress: entry.progress
+          });
+        }
+        const pagination = { ...this.state.pagination };
+        pagination.pageSize = 4;
+        this.setState({
+          loading: false,
+          data: conf,
+          pagination
         });
-      }
-      const pagination = { ...this.state.pagination };
-      pagination.pageSize = 4;
-      this.setState({
-        loading: false,
-        data: conf,
-        pagination
+      })
+      .catch(error => {
+        let empty = [];
+        console.log(error);
+        if (error) {
+          this.setState({
+            data: empty
+          });
+        }
       });
-    });
   };
 
   render() {
