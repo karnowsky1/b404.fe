@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Menu, Icon, Divider } from 'antd';
+import { Layout, Menu, Icon } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { MAIN_ROUTES } from '../../constants/routes';
 
@@ -34,7 +34,7 @@ class NavLayout extends React.Component {
                 </NavLink>
               </Menu.Item>
             ))}
-            <Divider style={{ margin: '10px' }} />
+            
             <div style={{ padding: '10px' }}>Settings</div>
             <Menu.Item key="5">
               <NavLink to="/main-settings">
