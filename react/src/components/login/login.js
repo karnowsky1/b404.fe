@@ -23,6 +23,29 @@ class LoginForm extends React.Component {
     this.handleChange = this.handleChange.bind(this)
   }
 
+  async checkLoggedIn() {
+    const { setIsLoggedIn } = this.props
+    const token = localStorage.getItem(TOKEN_KEY)
+    const uuid = localStorage.getItem(UUID_KEY)
+    if (token && uuid) {
+      axios
+        .get(window.__env__.API_URL + `/blink/api/person/id/${uuid}`, {
+          headers: {
+            Authorization: token
+          }
+        })
+        .then(response => {
+          if (response.status === 200) {
+            setIsLoggedIn(true);
+            console.log(this.props)
+          }
+        })
+        .catch(e => {
+          console.error(e)
+        })
+      }
+    }
+
   handleSubmit = async e => {
     const { setUser, setIsLoggedIn } = this.props // set user is coming from props
     // imported setUser is being given to connect, then it's connecting via dispatch
@@ -62,10 +85,10 @@ class LoginForm extends React.Component {
         message.error(error.response.data.error);
       } else if (error.request) {
         // The request was made but no response was received
-        message.error(error.response.data.error);
+        message.error("Server not responding");
       } else {
         // Something happened in setting up the request that triggered an Error
-        message.error(error.response.data.error);
+        message.error("Error setting up request");
       }
     });
   };
@@ -76,6 +99,7 @@ class LoginForm extends React.Component {
   }
 
   render() {
+    this.checkLoggedIn()
     const { /**errors,*/ username, password, /**isLoading*/ } = this.state
     const { getFieldDecorator } = this.props.form
     const { isLoggedIn } = this.props
