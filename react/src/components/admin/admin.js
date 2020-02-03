@@ -1,10 +1,44 @@
 import React from "react";
-import { Table, Button, Row, Col, Card, Tag, Divider, Modal } from "antd";
+import {
+  Table,
+  Button,
+  Row,
+  Col,
+  Card,
+  Tag,
+  Divider,
+  Modal,
+  Icon,
+  Input,
+  Cascader
+} from "antd";
 import axios from "axios";
+import qs from "qs";
+
+const InputGroup = Input.Group;
+const optionsC = [];
+const optionsR = [
+  {
+    value: "1",
+    label: "Admin"
+  },
+  {
+    value: "2",
+    label: "Coach"
+  },
+  {
+    value: "3",
+    label: "External"
+  }
+];
 
 const columns = [
   { title: "Name", dataIndex: "nameW", key: "nameW" },
-  { title: "Company", dataIndex: "companies", key: "companies" },
+  {
+    title: "Company",
+    dataIndex: "companies",
+    key: "companies"
+  },
   {
     title: "Role",
     dataIndex: "accessLevelID",
@@ -19,19 +53,25 @@ const columns = [
     title: "Actions",
     dataIndex: "",
     key: "x",
-    render: () => (
+    render: record => (
       <React.Fragment>
         <Button type="link" size="small">
           Edit
         </Button>
         <Divider type="vertical" />
-        <Button type="link" size="small">
+        <Button
+          type="link"
+          size="small"
+          onClick={e => AdminTable.deleteRow(e, record.id)}
+        >
           Delete
         </Button>
       </React.Fragment>
     )
   }
 ];
+
+const { confirm } = Modal;
 
 function name(dataN) {
   let name = "";
@@ -74,30 +114,86 @@ class AdminTable extends React.Component {
     data: [],
     loading: true,
     pagination: {},
-    visible: false
+    addvisible: false
   };
+
+  static showConfirm() {
+    confirm({
+      title: "Edit User",
+      content: {},
+      onOk() {
+        console.log("OK");
+      },
+      onCancel() {
+        console.log("Cancel");
+      }
+    });
+  }
 
   componentDidMount() {
     this.fetch();
   }
 
-  showModal = () => {
+  showAddModal = () => {
     this.setState({
-      visible: true
+      addvisible: true
     });
   };
 
-  handleOk = e => {
-    console.log(e);
+  handleAddOk = e => {
+    const data = {
+      username: document.getElementById("username").value,
+      password: document.getElementById("password").value,
+      fName: document.getElementById("fname").value,
+      lName: document.getElementById("lname").value,
+      email: document.getElementById("email").value,
+      title: document.getElementById("title").value,
+      accessLevelID: 1
+    };
+    axios({
+      method: "post",
+      url: "https://testing.blink-404.com/blink/api/person",
+      headers: {
+        Authorization: localStorage.getItem("token"),
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      data: qs.stringify(data),
+      type: "json"
+    })
+      .then(function(response) {
+        console.log(response);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+
     this.setState({
-      visible: false
+      addvisible: false
     });
+    this.fetch();
   };
 
-  handleCancel = e => {
+  static deleteRow(e, id) {
+    e.preventDefault();
+    axios
+      .delete("https://testing.blink-404.com/blink/api/person/id/" + id, {
+        headers: {
+          Authorization: localStorage.getItem("token")
+        }
+      })
+      .then(response => {
+        if (response.status === 200) {
+          console.log(response);
+        } else {
+          console.log(response);
+        }
+      });
+  }
+
+  handleaddCancel = e => {
     console.log(e);
     this.setState({
-      visible: false
+      addvisible: false
     });
   };
 
@@ -111,37 +207,53 @@ class AdminTable extends React.Component {
         params
       },
       type: "json"
-    }).then(response => {
-      let conf = [];
-      for (let entry of response.data) {
-        conf.push({
-          id: entry.UUID,
-          username: entry.username,
-          nameW: entry.fName + " " + entry.lName,
-          email: entry.email,
-          title: entry.title,
-          companies: entry.companies[0].companyName,
-          accessLevelID: entry.accessLevelID
+    })
+      .then(response => {
+        let conf = [];
+        for (let entry of response.data) {
+          if ("companyName" in entry) {
+            conf.push({
+              id: entry.UUID,
+              username: entry.username,
+              nameW: entry.fName + " " + entry.lName,
+              email: entry.email,
+              title: entry.title,
+              companies: entry.companies[0].companyName,
+              accessLevelID: entry.accessLevelID
+            });
+          } else {
+            conf.push({
+              id: entry.UUID,
+              username: entry.username,
+              nameW: entry.fName + " " + entry.lName,
+              email: entry.email,
+              title: entry.title,
+              accessLevelID: entry.accessLevelID
+            });
+          }
+        }
+        const pagination = { ...this.state.pagination };
+        pagination.pageSize = 4;
+        this.setState({
+          loading: false,
+          data: conf,
+          pagination
         });
-      }
-      const pagination = { ...this.state.pagination };
-      pagination.pageSize = 4;
-      this.setState({
-        loading: false,
-        data: conf,
-        pagination
+      })
+      .catch(function(error) {
+        console.log(error);
       });
-    });
   };
 
   render() {
     return (
       <React.Fragment>
-        <Card>
-          <div>
+        <div>
+          <Card>
             <h1>Users</h1>
             <Table
               columns={columns}
+              rowKey={record => record.id}
               expandedRowRender={record => (
                 <React.Fragment>
                   <Row>
@@ -164,22 +276,58 @@ class AdminTable extends React.Component {
                       </p>
                     </Col>
                   </Row>
-                  <Modal
-                    title="Basic Modal"
-                    visible={this.state.visible}
-                    onOk={this.handleOk}
-                    onCancel={this.handleCancel}
-                  >
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
-                  </Modal>
                 </React.Fragment>
               )}
               dataSource={this.state.data}
             />
-          </div>
-        </Card>
+            <Button type="primary" shape="circle" onClick={this.showAddModal}>
+              <Icon type="plus" />
+            </Button>
+            <Modal
+              title="Add User"
+              visible={this.state.addvisible}
+              onOk={this.handleAddOk}
+              onCancel={this.handleaddCancel}
+            >
+              <p>First Name *</p>
+              <Input id="fname" placeholder="First Name" />
+              <p></p>
+              <p>Last Name *</p>
+              <Input id="lname" placeholder="Last Name" />
+              <p></p>
+              <p>Username *</p>
+              <Input id="username" placeholder="Username" />
+              <p></p>
+              <p>Password *</p>
+              <Input id="password" placeholder="Password" />
+              <p></p>
+              <p>Comapay *</p>
+              <InputGroup compact id="company">
+                <Cascader
+                  style={{ width: "100%" }}
+                  options={optionsC}
+                  placeholder="Select Company"
+                />
+              </InputGroup>
+              <p></p>
+              <p>Role *</p>
+              <InputGroup compact>
+                <Cascader
+                  style={{ width: "100%" }}
+                  options={optionsR}
+                  placeholder="Select Role"
+                  id="role"
+                />
+              </InputGroup>
+              <p></p>
+              <p>Email</p>
+              <Input id="email" placeholder="Email" />
+              <p></p>
+              <p>Job Title</p>
+              <Input id="title" placeholder="Job Title" />
+            </Modal>
+          </Card>
+        </div>
       </React.Fragment>
     );
   }
