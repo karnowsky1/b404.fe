@@ -7,7 +7,7 @@ import axios from 'axios';
 import { setIsLoggedIn } from '../actions/user';
 import { Spin } from 'antd';
 
-const PrivateRoute = ({component: Component, authed, location, setIsLoggedIn, ...rest}) => {
+const AppRoute = ({component: Component, authed, location, setIsLoggedIn, isPrivate = false, ...rest}) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -53,17 +53,21 @@ const PrivateRoute = ({component: Component, authed, location, setIsLoggedIn, ..
     <Route
       {...rest}
       render={props =>
-        authed ? (
-          <NavLayout path={location.pathname}>
-            <Component {...props} />
-          </NavLayout>
-        ) : (
+        !authed && isPrivate ? (
           <Redirect to="/login" />
+        ) : !isPrivate && authed ? (
+          <Redirect to="/dashboard" />
+        ) : isPrivate ? (
+        <NavLayout path={location.pathname}>
+          <Component {...props} />
+        </NavLayout>)
+        : (
+          <Component {...props} />
         )
       }
     />
   );
 };
 
-export default connect((state = {}) => ({ authed: state.isLoggedIn }),{ setIsLoggedIn })(PrivateRoute);
+export default connect((state = {}) => ({ authed: state.isLoggedIn }),{ setIsLoggedIn })(AppRoute);
 

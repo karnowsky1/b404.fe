@@ -6,42 +6,52 @@ import { setUser, setIsLoggedIn } from '../../actions/user';
 import { connect } from 'react-redux';
 import { TOKEN_KEY, UUID_KEY } from '../../constants/auth';
 
-const profile_icon = 'user'
-const SIGNATURES = "1"
-const SETTINGS = "2"
-const LOG_OUT = "3"  
-// const logout_icon = 'logout'
-
-function handleMenuClick(e) {
-  console.log('click', e);
-  console.log(e.key)
-  if (e.key == LOG_OUT) {
-    localStorage.removeItem(TOKEN_KEY)
-    localStorage.removeItem(UUID_KEY)
-    setIsLoggedIn(false)
-    // console.log(auth)
-  }
-}
-
-const menu = (
-  <Menu onClick={handleMenuClick}>
-    <Menu.Item key="1">Signatures</Menu.Item>
-    <Menu.Item key="2">Settings</Menu.Item>
-    <Menu.Item key="3">
-      <NavLink to="/login">
-        Log Out
-      </NavLink>
-    </Menu.Item>
-    
-  </Menu>
-)
-
 class Logout extends React.Component {
   constructor(props) {
     super (props)
+    this.state = {
+      authed: ''
+    }
   }
+
   render() {
     const { setIsLoggedIn } = this.props
+    const profile_icon = 'user'
+    const SIGNATURES = "1"
+    const SETTINGS = "2"
+    const LOG_OUT = "3"  
+    // const logout_icon = 'logout'
+
+    function handleMenuClick(e) {
+      console.log('click', e);
+      console.log(e.key)
+      if (e.key == LOG_OUT) {
+        localStorage.removeItem(TOKEN_KEY)
+        localStorage.removeItem(UUID_KEY)
+        setIsLoggedIn(false)
+      }
+    }
+    
+    const menu = (
+      <Menu onClick={handleMenuClick}>
+        <Menu.Item key="1">
+          <NavLink to="/signatures">
+          Signatures
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="2">
+          <NavLink to="/main-settings">
+            Settings
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="3">
+          <NavLink to="/login">
+            Log Out
+          </NavLink>
+        </Menu.Item>
+      </Menu>
+    )
+    
     return(
       <Dropdown overlay={menu}>
         <Button type="primary" shape="circle">
@@ -52,6 +62,6 @@ class Logout extends React.Component {
   }
 }
 
-export default connect((state={})=>({}), { setUser, setIsLoggedIn })(Logout)
+export default connect((state={})=>({authed: state.isLoggedIn}), { setUser, setIsLoggedIn })(Logout)
 
 // export default Logout
