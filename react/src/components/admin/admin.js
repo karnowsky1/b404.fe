@@ -32,102 +32,98 @@ const optionsR = [
   }
 ];
 
-const columns = [
-  { title: "Name", dataIndex: "nameW", key: "nameW" },
-  {
-    title: "Company",
-    dataIndex: "companies",
-    key: "companies"
-  },
-  {
-    title: "Role",
-    dataIndex: "accessLevelID",
-    key: "accessLevelID",
-    render: accessLevelID => (
-      <React.Fragment>
-        <Tag color={color(accessLevelID)}>{name(accessLevelID)}</Tag>
-      </React.Fragment>
-    )
-  },
-  {
-    title: "Actions",
-    dataIndex: "",
-    key: "x",
-    render: record => (
-      <React.Fragment>
-        <Button type="link" size="small">
-          Edit
-        </Button>
-        <Divider type="vertical" />
-        <Button
-          type="link"
-          size="small"
-          onClick={e => AdminTable.deleteRow(e, record.id)}
-        >
-          Delete
-        </Button>
-      </React.Fragment>
-    )
-  }
-];
-
-const { confirm } = Modal;
-
-function name(dataN) {
-  let name = "";
-  switch (dataN) {
-    case 1:
-      name = "admin";
-      break;
-    case 2:
-      name = "coach";
-      break;
-    case 3:
-      name = "external";
-      break;
-    default:
-      return;
-  }
-  return name;
-}
-
-function color(dataC) {
-  let color = "";
-  switch (dataC) {
-    case 1:
-      color = "geekblue";
-      break;
-    case 2:
-      color = "green";
-      break;
-    case 3:
-      color = "cyan";
-      break;
-    default:
-      return;
-  }
-  return color;
-}
-
 class AdminTable extends React.Component {
   state = {
     data: [],
     loading: true,
     pagination: {},
-    addvisible: false
+    addvisible: false,
+    editvisible: false
   };
 
-  static showConfirm() {
-    confirm({
-      title: "Edit User",
-      content: {},
-      onOk() {
-        console.log("OK");
+  constructor(props) {
+    super(props);
+    this.editData = null;
+    this.columns = [
+      { title: "Name", dataIndex: "nameW", key: "nameW" },
+      {
+        title: "Company",
+        dataIndex: "companies",
+        key: "companies"
       },
-      onCancel() {
-        console.log("Cancel");
+      {
+        title: "Role",
+        dataIndex: "accessLevelID",
+        key: "accessLevelID",
+        render: accessLevelID => (
+          <React.Fragment>
+            <Tag color={this.color(accessLevelID)}>
+              {this.name(accessLevelID)}
+            </Tag>
+          </React.Fragment>
+        )
+      },
+      {
+        title: "Actions",
+        dataIndex: "",
+        key: "x",
+        render: record => (
+          <React.Fragment>
+            <Button
+              type="link"
+              size="small"
+              onClick={e => this.showEditModal(record)}
+            >
+              Edit
+            </Button>
+            <Divider type="vertical" />
+            <Button
+              type="link"
+              size="small"
+              onClick={e => this.deleteRow(e, record.id)}
+            >
+              Delete
+            </Button>
+          </React.Fragment>
+        )
       }
-    });
+    ];
+  }
+
+  name(dataN) {
+    let name = "";
+    switch (dataN) {
+      case 1:
+        name = "admin";
+        break;
+      case 2:
+        name = "coach";
+        break;
+      case 3:
+        name = "external";
+        break;
+      default:
+        return;
+    }
+    return name;
+  }
+
+  color(dataC) {
+    let color = "";
+    switch (dataC) {
+      case 1:
+        color = "geekblue";
+        break;
+      case 2:
+        color = "green";
+        break;
+      case 3:
+        color = "cyan";
+        break;
+      default:
+        return;
+    }
+    return color;
   }
 
   componentDidMount() {
@@ -137,6 +133,14 @@ class AdminTable extends React.Component {
   showAddModal = () => {
     this.setState({
       addvisible: true
+    });
+  };
+
+  showEditModal = record => {
+    console.log(record);
+    this.editData = record;
+    this.setState({
+      editvisible: true
     });
   };
 
@@ -173,7 +177,7 @@ class AdminTable extends React.Component {
     this.fetch();
   };
 
-  static deleteRow(e, id) {
+  deleteRow(e, id) {
     e.preventDefault();
     axios
       .delete("https://testing.blink-404.com/blink/api/person/id/" + id, {
@@ -183,7 +187,7 @@ class AdminTable extends React.Component {
       })
       .then(response => {
         if (response.status === 200) {
-          console.log(response);
+          this.fetch();
         } else {
           console.log(response);
         }
@@ -195,6 +199,45 @@ class AdminTable extends React.Component {
     this.setState({
       addvisible: false
     });
+  };
+
+  handleEditCancel = e => {
+    console.log(e);
+    this.setState({
+      editvisible: false
+    });
+  };
+
+  handleEditOk = e => {
+    const data = {
+      id: this.editData.id,
+      username: document.getElementById("usernameE").value,
+      fName: document.getElementById("fnameE").value,
+      lName: document.getElementById("lnameE").value,
+      email: document.getElementById("emailE").value,
+      title: document.getElementById("titleE").value,
+      accessLevelID: 1
+    };
+    axios({
+      method: "put",
+      url: "https://testing.blink-404.com/blink/api/person",
+      headers: {
+        Authorization: localStorage.getItem("token"),
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      data: qs.stringify(data),
+      type: "json"
+    })
+      .then(function(response) {
+        console.log(response);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    this.setState({
+      editvisible: false
+    });
+    this.fetch();
   };
 
   fetch = (params = {}) => {
@@ -211,26 +254,18 @@ class AdminTable extends React.Component {
       .then(response => {
         let conf = [];
         for (let entry of response.data) {
-          if ("companyName" in entry) {
-            conf.push({
-              id: entry.UUID,
-              username: entry.username,
-              nameW: entry.fName + " " + entry.lName,
-              email: entry.email,
-              title: entry.title,
-              companies: entry.companies[0].companyName,
-              accessLevelID: entry.accessLevelID
-            });
-          } else {
-            conf.push({
-              id: entry.UUID,
-              username: entry.username,
-              nameW: entry.fName + " " + entry.lName,
-              email: entry.email,
-              title: entry.title,
-              accessLevelID: entry.accessLevelID
-            });
-          }
+          conf.push({
+            id: entry.UUID,
+            fName: entry.fName,
+            lName: entry.lName,
+            username: entry.username,
+            nameW: entry.fName + " " + entry.lName,
+            email: entry.email,
+            title: entry.title,
+            companies:
+              entry.companies.length > 0 ? entry.companies[0].companyName : "",
+            accessLevelID: entry.accessLevelID
+          });
         }
         const pagination = { ...this.state.pagination };
         pagination.pageSize = 4;
@@ -252,7 +287,7 @@ class AdminTable extends React.Component {
           <Card>
             <h1>Users</h1>
             <Table
-              columns={columns}
+              columns={this.columns}
               rowKey={record => record.id}
               expandedRowRender={record => (
                 <React.Fragment>
@@ -325,6 +360,65 @@ class AdminTable extends React.Component {
               <p></p>
               <p>Job Title</p>
               <Input id="title" placeholder="Job Title" />
+            </Modal>
+            <Modal
+              title="Edit User"
+              visible={this.state.editvisible}
+              onOk={this.handleEditOk}
+              onCancel={this.handleEditCancel}
+            >
+              <p>First Name *</p>
+              <Input
+                id="fnameE"
+                placeholder={this.editData !== null ? this.editData.fName : ""}
+              />
+              <p></p>
+              <p>Last Name *</p>
+              <Input
+                id="lnameE"
+                placeholder={this.editData !== null ? this.editData.lName : ""}
+              />
+              <p></p>
+              <p>Username *</p>
+              <Input
+                id="usernameE"
+                placeholder={
+                  this.editData !== null ? this.editData.username : ""
+                }
+              />
+              <p></p>
+              <p>Comapay *</p>
+              <InputGroup compact id="companyE">
+                <Cascader
+                  style={{ width: "100%" }}
+                  options={optionsC}
+                  placeholder={
+                    this.editData !== null ? this.editData.companyName : ""
+                  }
+                />
+              </InputGroup>
+              <p></p>
+              <p>Role *</p>
+              <InputGroup compact>
+                <Cascader
+                  style={{ width: "100%" }}
+                  options={optionsR}
+                  placeholder={this.editData !== null ? this.editData.role : ""}
+                  id="roleE"
+                />
+              </InputGroup>
+              <p></p>
+              <p>Email</p>
+              <Input
+                id="emailE"
+                placeholder={this.editData !== null ? this.editData.email : ""}
+              />
+              <p></p>
+              <p>Job Title</p>
+              <Input
+                id="titleE"
+                placeholder={this.editData !== null ? this.editData.title : ""}
+              />
             </Modal>
           </Card>
         </div>
