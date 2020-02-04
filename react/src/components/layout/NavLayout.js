@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout, Menu, Icon } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { MAIN_ROUTES } from '../../constants/routes';
+import { connect }from 'react-redux'
 import Logout from './Logout';
 
 const { Header, Sider, Content } = Layout;
@@ -43,12 +44,14 @@ class NavLayout extends React.Component {
                 <span>Main Settings</span>
               </NavLink>
             </Menu.Item>
-            <Menu.Item key="6">
-              <NavLink to="/admin">
-                <Icon type="plus-square" />
-                <span>Admin</span>
-              </NavLink>
-            </Menu.Item>
+            {/* { this.props.isAdmin &&  */
+              <Menu.Item key="6">
+                <NavLink to="/admin">
+                  <Icon type="plus-square" />
+                  <span>Admin</span>
+                </NavLink>
+              </Menu.Item>
+            }
           </Menu>
         </Sider>
         <Layout>
@@ -77,4 +80,4 @@ class NavLayout extends React.Component {
   }
 }
 
-export default NavLayout;
+export default connect((state = {}) => ({ isAdmin: state.user }))(NavLayout); 

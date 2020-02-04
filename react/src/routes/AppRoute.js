@@ -4,12 +4,14 @@ import { connect } from 'react-redux';
 import NavLayout from '../components/layout/NavLayout';
 import { TOKEN_KEY, UUID_KEY } from '../constants/auth';
 import axios from 'axios';
-import { setIsLoggedIn } from '../actions/user';
+import { setIsLoggedIn, setUser } from '../actions/user';
 import { Spin } from 'antd';
 
-const AppRoute = ({component: Component, authed, location, setIsLoggedIn, isPrivate = false, ...rest}) => {
+const AppRoute = ({component: Component, authed, user, location, setIsLoggedIn, setUser, requireAdmin, isPrivate = false, ...rest}) => {
   const [loading, setLoading] = useState(true)
-
+  // make an requireAdmin or isAdmin prop 
+  // add requireAdmin, isAdmin, into the props
+  
   useEffect(() => {
     const token = localStorage.getItem(TOKEN_KEY)
     const uuid = localStorage.getItem(UUID_KEY)
@@ -24,6 +26,7 @@ const AppRoute = ({component: Component, authed, location, setIsLoggedIn, isPriv
         .then(response => {
           if (response.status === 200) {
             setIsLoggedIn(true)
+            setUser(response.data)
           }
         })
         .catch(e => {
@@ -31,11 +34,12 @@ const AppRoute = ({component: Component, authed, location, setIsLoggedIn, isPriv
         })
         .finally(() => {
           setLoading(false)
+          
         })
     } else {
       setLoading(false)
     }
-  }, [setIsLoggedIn]);
+  }, [setIsLoggedIn, setUser]);
   // runs when it mounts or when a dependancy changes
   return loading ? (
     <div
@@ -55,7 +59,9 @@ const AppRoute = ({component: Component, authed, location, setIsLoggedIn, isPriv
       render={props =>
         !authed && isPrivate ? (
           <Redirect to="/login" />
-        ) : !isPrivate && authed ? (
+        ) : (!isPrivate && authed) ? (
+          // ) : (!isPrivate && authed) || (user.accessLevelID <= 1 && requireAdmin && authed) ? (
+          // trying to incorporate authorization rendering
           <Redirect to="/dashboard" />
         ) : isPrivate ? (
         <NavLayout path={location.pathname}>
@@ -69,5 +75,5 @@ const AppRoute = ({component: Component, authed, location, setIsLoggedIn, isPriv
   );
 };
 
-export default connect((state = {}) => ({ authed: state.isLoggedIn }),{ setIsLoggedIn })(AppRoute);
+export default connect((state={})=>({user: state.user, authed: state.isLoggedIn}), {setUser, setIsLoggedIn})(AppRoute)
 

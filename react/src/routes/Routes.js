@@ -24,12 +24,13 @@ class Routes extends Component {
           <PrivateRoute exact path="/admin" component={Admin} authed={this.props.isLoggedIn}/> */}
           <AppRoute path="/" exact component = {Login} />
           <AppRoute path="/login" exact component = {Login} />
-          <AppRoute exact path="/dashboard" component={Dashboard} authed={this.props.isLoggedIn} isPrivate/>
-          <AppRoute exact path="/documents" component={Documents} authed={this.props.isLoggedIn} isPrivate/>
-          <AppRoute exact path="/workflow" component={Workflow} authed={this.props.isLoggedIn} isPrivate/>
-          <AppRoute exact path="/signatures" component={Signatures} authed={this.props.isLoggedIn} isPrivate/>
-          <AppRoute exact path="/main-settings" component={MainSettings} authed={this.props.isLoggedIn} isPrivate/>
-          <AppRoute exact path="/admin" component={Admin} authed={this.props.isLoggedIn} isPrivate/>
+          <AppRoute exact path="/dashboard" component={Dashboard} isPrivate/>
+          <AppRoute exact path="/documents" component={Documents} isPrivate/>
+          <AppRoute exact path="/workflow" component={Workflow} isPrivate/>
+          <AppRoute exact path="/signatures" component={Signatures} isPrivate/>
+          <AppRoute exact path="/main-settings" component={MainSettings} isPrivate/>
+          <AppRoute exact path="/admin" component={Admin} isPrivate requireAdmin/>
+          {/* <AppRoute exact path="/admin" component={Admin} isPrivate requireAdmin/> */}
           <Redirect to="/dashboard"/>
         </Switch>
       </BrowserRouter>
