@@ -17,8 +17,7 @@ class Logout extends React.Component {
   render() {
     const { setIsLoggedIn } = this.props
     const profile_icon = 'user'
-    const SIGNATURES = "1"
-    const SETTINGS = "2"
+    // const SETTINGS = "2"
     const LOG_OUT = "3"  
     // const logout_icon = 'logout'
 
@@ -34,11 +33,6 @@ class Logout extends React.Component {
     
     const menu = (
       <Menu onClick={handleMenuClick}>
-        <Menu.Item key="1">
-          <NavLink to="/signatures">
-          Signatures
-          </NavLink>
-        </Menu.Item>
         <Menu.Item key="2">
           <NavLink to="/main-settings">
             Settings
