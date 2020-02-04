@@ -7,6 +7,8 @@ import Logout from './Logout';
 
 const { Header, Sider, Content } = Layout;
 
+const { SubMenu } = Menu;
+
 class NavLayout extends React.Component {
   state = {
     collapsed: false
@@ -45,12 +47,18 @@ class NavLayout extends React.Component {
               </NavLink>
             </Menu.Item>
             {/* { this.props.isAdmin &&  */
-              <Menu.Item key="6">
-                <NavLink to="/admin">
-                  <Icon type="plus-square" />
-                  <span>Admin</span>
-                </NavLink>
-              </Menu.Item>
+            <SubMenu
+            key="sub1"
+            title={
+              <span>
+                <Icon type="plus-square" />
+                <span>Admin</span>
+              </span>
+            }
+            >
+            <Menu.Item key="6"><NavLink to="/company">Company</NavLink></Menu.Item>
+            <Menu.Item key="7"><NavLink to="/people">People</NavLink></Menu.Item>
+          </SubMenu>
             }
           </Menu>
         </Sider>

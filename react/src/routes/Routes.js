@@ -6,7 +6,8 @@ import Documents from '../pages/Documents';
 import Workflow from '../pages/Workflow';
 import Signatures from '../pages/Signatures';
 import MainSettings from '../pages/MainSettings';
-import Admin from '../pages/Admin';
+import Company from '../pages/Company';
+import People from '../pages/People';
 import AppRoute from './AppRoute'
 
 class Routes extends Component {
@@ -29,7 +30,8 @@ class Routes extends Component {
           <AppRoute exact path="/workflow" component={Workflow} isPrivate/>
           <AppRoute exact path="/signatures" component={Signatures} isPrivate/>
           <AppRoute exact path="/main-settings" component={MainSettings} isPrivate/>
-          <AppRoute exact path="/admin" component={Admin} isPrivate requireAdmin/>
+          <AppRoute exact path="/company" component={Company} isPrivate requireAdmin/>
+          <AppRoute exact path="/people" component={People} isPrivate requireAdmin/>
           {/* <AppRoute exact path="/admin" component={Admin} isPrivate requireAdmin/> */}
           <Redirect to="/dashboard"/>
         </Switch>
