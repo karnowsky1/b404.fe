@@ -1,6 +1,5 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { MAIN_ROUTES } from '../../constants/routes';
 import { Menu, Icon, Button, Dropdown } from 'antd';
 import { setUser, setIsLoggedIn } from '../../actions/user';
 import { connect } from 'react-redux';
@@ -24,7 +23,7 @@ class Logout extends React.Component {
     function handleMenuClick(e) {
       console.log('click', e);
       console.log(e.key)
-      if (e.key == LOG_OUT) {
+      if (e.key === LOG_OUT) {
         localStorage.removeItem(TOKEN_KEY)
         localStorage.removeItem(UUID_KEY)
         setIsLoggedIn(false)
