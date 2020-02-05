@@ -46,9 +46,16 @@ class Logout extends React.Component {
     )
     
     return(
+      /*
       <Dropdown overlay={menu}>
-        <Button style={{backgroundColor: '#001529'}} type="primary" shape="circle">
-          <Icon type={profile_icon} />
+        <Button style={{borderColor: '#001529'}} type="primary" shape="circle">
+          <Icon style= {{ color: '#001529' }} type={profile_icon} />
+        </Button>
+      </Dropdown>
+      */
+      <Dropdown overlay={menu}>
+        <Button style={{borderColor: '#F0F2F5', boxShadow: '0 0 1px 0px white inset, 0 0 1px 0px white' }} type="primary" shape="circle">
+          <Icon style= {{ color: '#F0F2F5' }} type={profile_icon} />
         </Button>
       </Dropdown>
     )
