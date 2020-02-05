@@ -15,8 +15,14 @@ import {
 import axios from "axios";
 import qs from "qs";
 
+const { confirm } = Modal;
 const InputGroup = Input.Group;
-const optionsC = [];
+const optionsC = [
+  {
+    value: getAllCompanies,
+    label: getAllCompanies
+  }
+];
 const optionsR = [
   {
     value: "1",
@@ -29,8 +35,33 @@ const optionsR = [
   {
     value: "3",
     label: "External"
+  },
+  {
+    value: "4",
+    label: "Customer"
+  },
+  {
+    value: "5",
+    label: "Provider"
   }
 ];
+
+function getAllCompanies() {
+  axios
+    .get(window.__env__.API_URL + "/blink/api/company", {
+      headers: {
+        Authorization: localStorage.getItem("token")
+      }
+    })
+    .then(response => {
+      for (let res in response.data) {
+        return response.data[res];
+      }
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+}
 
 class AdminTable extends React.Component {
   state = {
@@ -80,7 +111,7 @@ class AdminTable extends React.Component {
             <Button
               type="link"
               size="small"
-              onClick={e => this.deleteRow(e, record.id)}
+              onClick={e => this.showDeleteConfirm(e, record.id)}
             >
               Delete
             </Button>
@@ -102,6 +133,12 @@ class AdminTable extends React.Component {
       case 3:
         name = "external";
         break;
+      case 4:
+        name = "customer";
+        break;
+      case 5:
+        name = "provider";
+        break;
       default:
         return;
     }
@@ -120,6 +157,12 @@ class AdminTable extends React.Component {
       case 3:
         color = "cyan";
         break;
+      case 4:
+        color = "lime";
+        break;
+      case 5:
+        color = "purple";
+        break;
       default:
         return;
     }
@@ -128,7 +171,17 @@ class AdminTable extends React.Component {
 
   componentDidMount() {
     this.fetch();
+
+    /*
+    this.interval = setInterval(() => {
+      this.fetch();
+    }, 10000);*/
   }
+
+  /*
+  componentWillUnmount () {
+    clearInterval(this.interval);
+  }*/
 
   showAddModal = () => {
     this.setState({
@@ -156,7 +209,7 @@ class AdminTable extends React.Component {
     };
     axios({
       method: "post",
-      url: "https://testing.blink-404.com/blink/api/person",
+      url: window.__env__.API_URL + "/blink/api/person",
       headers: {
         Authorization: localStorage.getItem("token"),
         "Content-Type": "application/x-www-form-urlencoded"
@@ -164,8 +217,12 @@ class AdminTable extends React.Component {
       data: qs.stringify(data),
       type: "json"
     })
-      .then(function(response) {
-        console.log(response);
+      .then(response => {
+        if (response.status === 200) {
+          this.fetch();
+        } else {
+          console.log(response);
+        }
       })
       .catch(function(error) {
         console.log(error);
@@ -174,25 +231,37 @@ class AdminTable extends React.Component {
     this.setState({
       addvisible: false
     });
-    this.fetch();
   };
 
-  deleteRow(e, id) {
-    e.preventDefault();
-    axios
-      .delete("https://testing.blink-404.com/blink/api/person/id/" + id, {
-        headers: {
-          Authorization: localStorage.getItem("token")
-        }
-      })
-      .then(response => {
-        if (response.status === 200) {
-          this.fetch();
-        } else {
-          console.log(response);
-        }
-      });
-  }
+  showDeleteConfirm = (e, id) => {
+    confirm({
+      title: "Are you sure delete this user?",
+      content: "If you delete this user he will no longer be able to login!",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        axios
+          .delete(window.__env__.API_URL + "/blink/api/person/id/" + id, {
+            headers: {
+              Authorization: localStorage.getItem("token")
+            }
+          })
+          .then(response => {
+            if (response.status === 200) {
+              console.log("works");
+              //fix this it does not work
+              //this.fetch();
+            } else {
+              console.log(response);
+            }
+          });
+      },
+      onCancel() {
+        console.log("Cancel");
+      }
+    });
+  };
 
   handleaddCancel = e => {
     console.log(e);
@@ -212,6 +281,7 @@ class AdminTable extends React.Component {
     const data = {
       id: this.editData.id,
       username: document.getElementById("usernameE").value,
+      password: document.getElementById("passwordE").value,
       fName: document.getElementById("fnameE").value,
       lName: document.getElementById("lnameE").value,
       email: document.getElementById("emailE").value,
@@ -220,7 +290,7 @@ class AdminTable extends React.Component {
     };
     axios({
       method: "put",
-      url: "https://testing.blink-404.com/blink/api/person",
+      url: window.__env__.API_URL + "/blink/api/person",
       headers: {
         Authorization: localStorage.getItem("token"),
         "Content-Type": "application/x-www-form-urlencoded"
@@ -243,7 +313,7 @@ class AdminTable extends React.Component {
   fetch = (params = {}) => {
     axios({
       method: "get",
-      url: "https://testing.blink-404.com/blink/api/person",
+      url: window.__env__.API_URL + "/blink/api/person",
       headers: { Authorization: localStorage.getItem("token") },
       response: {
         results: 4,
@@ -310,13 +380,26 @@ class AdminTable extends React.Component {
                         {record.title}
                       </p>
                     </Col>
+                    <Col span={6}>
+                      <p>
+                        <b>Companies: </b>
+                        {record.companies}
+                      </p>
+                    </Col>
                   </Row>
                 </React.Fragment>
               )}
               dataSource={this.state.data}
             />
-            <Button type="primary" shape="circle" onClick={this.showAddModal}>
-              <Icon type="plus" />
+            <Button
+              type="primary"
+              shape="circle"
+              size="default"
+              onClick={this.showAddModal}
+            >
+              <b>
+                <Icon type="plus" />
+              </b>
             </Button>
             <Modal
               title="Add User"
@@ -336,7 +419,7 @@ class AdminTable extends React.Component {
               <p>Password *</p>
               <Input id="password" placeholder="Password" />
               <p></p>
-              <p>Comapay *</p>
+              <p>Comapay</p>
               <InputGroup compact id="company">
                 <Cascader
                   style={{ width: "100%" }}
@@ -370,29 +453,42 @@ class AdminTable extends React.Component {
               <p>First Name *</p>
               <Input
                 id="fnameE"
-                placeholder={this.editData !== null ? this.editData.fName : ""}
+                placeholder=""
+                defaultValue={this.editData !== null ? this.editData.fName : ""}
               />
               <p></p>
               <p>Last Name *</p>
               <Input
                 id="lnameE"
-                placeholder={this.editData !== null ? this.editData.lName : ""}
+                placeholder=""
+                defaultValue={this.editData !== null ? this.editData.lName : ""}
               />
               <p></p>
               <p>Username *</p>
               <Input
                 id="usernameE"
-                placeholder={
+                placeholder=""
+                defaultValue={
                   this.editData !== null ? this.editData.username : ""
                 }
               />
               <p></p>
-              <p>Comapay *</p>
+              <p>Password *</p>
+              <Input
+                id="passwordE"
+                placeholder=""
+                defaultValue={
+                  this.editData !== null ? this.editData.password : ""
+                }
+              />
+              <p></p>
+              <p>Comapay</p>
               <InputGroup compact id="companyE">
                 <Cascader
                   style={{ width: "100%" }}
                   options={optionsC}
-                  placeholder={
+                  placeholder=""
+                  defaultValue={
                     this.editData !== null ? this.editData.companyName : ""
                   }
                 />
@@ -403,21 +499,26 @@ class AdminTable extends React.Component {
                 <Cascader
                   style={{ width: "100%" }}
                   options={optionsR}
-                  placeholder={this.editData !== null ? this.editData.role : ""}
+                  placeholder=""
                   id="roleE"
+                  defaultValue={
+                    this.editData !== null ? this.editData.role : ""
+                  }
                 />
               </InputGroup>
               <p></p>
               <p>Email</p>
               <Input
                 id="emailE"
-                placeholder={this.editData !== null ? this.editData.email : ""}
+                placeholder=""
+                defaultValue={this.editData !== null ? this.editData.email : ""}
               />
               <p></p>
               <p>Job Title</p>
               <Input
                 id="titleE"
-                placeholder={this.editData !== null ? this.editData.title : ""}
+                placeholder=""
+                defaultValue={this.editData !== null ? this.editData.title : ""}
               />
             </Modal>
           </Card>
