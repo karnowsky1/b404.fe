@@ -10,7 +10,9 @@ import Routes from './routes/Routes'
 
 function App() {
   return (
-    <Provider store = {createStore(userReducer,{isLoggedIn: false})}>
+    <Provider store = {createStore(userReducer,{isLoggedIn: false},
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    )}>
       {/* provider, redux provideing the store to all of the children */
        /* connect function only works if the provider at the top level */
        /* give create store the combined reducers or have one big reducer */
