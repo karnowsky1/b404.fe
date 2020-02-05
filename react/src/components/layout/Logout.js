@@ -16,9 +16,7 @@ class Logout extends React.Component {
   render() {
     const { setIsLoggedIn } = this.props
     const profile_icon = 'user'
-    // const SETTINGS = "2"
-    const LOG_OUT = "3"  
-    // const logout_icon = 'logout'
+    const LOG_OUT = "2"  
 
     function handleMenuClick(e) {
       console.log('click', e);
@@ -33,11 +31,6 @@ class Logout extends React.Component {
     const menu = (
       <Menu onClick={handleMenuClick}>
         <Menu.Item key="2">
-          <NavLink to="/main-settings">
-            Settings
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="3">
           <NavLink to="/login">
             Log Out
           </NavLink>
@@ -47,8 +40,8 @@ class Logout extends React.Component {
     
     return(
       <Dropdown overlay={menu}>
-        <Button style={{backgroundColor: 'black'}} type="primary" shape="circle">
-          <Icon type={profile_icon} />
+        <Button style={{borderColor: '#542711', boxShadow: '0 0 1px 0px #542711 inset, 0 0 1px 0px #542711' }} type="primary" shape="circle">
+          <Icon style= {{ color: '#542711' }} type={profile_icon} />
         </Button>
       </Dropdown>
     )
@@ -56,5 +49,3 @@ class Logout extends React.Component {
 }
 
 export default connect((state={})=>({authed: state.isLoggedIn}), { setUser, setIsLoggedIn })(Logout)
-
-// export default Logout
