@@ -49,5 +49,3 @@ class Logout extends React.Component {
 }
 
 export default connect((state={})=>({authed: state.isLoggedIn}), { setUser, setIsLoggedIn })(Logout)
-
-// export default Logout
