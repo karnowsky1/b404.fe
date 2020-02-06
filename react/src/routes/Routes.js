@@ -13,7 +13,7 @@ import AppRoute from './AppRoute'
 class Routes extends Component {
   render() {
     return (
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Switch>
           {/* <Route path="/" exact component = {Login} />
           <Route path="/login" exact component = {Login} />
