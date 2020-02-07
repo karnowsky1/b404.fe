@@ -1,9 +1,13 @@
-import React from "react";
-import { Layout, Menu, Icon } from "antd";
-import { NavLink } from "react-router-dom";
-import { MAIN_ROUTES } from "../../constants/routes";
+import React from 'react';
+import { Layout, Menu, Icon } from 'antd';
+import { NavLink } from 'react-router-dom';
+import { MAIN_ROUTES } from '../../constants/routes';
+import { connect }from 'react-redux'
+import Logout from './Logout';
 
 const { Header, Sider, Content } = Layout;
+
+const { SubMenu } = Menu;
 
 class NavLayout extends React.Component {
   state = {
@@ -34,19 +38,28 @@ class NavLayout extends React.Component {
                 </NavLink>
               </Menu.Item>
             ))}
-            <div style={{ padding: "10px" }}>Settings</div>
+            
+            <div style={{ padding: '10px' }}>Settings</div>
             <Menu.Item key="5">
               <NavLink to="/main-settings">
                 <Icon type="setting" />
                 <span>Main Settings</span>
               </NavLink>
             </Menu.Item>
-            <Menu.Item key="6">
-              <NavLink to="/admin">
+            {/* { this.props.isAdmin &&  */
+            <SubMenu
+            key="sub1"
+            title={
+              <span>
                 <Icon type="plus-square" />
                 <span>Admin</span>
-              </NavLink>
-            </Menu.Item>
+              </span>
+            }
+            >
+            <Menu.Item key="6"><NavLink to="/company">Company</NavLink></Menu.Item>
+            <Menu.Item key="7"><NavLink to="/people">People</NavLink></Menu.Item>
+          </SubMenu>
+            }
           </Menu>
         </Sider>
         <Layout>
@@ -56,6 +69,9 @@ class NavLayout extends React.Component {
               type={this.state.collapsed ? "menu-unfold" : "menu-fold"}
               onClick={this.toggle}
             />
+            <div className="logout">
+              <Logout />
+            </div>
           </Header>
           <Content
             style={{
@@ -72,4 +88,4 @@ class NavLayout extends React.Component {
   }
 }
 
-export default NavLayout;
+export default connect((state = {}) => ({ isAdmin: state.user }))(NavLayout); 

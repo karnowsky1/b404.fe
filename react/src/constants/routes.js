@@ -7,7 +7,8 @@ export const MAIN_ROUTES = [
 
 export const SETTINGS_ROUTES = [
   { name: 'Main Settings', path: '/main-settings', icon: '' },
-  { name: 'Admin', path: '/admin', icon: '' }
+  { name: 'Company', path: '/company', icon: '' },
+  { name: 'People', path: '/people', icon: '' }
 ]
 
 export const ROUTES = [...MAIN_ROUTES, ...SETTINGS_ROUTES]

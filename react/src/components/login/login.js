@@ -59,13 +59,13 @@ class LoginForm extends React.Component {
       message.destroy()
       if (error.response) {
         // Request made and server responded
-        message.error("Invalid credentials, please try again!");
+        message.error(error.response.data.error);
       } else if (error.request) {
         // The request was made but no response was received
-        message.error("Something went wrong, please try again!");
+        message.error("Server not responding");
       } else {
         // Something happened in setting up the request that triggered an Error
-        message.error("Something went wrong, please try again!");
+        message.error("Error setting up request");
       }
     });
   };
@@ -143,7 +143,7 @@ class LoginForm extends React.Component {
         {/* <h1>{this.state.username}</h1> */}
         {/* <h1>{this.state.password}</h1> */}
         <h1>{this.props.user&&this.props.user.name}</h1>
-          </Card.Grid>,
+          </Card.Grid>
       </div>
     );
   }

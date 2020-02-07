@@ -22,6 +22,7 @@ const columns = [
   {
     title: "Workflow Details",
     dataIndex: "nameW",
+    key: "nameW",
     render: nameW => (
       <React.Fragment>
         <Row>
@@ -41,6 +42,7 @@ const columns = [
   {
     title: "Workflow Author",
     dataIndex: "author",
+    key: "author",
     render: author => (
       <React.Fragment>
         {author.name}
@@ -51,6 +53,7 @@ const columns = [
   {
     title: "Date Created",
     dataIndex: "date",
+    key: "date",
     render: date => (
       <React.Fragment>
         {date.createdD}
@@ -61,6 +64,7 @@ const columns = [
   {
     title: "Progress",
     dataIndex: "progress",
+    key: "progress",
     render: progress => (
       <Progress
         strokeColor={{
@@ -76,6 +80,7 @@ const columns = [
   {
     title: "More",
     dataIndex: "more",
+    key: "more",
     render: more => <Icon type="more" />
   }
 ];
@@ -144,6 +149,7 @@ class Tables extends React.Component {
               dataSource={this.state.data}
               pagination={this.state.pagination}
               //pagination={false}
+              rowKey={this.state.data.key}
               loading={this.state.loading}
               size="middle"
             />
