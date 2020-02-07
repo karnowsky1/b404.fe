@@ -1,9 +1,10 @@
 FROM nginx:alpine
 
 # Nginx config
-RUN rm -rf /etc/nginx/sites-enabled
+RUN rm -rf /etc/nginx/sites-enabled 
 RUN mkdir /etc/nginx/sites-enabled
-COPY nginx/b404.conf /etc/nginx/sites-enabled/
+RUN rm /etc/nginx/conf.d/*
+COPY nginx/b404.conf /etc/nginx/conf.d/
 
 # Static build
 COPY /react/build /usr/share/nginx/html/
