@@ -72,7 +72,9 @@ pipeline {
     stage('Stage 4: SonarQube analysis') {
       steps {
         withSonarQubeEnv(installationName: 'sonar.b404') {
-          sh 'sonar-scanner'
+          sh '''
+          docker run --rm -w /home/node/app -v $PWD/react:/home/node/app node:erbium-alpine npm install -g sonarqube-scanner && sonar-scanner
+          '''
         }
       }
     }
