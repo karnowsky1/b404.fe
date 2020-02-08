@@ -68,6 +68,15 @@ pipeline {
         archiveArtifacts artifacts: 'react/build/*', fingerprint: true
       }
     }
+
+    stage('Stage 4: SonarQube analysis') {
+      steps {
+        withSonarQubeEnv(installationName: 'sonar.b404') {
+          sh './react/sonar-scanner'
+        }
+      }
+    }
+
   }
 
   post {
