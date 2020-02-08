@@ -72,7 +72,7 @@ pipeline {
     stage('Stage 4: SonarQube analysis') {
       steps {
         withSonarQubeEnv(installationName: 'sonar.b404') {
-          sh './react/sonar-scanner'
+          sh 'sonar-scanner'
         }
       }
     }
