@@ -78,13 +78,15 @@ pipeline {
             }
           }
           steps {
-            withSonarQubeEnv(installationName: 'sonar.b404') {
-              sh '''
-              docker run --rm -w /home/node/app -v $PWD/react:/home/node/app node:erbium /bin/bash -c "npm install -g sonarqube-scanner; sonar-scanner"
-              '''
-            }
-            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-              sh "exit 1"
+            try{
+              withSonarQubeEnv(installationName: 'sonar.b404') {
+                sh '''
+                docker run --rm -w /home/node/app -v $PWD/react:/home/node/app node:erbium /bin/bash -c "npm install -g sonarqube-scanner; sonar-scanner"
+                '''
+              }
+            } catch (err) {
+              buildResult: 'SUCCESS' 
+              stageResult: 'FAILURE'
             }
           }
         }
