@@ -46,7 +46,7 @@ class NavLayout extends React.Component {
                 <span>Main Settings</span>
               </NavLink>
             </Menu.Item>
-            {/* { this.props.isAdmin &&  */
+            { this.props.isAdmin && 
             <SubMenu
             key="sub1"
             title={
@@ -88,4 +88,4 @@ class NavLayout extends React.Component {
   }
 }
 
-export default connect((state = {}) => ({ isAdmin: state.user }))(NavLayout); 
+export default connect((state = {}) => ({ isAdmin: state.user && state.user.accessLevelID <= 1 }))(NavLayout); 
