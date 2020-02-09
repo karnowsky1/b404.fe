@@ -69,32 +69,32 @@ pipeline {
       }
     }
 
-    try {
       stage('Stage 4: SonarQube analysis') {
-        stages {
-          stage ("When on Designated Branch") {
-            when {
-              anyOf{
-                branch 'dev'
+        try {
+          stages {
+            stage ("When on Designated Branch") {
+              when {
+                anyOf{
+                  branch 'dev'
+                }
               }
-            }
-            steps {
-              withSonarQubeEnv(installationName: 'sonar.b404') {
-                script {
-                  sh '''
-                  docker run --rm -w /home/node/app -v $PWD/react:/home/node/app node:erbium /bin/bash -c "npm install -g sonarqube-scanner; sonar-scanner"
-                  '''
+              steps {
+                withSonarQubeEnv(installationName: 'sonar.b404') {
+                  script {
+                    sh '''
+                    docker run --rm -w /home/node/app -v $PWD/react:/home/node/app node:erbium /bin/bash -c "npm install -g sonarqube-scanner; sonar-scanner"
+                    '''
+                  }
                 }
               }
             }
           }
+        } catch (err) {
+          buildResult: 'SUCCESS' 
+          stageResult: 'FAILURE'
         }
       }
-    } catch (err) {
-      buildResult: 'SUCCESS' 
-      stageResult: 'FAILURE'
     }
-  }
 
   post {
     always {
