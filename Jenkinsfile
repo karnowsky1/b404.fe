@@ -70,9 +70,9 @@ pipeline {
     }
 
     stage('Stage 4: SonarQube analysis') {
-      try{
-        stages {
-          stage ("When on Designated Branch") {
+      stages {
+        stage ("When on Designated Branch") {
+          try{
             when {
               anyOf{
                 branch 'dev'
@@ -85,11 +85,11 @@ pipeline {
                 '''
               }
             }
+          } catch (err) {
+            buildResult: 'SUCCESS' 
+            stageResult: 'FAILURE'
           }
         }
-      } catch (err) {
-        buildResult: 'SUCCESS' 
-        stageResult: 'FAILURE'
       }
     }
   }
