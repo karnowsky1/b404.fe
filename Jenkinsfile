@@ -72,13 +72,13 @@ pipeline {
     stage('Stage 4: SonarQube analysis') {
       stages {
         stage ("When on Designated Branch") {
-          try {
-            when {
-              anyOf{
-                branch 'dev'
-              }
+          when {
+            anyOf{
+              branch 'dev'
             }
-            steps {
+          }
+          steps {
+            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
               withSonarQubeEnv(installationName: 'sonar.b404') {
                 script {
                   sh '''
@@ -87,9 +87,6 @@ pipeline {
                 }
               }
             }
-          } catch (err) {
-            buildResult: 'SUCCESS' 
-            stageResult: 'FAILURE'
           }
         }
       }
