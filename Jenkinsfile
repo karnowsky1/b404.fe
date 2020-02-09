@@ -83,6 +83,9 @@ pipeline {
               docker run --rm -w /home/node/app -v $PWD/react:/home/node/app node:erbium /bin/bash -c "npm install -g sonarqube-scanner; sonar-scanner"
               '''
             }
+            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+              sh "exit 1"
+            }
           }
         }
       }
