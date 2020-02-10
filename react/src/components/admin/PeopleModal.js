@@ -26,9 +26,8 @@ export const PeopleModal = ({
     <Formik
       initialValues={initialValues}
       onSubmit={(values, { setSubmitting }) => {
-        onSubmit(values).then(() => {
+        onSubmit(values)
           setSubmitting(false);
-        });
       }}
     >
       {({ handleSubmit }) => (
@@ -81,6 +80,7 @@ export const PeopleModal = ({
           <p></p>
           <p>Job Title</p>
           <Input name="title" placeholder="Job Title" />
+          <p></p>
           <SubmitButton>Submit</SubmitButton>
         </Form>
       )}

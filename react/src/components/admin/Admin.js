@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Button, Row, Col, Card, Tag, Divider, Modal, Icon } from 'antd';
+import { Table, Button, Row, Col, Card, Tag, Divider, Modal, Icon, message } from 'antd';
 import axios from 'axios';
 import qs from 'qs';
 import { PeopleModal } from './PeopleModal';
@@ -39,7 +39,7 @@ class AdminTable extends React.Component {
     editvisible: false,
     companyOptions: []
   };
-
+  
   constructor(props) {
     super(props);
     this.columns = [
@@ -177,6 +177,9 @@ class AdminTable extends React.Component {
   };
 
   onAddSubmit = async values => {
+    if(!this.state.data.some(user =>
+      user.username === values.username
+    )){
     await axios({
       method: 'post',
       url: window.__env__.API_URL + '/blink/api/person',
@@ -185,11 +188,31 @@ class AdminTable extends React.Component {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       data: qs.stringify(values),
+      // this is already a big object coming from formik
       type: 'json'
     })
       .then(response => {
         if (response.status === 200) {
-          this.fetch();
+          // needed the response of the first call to make the second found
+          // grabbing ID from the first one to send into the next request 
+          axios({
+            method: 'post',
+            url: window.__env__.API_URL + '/blink/api/company/person/add',
+            headers: {
+              Authorization: localStorage.getItem('token'),
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: qs.stringify({companyID: values.company, personID: response.data.UUID}),
+            // making query string with key and value, that's why we're wrapping it in an object and using it this way 
+            // object names need to match variables from API endpoint 
+            type: 'json'
+          })
+          .then(()=>{
+            this.fetch();
+          })
+          .catch(error => {
+            console.error(error);
+          });    
         } else {
           console.log(response);
         }
@@ -201,9 +224,14 @@ class AdminTable extends React.Component {
     this.setState({
       addvisible: false
     });
+    } else {
+      message.destroy()
+      message.error(`Username ${values.username} is already taken`);
+    }
   };
 
   showDeleteConfirm = (e, id) => {
+    const { fetch } = this;
     confirm({
       title: 'Are you sure delete this user?',
       content: 'If you delete this user he will no longer be able to login!',
@@ -220,8 +248,7 @@ class AdminTable extends React.Component {
           .then(response => {
             if (response.status === 200) {
               console.log('works');
-              //fix this it does not work
-              //this.fetch();
+              fetch();
             } else {
               console.log(response);
             }
