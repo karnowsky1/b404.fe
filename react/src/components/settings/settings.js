@@ -56,46 +56,45 @@ class SettingsForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
-      }
-    });
-    const {UUID, username, password, fName, lName, email, title, accessLevelID} = this.state.user
-    const id = UUID
-    const url = window.__env__.API_URL + '/blink/api/person'
-    await axios.put(
-      url,
-      qs.stringify({
-        id,
-        username,
-        password,
-        fName,
-        lName,
-        email,
-        title,
-        accessLevelID
-      }),
-      {
-        headers: {
-          'Content-Type' : 'application/x-www-form-urlencoded',
-          'Authorization' : localStorage.getItem(TOKEN_KEY)
-        }
-      }
-    ).then(response => {
-      if (response.status === 200){
-        message.success('Data saved successfully');
-      }
-    }).catch(function (error) {
-      message.destroy()
-      if (error.response) {
-        // Request made and server responded
-        message.error(error.response.data.error);
-      } else if (error.request) {
-        // The request was made but no response was received
-        message.error("Server not responding");
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        message.error("Error setting up request");
-      }
+        const {UUID, username, password, fName, lName, email, title, accessLevelID} = this.state.user
+        const id = UUID
+        const url = window.__env__.API_URL + '/blink/api/person'
+        axios.put(
+          url,
+          qs.stringify({
+            id,
+            username,
+            password,
+            fName,
+            lName,
+            email,
+            title,
+            accessLevelID
+          }),
+          {
+            headers: {
+              'Content-Type' : 'application/x-www-form-urlencoded',
+              'Authorization' : localStorage.getItem(TOKEN_KEY)
+            }
+          }
+        ).then(response => {
+          if (response.status === 200){
+            message.success('Data saved successfully');
+          }
+        }).catch(function (error) {
+          message.destroy()
+          if (error.response) {
+            // Request made and server responded
+            message.error(error.response.data.error);
+          } else if (error.request) {
+            // The request was made but no response was received
+            message.error("Server not responding");
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            message.error("Error setting up request");
+          }
+        });
+      } else message.error('Please fill out all fields!')
     });
   };
 
@@ -110,6 +109,7 @@ class SettingsForm extends React.Component {
   
   render() {
     const { getFieldDecorator } = this.props.form;
+    console.log(this.state.user)
 
     const formItemLayout = {
       labelCol: {
@@ -238,7 +238,7 @@ class SettingsForm extends React.Component {
           })(<Input name='title' value={this.state.user.title} disabled onChange = {this.handleChange} />)}
         </Form.Item>
         <Form.Item
-          style={{display: 'none'}}
+          //style={{display: 'none'}}
           label={
             <span>
               Access Level
@@ -247,8 +247,7 @@ class SettingsForm extends React.Component {
         >
           {getFieldDecorator('accessLevelID', {
             initialValue: this.state.user.accessLevelID,
-            valuePropName: 'accesslevelid',
-            rules: [{ required: true, message: 'Please input your access level!', whitespace: true }],
+            valuePropName: 'accesslevelid'
           })(<Input name='accessLevelID' value={this.state.user.accessLevelID} disabled onChange = {this.handleChange} />)}
         </Form.Item>
         <Form.Item {...tailFormItemLayout}>
