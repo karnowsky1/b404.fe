@@ -238,7 +238,7 @@ class SettingsForm extends React.Component {
           })(<Input name='title' value={this.state.user.title} disabled onChange = {this.handleChange} />)}
         </Form.Item>
         <Form.Item
-          //style={{display: 'none'}}
+          style={{display: 'none'}}
           label={
             <span>
               Access Level
