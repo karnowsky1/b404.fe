@@ -3,6 +3,7 @@ import { Table, Button, Row, Col, Card, Tag, Divider, Modal, Icon, message } fro
 import axios from 'axios';
 import qs from 'qs';
 import { PeopleModal } from './PeopleModal';
+import { AxiosError } from './../errors/AxiosError'
 
 const { confirm } = Modal;
 
@@ -191,8 +192,8 @@ class AdminTable extends React.Component {
       // this is already a big object coming from formik
       type: 'json'
     })
-      .then(response => {
-        if (response.status === 200) {
+      .then(response => {  
+        if (response.status === 200 && values.company) {
           // needed the response of the first call to make the second found
           // grabbing ID from the first one to send into the next request 
           axios({
@@ -211,14 +212,40 @@ class AdminTable extends React.Component {
             this.fetch();
           })
           .catch(error => {
-            console.error(error);
+            message.destroy()
+            console.log("This is the Company CRUD error" +error)
+            message.destroy()
+            if (error.response) {
+              // Request made and server responded
+              message.error(error.response.data.error);
+            } else if (error.request) {
+              // The request was made but no response was received
+              message.error("Server not responding");
+            } else {
+              // Something happened in setting up the request that triggered an Error
+              message.error("Error setting up request");
+            }
           });    
         } else {
+          this.fetch()
           console.log(response);
         }
       })
       .catch(error => {
-        console.error(error);
+        // return(
+        //   <AxiosError error={error} />
+        // )
+        message.destroy()
+        if (error.response) {
+          // Request made and server responded
+          message.error(error.response.data.error);
+        } else if (error.request) {
+          // The request was made but no response was received
+          message.error("Server not responding");
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          message.error("Error setting up request");
+        }
       });
 
     this.setState({

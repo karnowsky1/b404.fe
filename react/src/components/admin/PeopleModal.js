@@ -1,9 +1,11 @@
 import { Formik } from 'formik';
 import { Input, Form, SubmitButton, Select } from 'formik-antd';
-import { Modal } from 'antd';
+import { Form as AntForm, Modal } from 'antd'
 import React from 'react';
 
 const { Option } = Select;
+// const { form } = this.props
+// const { getFieldDecorator } = form
 
 const defaults = {
   username: '',
@@ -12,15 +14,16 @@ const defaults = {
   lName: '',
   email: '',
   title: ''
-};
+}
 
-export const PeopleModal = ({
+const PeopleModalForm = ({
   initialValues = defaults,
   onSubmit,
   onCancel,
   companies,
   roles,
-  title
+  title,
+  form
 }) => (
   <Modal title={title} visible footer={[]} onCancel={onCancel}>
     <Formik
@@ -75,8 +78,22 @@ export const PeopleModal = ({
             ))}
           </Select>
           <p></p>
-          <p>Email</p>
-          <Input name="email" placeholder="Email" />
+          {/* <p>Email</p>
+          <Input name="email" placeholder="Email" /> */}
+          <Form.Item label="E-mail">
+          {form.getFieldDecorator('email', {
+            rules: [
+              {
+                type: 'email',
+                message: 'The input is not valid E-mail!',
+              },
+              {
+                required: true,
+                message: 'Please input your E-mail!',
+              },
+            ],
+          })(<Input name="email" placeholder="Email" />)}
+        </Form.Item>
           <p></p>
           <p>Job Title</p>
           <Input name="title" placeholder="Job Title" />
@@ -87,3 +104,5 @@ export const PeopleModal = ({
     </Formik>
   </Modal>
 );
+
+export const PeopleModal = AntForm.create({ name: 'people_modal' })(PeopleModalForm)
