@@ -1,3 +1,8 @@
+.settings-main {
+  display: flex;
+  justify-content: center;
+}
+
 .App {
   text-align: center;
 }
