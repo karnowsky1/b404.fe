@@ -2,7 +2,7 @@ import { Formik } from 'formik';
 import { Input, Form, SubmitButton, Select } from 'formik-antd';
 import { Form as AntForm, Modal } from 'antd'
 import React from 'react';
-import { validateEmail, required, validatePassword } from '../../utils/validators';
+import { validateEmail, required, validatePassword, validateRequiredPassword } from '../../utils/validators';
 
 const { Option } = Select;
 
@@ -22,6 +22,7 @@ const PeopleModalForm = ({
   companies,
   roles,
   title,
+  isAddModal,
   form
 }) => (
   <Modal title={title} visible footer={[]} onCancel={onCancel}>
@@ -55,7 +56,7 @@ const PeopleModalForm = ({
           </Form.Item>
           <p></p>
           <p>Password *</p>
-          <Form.Item name="password" validate={validatePassword}>
+          <Form.Item name="password" validate={isAddModal ? validateRequiredPassword : validatePassword}>
             <Input.Password name="password" placeholder="Password" />
           </Form.Item>
           <p></p>

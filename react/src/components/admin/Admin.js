@@ -384,6 +384,7 @@ class AdminTable extends React.Component {
                 onCancel={this.handleAddCancel}
                 roles={optionsR}
                 title="Add User"
+                isAddModal={true}
               />
             )}
             {this.state.editvisible && (
@@ -394,6 +395,7 @@ class AdminTable extends React.Component {
                 onCancel={this.handleEditCancel}
                 roles={optionsR}
                 title="Edit User"
+                isAddModal={false}
               />
             )}
           </Card>
