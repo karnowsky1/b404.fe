@@ -3,7 +3,8 @@ import { Table, Button, Card, Divider, Icon, Modal, message } from 'antd';
 import axios from 'axios';
 import qs from 'qs';
 import { CompanyModal } from './CompanyModal';
-// import { PeopleModal } from './PeopleModal';
+import { validateEmail } from '../../utils/validators';
+import { axiosError } from '../../utils/axiosError';
 
 const { confirm } = Modal;
 
@@ -14,7 +15,7 @@ class Companies extends React.Component {
     editingCompany: undefined,
     pagination: {},
     addvisible: false,
-    editvisible: false,
+    editvisible: false
   };
 
   constructor(props) {
@@ -96,7 +97,7 @@ class Companies extends React.Component {
 
   showEditModal = record => {
     this.setState({
-      editingCompany: {id: record.id, name: record.companies},
+      editingCompany: { id: record.id, name: record.companies },
       editvisible: true
     });
   };
@@ -138,9 +139,7 @@ class Companies extends React.Component {
           console.log(response);
         }
       })
-      .catch(error => {
-        console.error(error);
-      });
+      .catch(axiosError);
 
     this.setState({
       addvisible: false

@@ -2,10 +2,9 @@ import { Formik } from 'formik';
 import { Input, Form, SubmitButton, Select } from 'formik-antd';
 import { Form as AntForm, Modal } from 'antd'
 import React from 'react';
+import { validateEmail, required, validatePassword } from '../../utils/validators';
 
 const { Option } = Select;
-// const { form } = this.props
-// const { getFieldDecorator } = form
 
 const defaults = {
   username: '',
@@ -41,16 +40,24 @@ const PeopleModalForm = ({
           }}
         >
           <p>First Name *</p>
-          <Input name="fName" placeholder="First Name" />
+          <Form.Item name="fName" validate={required}>
+            <Input name="fName" placeholder="First Name" />
+          </Form.Item>
           <p></p>
           <p>Last Name *</p>
-          <Input name="lName" placeholder="Last Name" />
+          <Form.Item name="lName" validate={required}>
+            <Input name="lName" placeholder="Last Name" />
+          </Form.Item>
           <p></p>
           <p>Username *</p>
-          <Input name="username" placeholder="Username" />
+          <Form.Item name="username" validate={required}>
+            <Input name="username" placeholder="Username" />
+          </Form.Item>
           <p></p>
           <p>Password *</p>
-          <Input.Password name="password" placeholder="Password" />
+          <Form.Item name="password" validate={validatePassword}>
+            <Input.Password name="password" placeholder="Password" />
+          </Form.Item>
           <p></p>
           <p>Company</p>
           <Select
@@ -66,34 +73,24 @@ const PeopleModalForm = ({
           </Select>
           <p></p>
           <p>Role *</p>
-          <Select
-            style={{ width: '100%' }}
-            placeholder="Select Role"
-            name="accessLevelID"
-          >
-            {roles.map(({ value, label }) => (
-              <Option value={value} key={value}>
-                {label}
-              </Option>
-            ))}
-          </Select>
+          <Form.Item name="accessLevelID">
+            <Select
+              style={{ width: '100%' }}
+              placeholder="Select Role"
+              name="accessLevelID"
+            >
+              {roles.map(({ value, label }) => (
+                <Option value={value} key={value}>
+                  {label}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
           <p></p>
-          {/* <p>Email</p>
-          <Input name="email" placeholder="Email" /> */}
-          <Form.Item label="E-mail">
-          {form.getFieldDecorator('email', {
-            rules: [
-              {
-                type: 'email',
-                message: 'The input is not valid E-mail!',
-              },
-              {
-                required: true,
-                message: 'Please input your E-mail!',
-              },
-            ],
-          })(<Input name="email" placeholder="Email" />)}
-        </Form.Item>
+          <p>Email</p>
+          <Form.Item name="email" validate={validateEmail}>
+            <Input name="email" placeholder="Email" />
+          </Form.Item>
           <p></p>
           <p>Job Title</p>
           <Input name="title" placeholder="Job Title" />

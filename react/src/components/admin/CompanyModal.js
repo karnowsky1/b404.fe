@@ -2,6 +2,7 @@ import { Formik } from 'formik';
 import { Input, Form, SubmitButton } from 'formik-antd';
 import { Modal } from 'antd';
 import React from 'react';
+import { required } from '../../utils/validators';
 
 const defaults = {
   name: ''
@@ -28,8 +29,11 @@ export const CompanyModal = ({
             handleSubmit();
           }}
         >
+          
           <p>Company Name *</p>
-          <Input name="name" placeholder="Company Name" />
+          <Form.Item name="name" validate={required}>
+            <Input name="name" placeholder="Company Name" />
+          </Form.Item>
           <p></p>
           <SubmitButton>Submit</SubmitButton>
         </Form>

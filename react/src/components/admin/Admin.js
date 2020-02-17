@@ -3,7 +3,8 @@ import { Table, Button, Row, Col, Card, Tag, Divider, Modal, Icon, message } fro
 import axios from 'axios';
 import qs from 'qs';
 import { PeopleModal } from './PeopleModal';
-import { AxiosError } from './../errors/AxiosError'
+import { axiosError } from '../../utils/axiosError';
+import { getAllCompanies } from '../../utils/api';
 
 const { confirm } = Modal;
 
@@ -89,28 +90,6 @@ class AdminTable extends React.Component {
     ];
   }
 
-  getAllCompanies() {
-    axios
-      .get(window.__env__.API_URL + '/blink/api/company', {
-        headers: {
-          Authorization: localStorage.getItem('token')
-        }
-      })
-      .then(response => {
-        this.setState({
-          companyOptions: response.data.map(company => {
-            return {
-              value: company.companyID,
-              label: company.companyName
-            };
-          })
-        });
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-  }
-
   name(dataN) {
     let name = '';
     switch (dataN) {
@@ -161,7 +140,20 @@ class AdminTable extends React.Component {
 
   componentDidMount() {
     this.fetch();
-    this.getAllCompanies();
+    getAllCompanies()
+      .then(response => {
+        this.setState({
+          companyOptions: response.data.map(company => {
+            return {
+              value: company.companyID,
+              label: company.companyName
+            };
+          })
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
 
   showAddModal = () => {
@@ -211,46 +203,16 @@ class AdminTable extends React.Component {
           .then(()=>{
             this.fetch();
           })
-          .catch(error => {
-            message.destroy()
-            console.log("This is the Company CRUD error" +error)
-            message.destroy()
-            if (error.response) {
-              // Request made and server responded
-              message.error(error.response.data.error);
-            } else if (error.request) {
-              // The request was made but no response was received
-              message.error("Server not responding");
-            } else {
-              // Something happened in setting up the request that triggered an Error
-              message.error("Error setting up request");
-            }
-          });    
+          .catch(axiosError);    
         } else {
           this.fetch()
           console.log(response);
         }
       })
-      .catch(error => {
-        // return(
-        //   <AxiosError error={error} />
-        // )
-        message.destroy()
-        if (error.response) {
-          // Request made and server responded
-          message.error(error.response.data.error);
-        } else if (error.request) {
-          // The request was made but no response was received
-          message.error("Server not responding");
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          message.error("Error setting up request");
-        }
+      .catch(axiosError);
+      this.setState({
+        addvisible: false
       });
-
-    this.setState({
-      addvisible: false
-    });
     } else {
       message.destroy()
       message.error(`Username ${values.username} is already taken`);
