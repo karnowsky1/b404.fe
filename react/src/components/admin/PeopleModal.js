@@ -15,6 +15,10 @@ const defaults = {
   title: ''
 }
 
+function handleChange(value){
+  console.log(value)
+}
+
 const PeopleModalForm = ({
   initialValues = defaults,
   onSubmit,
@@ -61,7 +65,9 @@ const PeopleModalForm = ({
           </Form.Item>
           <p></p>
           <p>Company</p>
+          {/* //////////////////////////////////////////////////// */}
           <Select
+            mode="multiple"
             name="company"
             style={{ width: '100%' }}
             placeholder="Select Company"
@@ -72,13 +78,14 @@ const PeopleModalForm = ({
               </Option>
             ))}
           </Select>
+          {/* //////////////////////////////////////////////////// */}
           <p></p>
           <p>Role *</p>
-          <Form.Item name="accessLevelID">
             <Select
               style={{ width: '100%' }}
               placeholder="Select Role"
               name="accessLevelID"
+              onChange={handleChange}
             >
               {roles.map(({ value, label }) => (
                 <Option value={value} key={value}>
@@ -86,7 +93,6 @@ const PeopleModalForm = ({
                 </Option>
               ))}
             </Select>
-          </Form.Item>
           <p></p>
           <p>Email</p>
           <Form.Item name="email" validate={validateEmail}>

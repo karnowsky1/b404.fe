@@ -49,7 +49,8 @@ class AdminTable extends React.Component {
       {
         title: 'Company',
         dataIndex: 'companies',
-        key: 'companies'
+        key: 'companies',
+        ellipsis: true
       },
       {
         title: 'Role',
@@ -185,25 +186,28 @@ class AdminTable extends React.Component {
       type: 'json'
     })
       .then(response => {  
+        // console.log(values.company)
         if (response.status === 200 && values.company) {
           // needed the response of the first call to make the second found
           // grabbing ID from the first one to send into the next request 
-          axios({
-            method: 'post',
-            url: window.__env__.API_URL + '/blink/api/company/person/add',
-            headers: {
-              Authorization: localStorage.getItem('token'),
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            data: qs.stringify({companyID: values.company, personID: response.data.UUID}),
-            // making query string with key and value, that's why we're wrapping it in an object and using it this way 
-            // object names need to match variables from API endpoint 
-            type: 'json'
-          })
-          .then(()=>{
-            this.fetch();
-          })
-          .catch(axiosError);    
+          for (let company of values.company) {
+            axios({
+              method: 'post',
+              url: window.__env__.API_URL + '/blink/api/company/person/add',
+              headers: {
+                Authorization: localStorage.getItem('token'),
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              data: qs.stringify({companyID: company, personID: response.data.UUID}),
+              // making query string with key and value, that's why we're wrapping it in an object and using it this way 
+              // object names need to match variables from API endpoint 
+              type: 'json'
+            })
+            .then(()=>{
+              this.fetch();
+            })
+            .catch(axiosError);
+          }    
         } else {
           this.fetch()
           console.log(response);
