@@ -274,12 +274,27 @@ class AdminTable extends React.Component {
       data: qs.stringify(values),
       type: 'json'
     })
-      .then(response => {
-        console.log(response);
+      .then(response => {  
+        if (response.status === 200 && values.company) {
+          axios({
+            method: 'post',
+            url: window.__env__.API_URL + '/blink/api/company/person/add',
+            headers: {
+              Authorization: localStorage.getItem('token'),
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: qs.stringify({companyID: values.company, personID: response.data.UUID}),
+            type: 'json'
+          })
+          .then(()=>{
+            this.fetch();
+          })
+          .catch(axiosError);    
+        } else {
+          this.fetch()
+          console.log(response);
+        }
       })
-      .catch(error => {
-        console.error(error);
-      });
     this.setState({
       editvisible: false
     });
@@ -309,7 +324,10 @@ class AdminTable extends React.Component {
             email: entry.email,
             title: entry.title,
             companies:
-              entry.companies.length > 0 ? entry.companies[0].companyName : '',
+            entry.companies.map(company =>{
+              return company.companyName + '. '
+            }),
+              // entry.companies.length > 0 ? entry.companies[0].companyName : '',
             accessLevelID: entry.accessLevelID
           });
         }
