@@ -59,9 +59,11 @@ const AppRoute = ({component: Component, authed, user, location, setIsLoggedIn, 
       render={props =>
         !authed && isPrivate ? (
           <Redirect to={process.env.PUBLIC_URL + "/login"} />
-        ) : (!isPrivate && authed) ? (
-          // ) : (!isPrivate && authed) || (user.accessLevelID <= 1 && requireAdmin && authed) ? (
-          // trying to incorporate authorization rendering
+        // ) : (!isPrivate && authed) ? (
+          ) : (!isPrivate && authed) || (user && user.accessLevelID > 1 && requireAdmin && authed) ? (
+            //evaluated every render 
+            // undefined for the first few renders, then it renders with the actual user object 
+            // trying to incorporate authorization rendering
           <Redirect to={process.env.PUBLIC_URL + "/dashboard"} />
         ) : isPrivate ? (
         <NavLayout path={process.env.PUBLIC_URL + location.pathname}>
