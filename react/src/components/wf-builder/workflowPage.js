@@ -169,9 +169,10 @@ class WorkflowsTable extends React.Component {
               + Create
             </Button>
             <Modal
+            // TODO: don't hard code this.
               bodyStyle={{ height: '650px' }}
               title="Create your workflow"
-              width="100"
+              width="66%"
               visible={this.state.visible}
               onOk={this.handleOk}
               onCancel={this.handleCancel}
