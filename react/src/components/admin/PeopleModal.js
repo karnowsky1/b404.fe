@@ -12,11 +12,9 @@ const defaults = {
   fName: '',
   lName: '',
   email: '',
-  title: ''
-}
-
-function handleChange(value){
-  console.log(value)
+  title: '',
+  company: undefined,
+  accessLevelID: ''
 }
 
 const PeopleModalForm = ({
@@ -32,8 +30,8 @@ const PeopleModalForm = ({
   <Modal title={title} visible footer={[]} onCancel={onCancel}>
     <Formik
       initialValues={initialValues}
-      onSubmit={(values, { setSubmitting }) => {
-        onSubmit(values)
+      onSubmit={(values, { setSubmitting }) => { // onSubmit from formik-antd
+        onSubmit(values) // onSubmit passed from props 
           setSubmitting(false);
       }}
     >
@@ -71,7 +69,10 @@ const PeopleModalForm = ({
             name="company"
             style={{ width: '100%' }}
             placeholder="Select Company"
+            defaultValue={initialValues.company}
           >
+            {/* { console.log(companies)} */}
+            {console.log(initialValues.company)}
             {companies.map(({ value, label }) => (
               <Option value={value} key={value}>
                 {label}
@@ -85,7 +86,6 @@ const PeopleModalForm = ({
               style={{ width: '100%' }}
               placeholder="Select Role"
               name="accessLevelID"
-              onChange={handleChange}
             >
               {roles.map(({ value, label }) => (
                 <Option value={value} key={value}>
