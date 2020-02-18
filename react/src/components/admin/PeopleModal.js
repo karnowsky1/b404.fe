@@ -12,7 +12,9 @@ const defaults = {
   fName: '',
   lName: '',
   email: '',
-  title: ''
+  title: '',
+  company: undefined,
+  accessLevelID: ''
 }
 
 const PeopleModalForm = ({
@@ -28,8 +30,8 @@ const PeopleModalForm = ({
   <Modal title={title} visible footer={[]} onCancel={onCancel}>
     <Formik
       initialValues={initialValues}
-      onSubmit={(values, { setSubmitting }) => {
-        onSubmit(values)
+      onSubmit={(values, { setSubmitting }) => { // onSubmit from formik-antd
+        onSubmit(values) // onSubmit passed from props 
           setSubmitting(false);
       }}
     >
@@ -61,20 +63,25 @@ const PeopleModalForm = ({
           </Form.Item>
           <p></p>
           <p>Company</p>
+          {/* //////////////////////////////////////////////////// */}
           <Select
+            mode="multiple"
             name="company"
             style={{ width: '100%' }}
             placeholder="Select Company"
+            defaultValue={initialValues.company}
           >
+            {/* { console.log(companies)} */}
+            {console.log(initialValues.company)}
             {companies.map(({ value, label }) => (
               <Option value={value} key={value}>
                 {label}
               </Option>
             ))}
           </Select>
+          {/* //////////////////////////////////////////////////// */}
           <p></p>
           <p>Role *</p>
-          <Form.Item name="accessLevelID">
             <Select
               style={{ width: '100%' }}
               placeholder="Select Role"
@@ -86,7 +93,6 @@ const PeopleModalForm = ({
                 </Option>
               ))}
             </Select>
-          </Form.Item>
           <p></p>
           <p>Email</p>
           <Form.Item name="email" validate={validateEmail}>

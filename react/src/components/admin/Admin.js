@@ -4,7 +4,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { PeopleModal } from './PeopleModal';
 import { axiosError } from '../../utils/axiosError';
-import { getAllCompanies } from '../../utils/api';
+import { getAllCompanies, getPerson } from '../../utils/api';
 
 const { confirm } = Modal;
 
@@ -36,6 +36,8 @@ class AdminTable extends React.Component {
     data: [],
     loading: true,
     editingUser: undefined,
+    editingUserCompanies: undefined,
+    editingUserID: undefined,
     pagination: {},
     addvisible: false,
     editvisible: false,
@@ -49,7 +51,8 @@ class AdminTable extends React.Component {
       {
         title: 'Company',
         dataIndex: 'companies',
-        key: 'companies'
+        key: 'companies',
+        ellipsis: true
       },
       {
         title: 'Role',
@@ -162,11 +165,38 @@ class AdminTable extends React.Component {
     });
   };
 
-  showEditModal = record => {
-    this.setState({
-      editingUser: record,
+  showEditModal = async record => {
+    await getPerson(record.id)
+      .then(response =>{
+        // console.log(response.data)
+        // console.log(response.data.companies)
+        this.setState({
+          editingUserCompanies: response.data.companies.map(company =>{
+            return company.companyID
+          }) 
+        })
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    this.setState({      
+      editingUser: 
+      {
+        username: record.username, 
+        fName: record.fName,
+        lName: record.lName,
+        email: record.email,
+        title: record.title,
+        company: this.state.editingUserCompanies,
+        accessLevelID: record.accessLevelID
+      },
+      editingUserID: record.id,
       editvisible: true
+
     });
+    // console.log('this is the record')
+    // console.log(record)
+    
   };
 
   onAddSubmit = async values => {
@@ -185,25 +215,28 @@ class AdminTable extends React.Component {
       type: 'json'
     })
       .then(response => {  
+        // console.log(values.company)
         if (response.status === 200 && values.company) {
           // needed the response of the first call to make the second found
           // grabbing ID from the first one to send into the next request 
-          axios({
-            method: 'post',
-            url: window.__env__.API_URL + '/blink/api/company/person/add',
-            headers: {
-              Authorization: localStorage.getItem('token'),
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            data: qs.stringify({companyID: values.company, personID: response.data.UUID}),
-            // making query string with key and value, that's why we're wrapping it in an object and using it this way 
-            // object names need to match variables from API endpoint 
-            type: 'json'
-          })
-          .then(()=>{
-            this.fetch();
-          })
-          .catch(axiosError);    
+          for (let company of values.company) {
+            axios({
+              method: 'post',
+              url: window.__env__.API_URL + '/blink/api/company/person/add',
+              headers: {
+                Authorization: localStorage.getItem('token'),
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              data: qs.stringify({companyID: company, personID: response.data.UUID}),
+              // making query string with key and value, that's why we're wrapping it in an object and using it this way 
+              // object names need to match variables from API endpoint 
+              type: 'json'
+            })
+            .then(()=>{
+              this.fetch();
+            })
+            .catch(axiosError);
+          }    
         } else {
           this.fetch()
           console.log(response);
@@ -250,20 +283,22 @@ class AdminTable extends React.Component {
   };
 
   handleAddCancel = e => {
-    console.log(e);
+    // console.log(e);
     this.setState({
       addvisible: false
     });
   };
 
   handleEditCancel = e => {
-    console.log(e);
+    // console.log(e);
     this.setState({
       editvisible: false
     });
   };
 
   onEditSubmit = async values => {
+    console.log("These are the values")
+    console.log(values)
     await axios({
       method: 'put',
       url: window.__env__.API_URL + '/blink/api/person',
@@ -271,15 +306,58 @@ class AdminTable extends React.Component {
         Authorization: localStorage.getItem('token'),
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      data: qs.stringify(values),
+      data: qs.stringify({
+        id: this.state.editingUserID,
+        username: values.username,
+        password: values.password,
+        fName: values.fName,
+        lName: values.lName,
+        email: values.email,
+        title: values.title,
+        accessLevelID: values.accessLevelID
+      }), 
       type: 'json'
     })
       .then(response => {
-        console.log(response);
+        for (let company of this.state.editingUserCompanies) {
+          axios({
+            method: 'post',
+            url: window.__env__.API_URL + '/blink/api/company/person/delete',
+            headers: {
+              Authorization: localStorage.getItem('token'),
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: qs.stringify({companyID: company, personID: response.data.UUID}),
+            type: 'json'
+          })
+          .then(()=>{
+            this.fetch();
+          })
+          .catch(axiosError);
+        }    
+        for (let company of values.company) {
+          console.log(company.toString())
+          if (response.status === 200 && values.company) {
+            axios({
+              method: 'post',
+              url: window.__env__.API_URL + '/blink/api/company/person/add',
+              headers: {
+                Authorization: localStorage.getItem('token'),
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              data: qs.stringify({companyID: company, personID: response.data.UUID}),
+              type: 'json'
+            })
+            .then(()=>{
+              this.fetch();
+            })
+            .catch(axiosError);    
+          } else {
+            this.fetch()
+            console.log(response);
+          }
+        }
       })
-      .catch(error => {
-        console.error(error);
-      });
     this.setState({
       editvisible: false
     });
@@ -309,7 +387,10 @@ class AdminTable extends React.Component {
             email: entry.email,
             title: entry.title,
             companies:
-              entry.companies.length > 0 ? entry.companies[0].companyName : '',
+            entry.companies.map(company =>{
+              return company.companyName + '. '
+            }),
+              // entry.companies.length > 0 ? entry.companies[0].companyName : '',
             accessLevelID: entry.accessLevelID
           });
         }
