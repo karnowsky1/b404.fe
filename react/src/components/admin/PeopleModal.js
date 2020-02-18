@@ -72,7 +72,7 @@ const PeopleModalForm = ({
             defaultValue={initialValues.company}
           >
             {/* { console.log(companies)} */}
-            {console.log(initialValues.company)}
+            {/* {console.log(initialValues.company)} */}
             {companies.map(({ value, label }) => (
               <Option value={value} key={value}>
                 {label}

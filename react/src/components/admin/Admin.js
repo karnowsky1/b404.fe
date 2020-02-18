@@ -41,7 +41,7 @@ class AdminTable extends React.Component {
     pagination: {},
     addvisible: false,
     editvisible: false,
-    companyOptions: []
+    companyOptions: [],
   };
   
   constructor(props) {
@@ -191,6 +191,7 @@ class AdminTable extends React.Component {
         accessLevelID: record.accessLevelID
       },
       editingUserID: record.id,
+      previousJobIsEmpty: record.title === "",
       editvisible: true
 
     });
@@ -239,7 +240,7 @@ class AdminTable extends React.Component {
           }    
         } else {
           this.fetch()
-          console.log(response);
+          // console.log(response);
         }
       })
       .catch(axiosError);
@@ -269,15 +270,15 @@ class AdminTable extends React.Component {
           })
           .then(response => {
             if (response.status === 200) {
-              console.log('works');
+              // console.log('works');
               fetch();
             } else {
-              console.log(response);
+              // console.log(response);
             }
           });
       },
       onCancel() {
-        console.log('Cancel');
+        // console.log('Cancel');
       }
     });
   };
@@ -297,8 +298,11 @@ class AdminTable extends React.Component {
   };
 
   onEditSubmit = async values => {
-    console.log("These are the values")
-    console.log(values)
+    // console.log("These are the values")
+    // console.log(values)
+    if(!this.state.previousJobIsEmpty && values.title === ""){
+      values.title = ' '
+    }
     await axios({
       method: 'put',
       url: window.__env__.API_URL + '/blink/api/person',
@@ -318,9 +322,9 @@ class AdminTable extends React.Component {
       }), 
       type: 'json'
     })
-      .then(response => {
+      .then(async response => {
         for (let company of this.state.editingUserCompanies) {
-          axios({
+          await axios({
             method: 'post',
             url: window.__env__.API_URL + '/blink/api/company/person/delete',
             headers: {
@@ -336,9 +340,9 @@ class AdminTable extends React.Component {
           .catch(axiosError);
         }    
         for (let company of values.company) {
-          console.log(company.toString())
+          // console.log(company.toString())
           if (response.status === 200 && values.company) {
-            axios({
+            await axios({
               method: 'post',
               url: window.__env__.API_URL + '/blink/api/company/person/add',
               headers: {
@@ -354,7 +358,7 @@ class AdminTable extends React.Component {
             .catch(axiosError);    
           } else {
             this.fetch()
-            console.log(response);
+            // console.log(response);
           }
         }
       })
