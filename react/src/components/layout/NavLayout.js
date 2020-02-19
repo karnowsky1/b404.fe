@@ -25,6 +25,20 @@ class NavLayout extends React.Component {
       <Layout style={{ height: '100vh' }}>
         <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
           <div className="logo" />
+          { this.state.collapsed ?
+          <div className="box-for-image">
+            <img className="image-url"  alt=""/>
+          </div>
+          : 
+            <div className="box-for-logo">
+              <div className="font-title-logo">
+                VENTURE CREATIONS
+              </div>
+              <div className="font-subtitle-logo">
+                 RIT's Technology Business Incubator
+               </div>
+            </div>}
+            
           <Menu
             theme="dark"
             mode="inline"
