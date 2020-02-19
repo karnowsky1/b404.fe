@@ -89,28 +89,26 @@ code {
 }
 
 .font-title-logo {
+  position: fixed;
   font-size: 15px;
   color: white;
   font-weight: bold;
-
 }
 
  .font-subtitle-logo {
+  padding-top: 20px;
+  position: fixed;
   font-size: 10px;
   color: white;
 
 }
 
 .image-url {
-  background-image: url('img/something.jpg');
-  width: 100%;
-  height: 100%;
-  border: none;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
- 
+  margin-left: 15px;
+  width: 50%;
+  height: auto;
 }
+
 .box-for-image {
   width: 60px;
   height: 40px;
