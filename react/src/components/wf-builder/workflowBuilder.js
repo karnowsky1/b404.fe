@@ -16,11 +16,12 @@ export default class WorkflowBuilder extends Component {
         this.state = {
             treeData: [{
                 title: 'TITLE',
+                subtitle: 'Insert description here',
             }]
         };
     }
     addNewNode(rowInfo) {
-        const NEW_NODE = { title: 'STEP', isDirectory: true, expanded: true };
+        const NEW_NODE = { title: 'STEP', subtitle: 'Insert text here...'};
         const newTree = addNodeUnderParent({
           treeData: this.state.treeData,
           newNode: NEW_NODE,
@@ -29,6 +30,7 @@ export default class WorkflowBuilder extends Component {
           getNodeKey: ({ treeIndex }) => treeIndex,
         });
         this.updateTreeData(newTree.treeData);
+        console.log(this.state.treeData)
       }
     
       removeNode(rowInfo) {
@@ -53,10 +55,11 @@ export default class WorkflowBuilder extends Component {
                          treeData={this.state.treeData}
                          onChange={this.updateTreeData}
                          generateNodeProps={rowInfo => ({
-                        title: (
-                        <Input
+                         title: (
+                         <Input
                          style={{ fontSize: '1.1rem' }}
                          value={rowInfo.node.title}
+                         size="small"
                          onChange={event => {
                          const { path } = rowInfo;
                          const title = event.target.value;
@@ -72,6 +75,26 @@ export default class WorkflowBuilder extends Component {
                             }}
                             />
                              ),
+                            subtitle: (
+                            <Input
+                            style={{ marginTop: '12px' }}
+                            value={rowInfo.node.subtitle}
+                            size="small"
+                            onChange={event => {
+                            const { path } = rowInfo;
+                            const subtitle = event.target.value;
+    
+                                this.setState(state => ({
+                                treeData: changeNodeAtPath({
+                                treeData: state.treeData,
+                                path,
+                                getNodeKey,
+                                newNode: { ...rowInfo.node, subtitle },
+                                }),
+                                }));
+                                }}
+                                />
+                                ),
                              buttons: [
                                       <div>
                                        <Button label='Delete'
@@ -84,7 +107,7 @@ export default class WorkflowBuilder extends Component {
                                       height: '50px',
                                     }
                           })}
-                />
+                         />
             </div>
         );
     }

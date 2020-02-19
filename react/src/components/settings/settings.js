@@ -151,7 +151,7 @@ class SettingsForm extends React.Component {
             rules: [{ required: true, message: 'Please input your id!', whitespace: true }],
           })(<Input name='UUID' value={this.state.user.UUID} disabled onChange = {this.handleChange} />)}
         </Form.Item>
-      <Form.Item
+        <Form.Item
           label={
             <span>
               Username&nbsp;
