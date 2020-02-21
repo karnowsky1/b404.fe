@@ -52,7 +52,7 @@ class LoginForm extends React.Component {
       if (response.status === 200){
         setUser(response.data)
         localStorage.setItem(TOKEN_KEY, response.headers.authorization)
-        localStorage.setItem(UUID_KEY, response.data.UUID)
+        localStorage.setItem(UUID_KEY, response.data.uuid)
         setIsLoggedIn(true)
       }
     }).catch(function (error) {
