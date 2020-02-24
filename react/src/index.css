@@ -103,3 +103,7 @@ code {
   right: 3.5em;
   top: 0px;
 }
+
+.datePicker-p-tag {
+  width: auto;
+}
