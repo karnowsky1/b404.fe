@@ -92,8 +92,15 @@ class Tables extends React.Component {
     pagination: {}
   };
 
+  _isMounted = false;
+
   componentDidMount() {
+    this._isMounted = true;
     this.fetch();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   fetch = (params = {}) => {

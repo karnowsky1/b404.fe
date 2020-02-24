@@ -4,6 +4,7 @@ import { Form,
   Tooltip,
   Icon,
   Button,
+  Spin,
   message } from 'antd'
 import axios from 'axios'
 import qs from 'qs'
@@ -14,6 +15,7 @@ class SettingsForm extends React.Component {
   constructor(props) {
     super (props)
     this.state = {
+        loading: false,
         user: {},
         confirmDirty: false,
         autoCompleteResult: [],
@@ -21,7 +23,12 @@ class SettingsForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
+  _isMounted = false;
+
   componentDidMount() {
+    this._isMounted = true;
+    this.setState({ loading: true });
+
     const url = window.__env__.API_URL + '/blink/api/person/id/' + localStorage.getItem(UUID_KEY);
     axios.get(
       url,
@@ -34,11 +41,13 @@ class SettingsForm extends React.Component {
     ).then(response => {
       if (response.status === 200){
         this.setState({
+          loading: false,
           user: response.data
         })
       }
     }).catch(function (error) {
-      message.destroy()
+      message.destroy();
+      this.setState({ loading: false });
       if (error.response) {
         // Request made and server responded
         message.error(error.response.data.error);
@@ -52,12 +61,17 @@ class SettingsForm extends React.Component {
     });
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   handleSubmit = async e => {
+    this.setState({ loading: true });
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const {UUID, username, password, fName, lName, email, title, accessLevelID} = this.state.user
-        const id = UUID
+        const {uuid, username, password, fName, lName, email, title, accessLevelID} = this.state.user
+        const id = uuid
         const url = window.__env__.API_URL + '/blink/api/person'
         axios.put(
           url,
@@ -80,9 +94,11 @@ class SettingsForm extends React.Component {
         ).then(response => {
           if (response.status === 200){
             message.success('Data saved successfully');
+            this.setState({ loading: false });
           }
         }).catch(function (error) {
-          message.destroy()
+          message.destroy();
+          this.setState({ loading: false });
           if (error.response) {
             // Request made and server responded
             message.error(error.response.data.error);
@@ -109,7 +125,6 @@ class SettingsForm extends React.Component {
   
   render() {
     const { getFieldDecorator } = this.props.form;
-    console.log(this.state.user)
 
     const formItemLayout = {
       labelCol: {
@@ -136,6 +151,7 @@ class SettingsForm extends React.Component {
     
     return (
       <div className="settings-main">
+      <Spin spinning={this.state.loading}>
       <Form {...formItemLayout} hideRequiredMark name='form' labelAlign ="left" onSubmit={this.handleSubmit}>
       <Form.Item
           style={{display: 'none'}}
@@ -145,11 +161,11 @@ class SettingsForm extends React.Component {
             </span>
           }
         >
-          {getFieldDecorator('UUID', {
-            initialValue: this.state.user.UUID,
+          {getFieldDecorator('uuid', {
+            initialValue: this.state.user.uuid,
             valuePropName: 'uuid',
             rules: [{ required: true, message: 'Please input your id!', whitespace: true }],
-          })(<Input name='UUID' value={this.state.user.UUID} disabled onChange = {this.handleChange} />)}
+          })(<Input name='uuid' value={this.state.user.uuid} disabled onChange = {this.handleChange} />)}
         </Form.Item>
         <Form.Item
           label={
@@ -256,6 +272,7 @@ class SettingsForm extends React.Component {
           </Button>
         </Form.Item>
       </Form>
+      </Spin>
       </div>
     );
   }

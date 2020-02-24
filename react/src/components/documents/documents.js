@@ -114,8 +114,15 @@ class DocumentsTable extends React.Component {
     loading: true
   };
 
+  _isMounted = false;
+
   componentDidMount() {
+    this._isMounted = true;
     this.fetch();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   handleTableChange = (pagination, filters, sorter) => {

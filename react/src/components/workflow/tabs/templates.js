@@ -106,9 +106,17 @@ class Templates extends React.Component {
   };
   */
 
+  _isMounted = false;
+
   componentDidMount() {
+    this._isMounted = true;
+    
     this.getAllCompanies();
     this.getAllPeople();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   showCompanyModal = () => {
@@ -185,7 +193,7 @@ class Templates extends React.Component {
         this.setState({
           personOptions: response.data.map(person => {
             return {
-              value: person.UUID,
+              value: person.uuid,
               label: person.fName + " " + person.lName
             };
           })
@@ -220,6 +228,7 @@ class Templates extends React.Component {
   };
 
   render() {
+    //const { visible, loading } = this.state;
     return (
       <React.Fragment>
         <Table
@@ -250,13 +259,13 @@ class Templates extends React.Component {
               + Create
             </Button>
             <Modal
-            // TODO: don't hard code this.
-              bodyStyle={{ height: '75vh' }}
-              title="Create your workflow"
+              bodyStyle={{ height: '81vh' }}
+              title="Create your workflow template"
               width="75vw"
               visible={this.state.visible}
               onOk={this.handleOk}
               onCancel={this.handleCancel}
+              footer={null}
             >
             <WorkflowBuilder />        
             </Modal>
