@@ -23,7 +23,7 @@ class NavLayout extends React.Component {
 
   render() {
     return (
-      <Layout style={{ height: '100vh' }}>
+      <Layout style={{ height: "100vh" }}>
         <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
           <div className="logo" />
           { this.state.collapsed ?
@@ -61,7 +61,7 @@ class NavLayout extends React.Component {
                 <span>Main Settings</span>
               </NavLink>
             </Menu.Item>
-            {/* { this.props.isAdmin &&  */
+            { this.props.isAdmin && 
             <SubMenu
             key="sub1"
             title={
@@ -78,10 +78,10 @@ class NavLayout extends React.Component {
           </Menu>
         </Sider>
         <Layout>
-          <Header style={{ background: '#f06f32', padding: 0 }}>
+          <Header style={{ background: "#f06f32", padding: 0 }}>
             <Icon
               className="trigger"
-              type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+              type={this.state.collapsed ? "menu-unfold" : "menu-fold"}
               onClick={this.toggle}
             />
             <div className="logout">
@@ -90,9 +90,9 @@ class NavLayout extends React.Component {
           </Header>
           <Content
             style={{
-              margin: '24px 16px',
+              margin: "24px 16px",
               padding: 24,
-              background: '#fff'
+              background: "#fff"
             }}
           >
             {this.props.children}
@@ -103,4 +103,4 @@ class NavLayout extends React.Component {
   }
 }
 
-export default connect((state = {}) => ({ isAdmin: state.user }))(NavLayout); 
+export default connect((state = {}) => ({ isAdmin: state.user && state.user.accessLevelID <= 1 }))(NavLayout); 
