@@ -46,18 +46,19 @@ const MilestoneModalForm = ({
           </Form.Item>
           <p></p>
           <p>Description *</p>
-          <Form.Item name="description" validate={required}>
+          <Form.Item name="description">
             <Input name="description" placeholder="Milestone Description" />
           </Form.Item>
           <p></p>
           <p>Company</p>
           {/* //////////////////////////////////////////////////// */}
           <Select
-            mode="multiple"
+            // mode="multiple"
             name="company"
             style={{ width: '100%' }}
             placeholder="Select Company"
             defaultValue={initialValues.company}
+            validate={required}
           >
             {/* { console.log(companies)} */}
             {/* {console.log(initialValues.company)} */}
