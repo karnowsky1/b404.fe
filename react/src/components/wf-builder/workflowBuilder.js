@@ -21,6 +21,10 @@ export default class WorkflowBuilder extends Component {
         this.addNode = this.addNewNode.bind(this);
         this.removeNode = this.removeNode.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        message.config({
+            maxCount: 1,
+        });
+
         this.state = {
             wfName: '',
             wfDescription: '',
@@ -72,7 +76,7 @@ export default class WorkflowBuilder extends Component {
         e.preventDefault();
         //const {wfName, username, password, fName, lName, email, title, accessLevelID} = this.state.user
         //const id = UUID
-        //const url = window.__env__.API_URL + '/blink/api/workflow'
+        const url = window.__env__.API_URL + '/blink/api/workflow'
         const requestObject = {
             name: this.state.wfName.text,
             description: this.state.wfDescription.text,
@@ -80,7 +84,7 @@ export default class WorkflowBuilder extends Component {
         }
         this.setState({ loading: true });
         console.log(requestObject);
-        /**
+        
         axios.post(
             url,
             requestObject,
@@ -93,7 +97,7 @@ export default class WorkflowBuilder extends Component {
         ).then(response => {
             //this.setState({ loading: true });
             if (response.status === 200){
-            //this.setState({ loading: false });
+            this.setState({ loading: false });
             message.success('Data saved successfully');
             }
         }).catch(function (error) {
@@ -109,7 +113,7 @@ export default class WorkflowBuilder extends Component {
             // Something happened in setting up the request that triggered an Error
             message.error("Error setting up request");
             }
-        });*/
+        });
       };
 
     addNewNode(rowInfo) {

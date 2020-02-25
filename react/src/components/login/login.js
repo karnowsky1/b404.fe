@@ -19,8 +19,11 @@ class LoginForm extends React.Component {
       password: '',
       isLoading: false
     }
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    message.config({
+      maxCount: 1,
+    });
   }
 
   handleSubmit = async e => {

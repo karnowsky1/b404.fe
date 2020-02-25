@@ -21,6 +21,9 @@ class SettingsForm extends React.Component {
         autoCompleteResult: [],
     }
     this.handleSubmit = this.handleSubmit.bind(this)
+    message.config({
+      maxCount: 1,
+    });
   }
 
   _isMounted = false;
@@ -110,7 +113,10 @@ class SettingsForm extends React.Component {
             message.error("Error setting up request");
           }
         });
-      } else message.error('Please fill out all fields!')
+      } else {
+              message.error('Please fill out all fields!');
+              this.setState({ loading: false });
+             }
     });
   };
 
