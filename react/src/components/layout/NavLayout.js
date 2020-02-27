@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { MAIN_ROUTES } from '../../constants/routes';
 import { connect }from 'react-redux'
 import Logout from './Logout';
+import mainLogo from '../../img/something.jpg';
 
 const { Header, Sider, Content } = Layout;
 
@@ -25,6 +26,20 @@ class NavLayout extends React.Component {
       <Layout style={{ height: "100vh" }}>
         <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
           <div className="logo" />
+          { this.state.collapsed ?
+          <div className="box-for-image">
+            <img className="image-url" src={mainLogo}  alt=""/>
+          </div>
+          : 
+            <div className="box-for-logo">
+              <div style={{position: 'fixed'}} className="font-title-logo">
+                VENTURE CREATIONS
+              </div>
+              <div style={{position: 'fixed'}} className="font-subtitle-logo">
+                 RIT's Technology Business Incubator
+               </div>
+            </div>}
+            
           <Menu
             theme="dark"
             mode="inline"

@@ -73,10 +73,48 @@ code {
   color: #1890ff;
 }
 
-.logo {
+.box-for-logo{
   height: 32px;
-  background: rgba(255, 255, 255, 0.2);
+  background: 001529;
   margin: 16px;
+}
+
+.logo-top-part {
+  height: 15px;
+}
+
+.logo-bottom-part {
+  height: 15px;
+
+}
+
+.font-title-logo {
+  position: fixed;
+  font-size: 15px;
+  color: white;
+  font-weight: bold;
+}
+
+ .font-subtitle-logo {
+  padding-top: 20px;
+  position: fixed;
+  font-size: 10px;
+  color: white;
+
+}
+
+.image-url {
+  margin-left: 15px;
+  width: 50%;
+  height: auto;
+}
+
+.box-for-image {
+  width: 60px;
+  height: 40px;
+  border: 0px;
+  margin-top: 10px;
+  margin-left: 10px;
 }
 
 .ant-card-grid:nth-child(1) {

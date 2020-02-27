@@ -1,6 +1,6 @@
-import React from "react";
-import { Table, Progress, Icon, Button, Row, Col, Card } from "antd";
-import axios from "axios";
+import React from 'react';
+import { Table, Progress, Icon, Button, Row, Col, Card } from 'antd';
+import axios from 'axios';
 
 /*
 const menu = (
@@ -20,9 +20,9 @@ const menu = (
 
 const columns = [
   {
-    title: "Workflow Details",
-    dataIndex: "nameW",
-    key: "nameW",
+    title: 'Workflow Details',
+    dataIndex: 'nameW',
+    key: 'nameW',
     render: nameW => (
       <React.Fragment>
         <Row>
@@ -40,9 +40,9 @@ const columns = [
     )
   },
   {
-    title: "Workflow Author",
-    dataIndex: "author",
-    key: "author",
+    title: 'Workflow Author',
+    dataIndex: 'author',
+    key: 'author',
     render: author => (
       <React.Fragment>
         {author.name}
@@ -51,9 +51,9 @@ const columns = [
     )
   },
   {
-    title: "Date Created",
-    dataIndex: "date",
-    key: "date",
+    title: 'Date Created',
+    dataIndex: 'date',
+    key: 'date',
     render: date => (
       <React.Fragment>
         {date.createdD}
@@ -62,14 +62,14 @@ const columns = [
     )
   },
   {
-    title: "Progress",
-    dataIndex: "progress",
-    key: "progress",
+    title: 'Progress',
+    dataIndex: 'progress',
+    key: 'progress',
     render: progress => (
       <Progress
         strokeColor={{
-          "0%": "#108ee9",
-          "100%": "#87d068"
+          '0%': '#108ee9',
+          '100%': '#87d068'
         }}
         percent={progress}
         size="small"
@@ -78,9 +78,9 @@ const columns = [
     )
   },
   {
-    title: "More",
-    dataIndex: "more",
-    key: "more",
+    title: 'More',
+    dataIndex: 'more',
+    key: 'more',
     render: more => <Icon type="more" />
   }
 ];
@@ -98,15 +98,15 @@ class Tables extends React.Component {
 
   fetch = (params = {}) => {
     axios({
-      method: "get",
+      method: 'get',
       //TODO:Change to API...............................................................................
-      url: "https://demo1986594.mockable.io",
+      url: 'https://demo1986594.mockable.io',
       //TODO:Change to API...............................................................................
       response: {
         results: 4,
         params
       },
-      type: "json"
+      type: 'json'
     })
       .then(response => {
         let conf = [];
