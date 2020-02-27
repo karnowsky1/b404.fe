@@ -51,29 +51,32 @@ export class DateRange extends React.Component {
   render() {
     const { startValue, endValue, endOpen } = this.state;
     return (
-      <div>
-        <p className="datePicker-p-tag">Start Date *</p>
-        <DatePicker
-          disabledDate={this.disabledStartDate}
-          showTime
-          format="YYYY-MM-DD HH:mm:ss"
-          value={startValue}
-          placeholder="Start"
-          onChange={this.onStartChange}
-          onOpenChange={this.handleStartOpenChange}
-        />
-        <p></p>
-        <p className="datePicker-p-tag">End Date *</p> {/* These p tags are making it so that they can't stay together */}
-        <DatePicker
-          disabledDate={this.disabledEndDate}
-          showTime
-          format="YYYY-MM-DD HH:mm:ss"
-          value={endValue}
-          placeholder="End"
-          onChange={this.onEndChange}
-          open={endOpen}
-          onOpenChange={this.handleEndOpenChange}
-        />
+      <div style={{display: "flex", justifyContent: "space-between" }}>
+        <div>
+          <p className="datePicker-p-tag">Start Date *</p>
+          <DatePicker
+            disabledDate={this.disabledStartDate}
+            showTime
+            format="YYYY-MM-DD HH:mm:ss"
+            value={startValue}
+            placeholder="Start"
+            onChange={this.onStartChange}
+            onOpenChange={this.handleStartOpenChange}
+          />
+        </div>
+        <div>
+          <p className="datePicker-p-tag">End Date *</p> {/* These p tags are making it so that they can't stay together */}
+          <DatePicker
+            disabledDate={this.disabledEndDate}
+            showTime
+            format="YYYY-MM-DD HH:mm:ss"
+            value={endValue}
+            placeholder="End"
+            onChange={this.onEndChange}
+            open={endOpen}
+            onOpenChange={this.handleEndOpenChange}
+          />
+        </div>
       </div>
     );
   }
