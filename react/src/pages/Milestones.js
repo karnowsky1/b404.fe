@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import MilestoneTable from '../components/milestone/milestone'
+import MilestonesTable from "../components/milestones/milestonesTable";
 
 export default class Milestones extends Component {
     render() {
         return (
-          <MilestoneTable/>
+           <MilestonesTable />
         )
     }
 }

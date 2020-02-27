@@ -78,7 +78,7 @@ class MilestonesTable extends React.Component {
   render() {
     return (
       <Tabs defaultActiveKey="1" onChange={callback}>
-        <TabPane tab="Active" key="1">
+        <TabPane tab="Active Milestones" key="1">
           <Table
             columns={this.columns}
             rowKey={record => record.id}
@@ -111,7 +111,7 @@ class MilestonesTable extends React.Component {
           />
           <Button type="primary">+ Create</Button>
         </TabPane>
-        <TabPane tab="Archived" key="2">
+        <TabPane tab="Archived Milestones" key="2">
           <p>Archived Tab</p>
         </TabPane>
       </Tabs>
