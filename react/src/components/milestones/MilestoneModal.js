@@ -64,11 +64,11 @@ const MilestoneModalForm = ({
             {/* {console.log(initialValues.company)} */}
 
 
-            {/* {companies.map(({ value, label }) => ( */}
-              {/* <Option value={value} key={value}> */}
-                {/* {label} */}
-              {/* </Option> */}
-            {/* ))} */}
+            {companies.map(({ value, label }) => (
+               <Option value={value} key={value}> 
+                {label} 
+               </Option> 
+            ))}
           </Select>
           {/* //////////////////////////////////////////////////// */}
           <p></p>

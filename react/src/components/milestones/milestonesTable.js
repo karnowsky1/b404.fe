@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import { Table, Tabs, Progress, Row, Col, Button } from 'antd';
+import { MilestoneModal } from './MilestoneModal'
+import { getAllCompanies } from '../../utils/api';
 
 const { TabPane } = Tabs;
 
@@ -13,7 +15,9 @@ class MilestonesTable extends React.Component {
     data: [],
     companyName: [],
     loading: true,
-    pagination: {}
+    addvisible: false,
+    pagination: {},
+    companyOptions: []
   };
   constructor(props) {
     super(props);
@@ -37,7 +41,33 @@ class MilestonesTable extends React.Component {
 
   componentDidMount() {
     this.fetch();
+    getAllCompanies()
+      .then(response => {
+        this.setState({
+          companyOptions: response.data.map(company => ({
+            value: company.companyID,
+            key: company.companyID,
+            label: company.companyName
+          }))
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
+
+  showAddModal = () => {
+    this.setState({
+      addvisible: true
+    });
+  };
+
+  handleAddCancel = e => {
+    // console.log(e);
+    this.setState({
+      addvisible: false
+    });
+  };
 
   fetch = (params = {}) => {
     axios({
@@ -109,7 +139,20 @@ class MilestonesTable extends React.Component {
             )}
             dataSource={this.state.data}
           />
-          <Button type="primary">+ Create</Button>
+          <Button 
+            type="primary"
+            onClick={this.showAddModal}
+            >+ Create
+          </Button>
+          {this.state.addvisible && (
+              <MilestoneModal
+                onSubmit={this.onAddSubmit}
+                companies={this.state.companyOptions}
+                onCancel={this.handleAddCancel}
+                title="Add Milestone"
+                isAddModal={true}
+              />
+            )}
         </TabPane>
         <TabPane tab="Archived Milestones" key="2">
           <p>Archived Tab</p>
