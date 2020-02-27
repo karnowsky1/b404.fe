@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Table,
   Icon,
@@ -10,8 +10,8 @@ import {
   Upload,
   message,
   Input
-} from "antd";
-import axios from "axios";
+} from 'antd';
+import axios from 'axios';
 
 const { Search } = Input;
 
@@ -32,22 +32,22 @@ const menu = (
 );*/
 
 message.config({
-  maxCount: 1,
+  maxCount: 1
 });
 
 const props = {
-  name: "file",
-  action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+  name: 'file',
+  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
   headers: {
-    authorization: "authorization-text"
+    authorization: 'authorization-text'
   },
   onChange(info) {
-    if (info.file.status !== "uploading") {
+    if (info.file.status !== 'uploading') {
       console.log(info.file, info.fileList);
     }
-    if (info.file.status === "done") {
+    if (info.file.status === 'done') {
       message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === "error") {
+    } else if (info.file.status === 'error') {
       message.error(`${info.file.name} file upload failed.`);
     }
   }
@@ -55,8 +55,8 @@ const props = {
 
 const columns = [
   {
-    title: "Document Details",
-    dataIndex: "nameW",
+    title: 'Document Details',
+    dataIndex: 'nameW',
     sorter: true,
     render: nameW => (
       <React.Fragment>
@@ -75,8 +75,8 @@ const columns = [
     )
   },
   {
-    title: "Author",
-    dataIndex: "author",
+    title: 'Author',
+    dataIndex: 'author',
     render: author => (
       <React.Fragment>
         {author.name}
@@ -85,8 +85,8 @@ const columns = [
     )
   },
   {
-    title: "Date Created",
-    dataIndex: "date",
+    title: 'Date Created',
+    dataIndex: 'date',
     render: date => (
       <React.Fragment>
         {date.created}
@@ -95,8 +95,8 @@ const columns = [
     )
   },
   {
-    title: "Last Modified",
-    dataIndex: "modified",
+    title: 'Last Modified',
+    dataIndex: 'modified',
     render: modified => (
       <React.Fragment>
         {modified.created}
@@ -105,8 +105,8 @@ const columns = [
     )
   },
   {
-    title: "More",
-    dataIndex: "more",
+    title: 'More',
+    dataIndex: 'more',
     render: more => <Icon type="more" />
   }
 ];
@@ -118,15 +118,8 @@ class DocumentsTable extends React.Component {
     loading: true
   };
 
-  _isMounted = false;
-
   componentDidMount() {
-    this._isMounted = true;
     this.fetch();
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
   }
 
   handleTableChange = (pagination, filters, sorter) => {
@@ -146,19 +139,19 @@ class DocumentsTable extends React.Component {
 
   fetch = (params = {}) => {
     axios({
-      method: "get",
+      method: 'get',
       //TODO:Change to API...............................................................................
-      url: "https://demo7818297.mockable.io/",
+      url: 'https://demo7818297.mockable.io/',
       //TODO:Change to API...............................................................................
       response: {
         results: 2,
         params
       },
-      type: "json"
+      type: 'json'
     }).then(response => {
       const pagination = { ...this.state.pagination };
       pagination.total = 10;
-      pagination.size = "small";
+      pagination.size = 'small';
       pagination.pageSize = 4;
       this.setState({
         loading: false,

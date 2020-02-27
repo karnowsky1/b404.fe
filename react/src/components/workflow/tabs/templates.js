@@ -1,31 +1,31 @@
-import React from "react";
-import { Table, Button, Divider, Modal } from "antd";
-import axios from "axios";
-import { AssignModal } from "../assignModal";
-import { AssignPeople } from "../assignModal";
+import React from 'react';
+import { Table, Button, Divider, Modal } from 'antd';
+import axios from 'axios';
+import { AssignModal } from '../assignModal';
+import { AssignPeople } from '../assignModal';
 import WorkflowBuilder from '../../wf-builder/workflowBuilder';
 
 const data = [
   {
     key: 1,
-    name: "a1",
+    name: 'a1',
     age: 32,
     description:
-      "My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park."
+      'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.'
   },
   {
     key: 2,
-    name: "qt3",
+    name: 'qt3',
     age: 42,
     description:
-      "My name is Jim Green, I am 42 years old, living in London No. 1 Lake Park."
+      'My name is Jim Green, I am 42 years old, living in London No. 1 Lake Park.'
   },
   {
     key: 3,
-    name: "wf7",
+    name: 'wf7',
     age: 32,
     description:
-      "My name is Joe Black, I am 32 years old, living in Sidney No. 1 Lake Park."
+      'My name is Joe Black, I am 32 years old, living in Sidney No. 1 Lake Park.'
   }
 ];
 
@@ -43,12 +43,12 @@ class Templates extends React.Component {
   constructor(props) {
     super(props);
     this.columns = [
-      { title: "Type", dataIndex: "name", key: "name" },
-      { title: "Description", dataIndex: "description", key: "description" },
+      { title: 'Type', dataIndex: 'name', key: 'name' },
+      { title: 'Description', dataIndex: 'description', key: 'description' },
       {
-        title: "Action",
-        dataIndex: "",
-        key: "x",
+        title: 'Action',
+        dataIndex: '',
+        key: 'x',
         render: () => (
           <React.Fragment>
             <Button
@@ -106,17 +106,9 @@ class Templates extends React.Component {
   };
   */
 
-  _isMounted = false;
-
   componentDidMount() {
-    this._isMounted = true;
-    
     this.getAllCompanies();
     this.getAllPeople();
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
   }
 
   showCompanyModal = () => {
@@ -162,9 +154,9 @@ class Templates extends React.Component {
 
   getAllCompanies() {
     axios
-      .get(window.__env__.API_URL + "/blink/api/company", {
+      .get(window.__env__.API_URL + '/blink/api/company', {
         headers: {
-          Authorization: localStorage.getItem("token")
+          Authorization: localStorage.getItem('token')
         }
       })
       .then(response => {
@@ -184,9 +176,9 @@ class Templates extends React.Component {
 
   getAllPeople() {
     axios
-      .get(window.__env__.API_URL + "/blink/api/person", {
+      .get(window.__env__.API_URL + '/blink/api/person', {
         headers: {
-          Authorization: localStorage.getItem("token")
+          Authorization: localStorage.getItem('token')
         }
       })
       .then(response => {
@@ -194,7 +186,7 @@ class Templates extends React.Component {
           personOptions: response.data.map(person => {
             return {
               value: person.uuid,
-              label: person.fName + " " + person.lName
+              label: person.fName + ' ' + person.lName
             };
           })
         });
@@ -255,20 +247,20 @@ class Templates extends React.Component {
             onOk={this.handlePersonOk}
           />
         )}
-            <Button type="primary" onClick={this.showModal}>
-              + Create
-            </Button>
-            <Modal
-              bodyStyle={{ height: '81vh' }}
-              title="Create your workflow template"
-              width="75vw"
-              visible={this.state.visible}
-              onOk={this.handleOk}
-              onCancel={this.handleCancel}
-              footer={null}
-            >
-            <WorkflowBuilder />        
-            </Modal>
+        <Button type="primary" onClick={this.showModal}>
+          + Create
+        </Button>
+        <Modal
+          bodyStyle={{ height: '81vh' }}
+          title="Create your workflow template"
+          width="75vw"
+          visible={this.state.visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+          footer={null}
+        >
+          <WorkflowBuilder />
+        </Modal>
       </React.Fragment>
     );
   }

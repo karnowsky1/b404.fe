@@ -1,5 +1,16 @@
 import React from 'react';
-import { Table, Button, Row, Col, Card, Tag, Divider, Modal, Icon, message } from 'antd';
+import {
+  Table,
+  Button,
+  Row,
+  Col,
+  Card,
+  Tag,
+  Divider,
+  Modal,
+  Icon,
+  message
+} from 'antd';
 import axios from 'axios';
 import qs from 'qs';
 import { PeopleModal } from './PeopleModal';
@@ -41,9 +52,9 @@ class AdminTable extends React.Component {
     pagination: {},
     addvisible: false,
     editvisible: false,
-    companyOptions: [],
+    companyOptions: []
   };
-  
+
   constructor(props) {
     super(props);
     this.columns = [
@@ -146,12 +157,11 @@ class AdminTable extends React.Component {
     getAllCompanies()
       .then(response => {
         this.setState({
-          companyOptions: response.data.map(company => {
-            return {
-              value: company.companyID,
-              label: company.companyName
-            };
-          })
+          companyOptions: response.data.map(company => ({
+            value: company.companyID,
+            key: company.companyID,
+            label: company.companyName
+          }))
         });
       })
       .catch(error => {
@@ -167,88 +177,87 @@ class AdminTable extends React.Component {
 
   showEditModal = async record => {
     await getPerson(record.id)
-      .then(response =>{
+      .then(response => {
         // console.log(response.data)
         // console.log(response.data.companies)
         this.setState({
-          editingUserCompanies: response.data.companies.map(company =>{
-            return company.companyID
-          }) 
-        })
+          editingUserCompanies: response.data.companies.map(company => {
+            return company.companyID;
+          })
+        });
       })
       .catch(error => {
         console.error(error);
       });
-    this.setState({      
-      editingUser: 
-      {
-        username: record.username, 
+    this.setState({
+      editingUser: {
+        username: record.username,
         fName: record.fName,
         lName: record.lName,
         email: record.email,
         title: record.title,
-        company: this.state.editingUserCompanies,
+        companies: this.state.editingUserCompanies,
         accessLevelID: record.accessLevelID
       },
       editingUserID: record.id,
-      previousJobIsEmpty: record.title === "",
+      previousJobIsEmpty: record.title === '',
       editvisible: true
-
     });
     // console.log('this is the record')
     // console.log(record)
-    
   };
 
   onAddSubmit = async values => {
-    if(!this.state.data.some(user =>
-      user.username === values.username
-    )){
-    await axios({
-      method: 'post',
-      url: window.__env__.API_URL + '/blink/api/person',
-      headers: {
-        Authorization: localStorage.getItem('token'),
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      data: qs.stringify(values),
-      // this is already a big object coming from formik
-      type: 'json'
-    })
-      .then(response => {  
-        // console.log(values.company)
-        if (response.status === 200 && values.company) {
-          // needed the response of the first call to make the second found
-          // grabbing ID from the first one to send into the next request 
-          for (let company of values.company) {
-            axios({
-              method: 'post',
-              url: window.__env__.API_URL + '/blink/api/company/person/add',
-              headers: {
-                Authorization: localStorage.getItem('token'),
-                'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              data: qs.stringify({companyID: company, personID: response.data.UUID}),
-              // making query string with key and value, that's why we're wrapping it in an object and using it this way 
-              // object names need to match variables from API endpoint 
-              type: 'json'
-            })
-            .then(()=>{
-              this.fetch();
-            })
-            .catch(axiosError);
-          }    
-        } else {
-          this.fetch()
-          // console.log(response);
-        }
+    // console.log(values);
+    if (!this.state.data.some(user => user.username === values.username)) {
+      await axios({
+        method: 'post',
+        url: window.__env__.API_URL + '/blink/api/person',
+        headers: {
+          Authorization: localStorage.getItem('token'),
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: qs.stringify(values),
+        // this is already a big object coming from formik
+        type: 'json'
       })
-      .catch(axiosError);
+        .then(response => {
+          // console.log(values.company)
+          if (response.status === 200 && values.companies) {
+            // needed the response of the first call to make the second found
+            // grabbing ID from the first one to send into the next request
+            for (let company of values.companies) {
+              axios({
+                method: 'post',
+                url: window.__env__.API_URL + '/blink/api/company/person/add',
+                headers: {
+                  Authorization: localStorage.getItem('token'),
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                data: qs.stringify({
+                  companyID: company,
+                  personID: response.data.uuid
+                }),
+                // making query string with key and value, that's why we're wrapping it in an object and using it this way
+                // object names need to match variables from API endpoint
+                type: 'json'
+              })
+                .then(() => {
+                  this.fetch();
+                })
+                .catch(axiosError);
+            }
+          } else {
+            this.fetch();
+            // console.log(response);
+          }
+        })
+        .catch(axiosError);
       this.setState({
         addvisible: false
       });
     } else {
-      message.destroy()
+      message.destroy();
       message.error(`Username ${values.username} is already taken`);
     }
   };
@@ -300,8 +309,8 @@ class AdminTable extends React.Component {
   onEditSubmit = async values => {
     // console.log("These are the values")
     // console.log(values)
-    if(!this.state.previousJobIsEmpty && values.title === ""){
-      values.title = ' '
+    if (!this.state.previousJobIsEmpty && values.title === '') {
+      values.title = ' ';
     }
     await axios({
       method: 'put',
@@ -319,49 +328,54 @@ class AdminTable extends React.Component {
         email: values.email,
         title: values.title,
         accessLevelID: values.accessLevelID
-      }), 
+      }),
       type: 'json'
-    })
-      .then(async response => {
-        for (let company of this.state.editingUserCompanies) {
+    }).then(async response => {
+      for (let company of this.state.editingUserCompanies) {
+        await axios({
+          method: 'post',
+          url: window.__env__.API_URL + '/blink/api/company/person/delete',
+          headers: {
+            Authorization: localStorage.getItem('token'),
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          data: qs.stringify({
+            companyID: company,
+            personID: response.data.uuid
+          }),
+          type: 'json'
+        })
+          .then(() => {
+            this.fetch();
+          })
+          .catch(axiosError);
+      }
+      if (response.status === 200 && values.companies) {
+        // console.log(company.toString())
+        for (let company of values.companies) {
           await axios({
             method: 'post',
-            url: window.__env__.API_URL + '/blink/api/company/person/delete',
+            url: window.__env__.API_URL + '/blink/api/company/person/add',
             headers: {
               Authorization: localStorage.getItem('token'),
               'Content-Type': 'application/x-www-form-urlencoded'
             },
-            data: qs.stringify({companyID: company, personID: response.data.UUID}),
+            data: qs.stringify({
+              companyID: company,
+              personID: response.data.uuid
+            }),
             type: 'json'
           })
-          .then(()=>{
-            this.fetch();
-          })
-          .catch(axiosError);
-        }    
-        for (let company of values.company) {
-          // console.log(company.toString())
-          if (response.status === 200 && values.company) {
-            await axios({
-              method: 'post',
-              url: window.__env__.API_URL + '/blink/api/company/person/add',
-              headers: {
-                Authorization: localStorage.getItem('token'),
-                'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              data: qs.stringify({companyID: company, personID: response.data.UUID}),
-              type: 'json'
-            })
-            .then(()=>{
+            .then(() => {
               this.fetch();
             })
-            .catch(axiosError);    
-          } else {
-            this.fetch()
-            // console.log(response);
-          }
-        }
-      })
+            .catch(axiosError);
+        } 
+      } else {
+        this.fetch();
+        // console.log(response);
+      }
+    });
     this.setState({
       editvisible: false
     });
@@ -383,18 +397,18 @@ class AdminTable extends React.Component {
         let conf = [];
         for (let entry of response.data) {
           conf.push({
-            id: entry.UUID,
+            key: entry.uuid,
+            id: entry.uuid,
             fName: entry.fName,
             lName: entry.lName,
             username: entry.username,
             nameW: entry.fName + ' ' + entry.lName,
             email: entry.email,
             title: entry.title,
-            companies:
-            entry.companies.map(company =>{
-              return company.companyName + '. '
-            }),
-              // entry.companies.length > 0 ? entry.companies[0].companyName : '',
+            companies: entry.companies
+              .map(company => company.companyName)
+              .join(', '),
+            // entry.companies.length > 0 ? entry.companies[0].companyName : '',
             accessLevelID: entry.accessLevelID
           });
         }
@@ -421,34 +435,32 @@ class AdminTable extends React.Component {
               columns={this.columns}
               rowKey={record => record.id}
               expandedRowRender={record => (
-                <React.Fragment>
-                  <Row>
-                    <Col span={6}>
-                      <p>
-                        <b>Username: </b>
-                        {record.username}
-                      </p>
-                    </Col>
-                    <Col span={6}>
-                      <p>
-                        <b>Email: </b>
-                        {record.email}
-                      </p>
-                    </Col>
-                    <Col span={6}>
-                      <p>
-                        <b>Job Title: </b>
-                        {record.title}
-                      </p>
-                    </Col>
-                    <Col span={6}>
-                      <p>
-                        <b>Companies: </b>
-                        {record.companies}
-                      </p>
-                    </Col>
-                  </Row>
-                </React.Fragment>
+                <Row key={record.key}>
+                  <Col span={6}>
+                    <p>
+                      <b>Username: </b>
+                      {record.username}
+                    </p>
+                  </Col>
+                  <Col span={6}>
+                    <p>
+                      <b>Email: </b>
+                      {record.email}
+                    </p>
+                  </Col>
+                  <Col span={6}>
+                    <p>
+                      <b>Job Title: </b>
+                      {record.title}
+                    </p>
+                  </Col>
+                  <Col span={6}>
+                    <p>
+                      <b>Companies: </b>
+                      {record.companies}
+                    </p>
+                  </Col>
+                </Row>
               )}
               dataSource={this.state.data}
             />

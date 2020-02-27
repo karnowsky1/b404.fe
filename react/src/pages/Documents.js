@@ -4,7 +4,10 @@ import DocumentsTable from '../components/documents/documents'
 export default class Documents extends Component {
     render() {
         return (
-          <DocumentsTable />
+          <React.Fragment>
+            Documents
+          </React.Fragment>
+          // <DocumentsTable />
         )
     }
 }
