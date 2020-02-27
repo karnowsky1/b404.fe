@@ -102,6 +102,7 @@ const PeopleModalForm = ({
               style={{ width: '100%' }}
               placeholder="Select Role"
               name="accessLevelID"
+              validate={required}
             >
               {roles.map(({ value, label }) => (
                 <Option value={value} key={value}>

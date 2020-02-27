@@ -223,6 +223,7 @@ class AdminTable extends React.Component {
       })
         .then(response => {
           // console.log(values.company)
+          this.fetch();
           if (response.status === 200 && values.companies) {
             // needed the response of the first call to make the second found
             // grabbing ID from the first one to send into the next request
@@ -247,9 +248,6 @@ class AdminTable extends React.Component {
                 })
                 .catch(axiosError);
             }
-          } else {
-            this.fetch();
-            // console.log(response);
           }
         })
         .catch(axiosError);
