@@ -98,18 +98,19 @@ const PeopleModalForm = ({
             {/* //////////////////////////////////////////////////// */}
             <p></p>
             <p>Role *</p>
-            <Select
-              style={{ width: '100%' }}
-              placeholder="Select Role"
-              name="accessLevelID"
-              validate={required}
-            >
-              {roles.map(({ value, label }) => (
-                <Option value={value} key={value}>
-                  {label}
-                </Option>
-              ))}
-            </Select>
+            <Form.Item name="accessLevelID" validate={required}>
+              <Select
+                style={{ width: '100%' }}
+                placeholder="Select Role"
+                name="accessLevelID"
+              >
+                {roles.map(({ value, label }) => (
+                  <Option value={value} key={value}>
+                    {label}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
             <p></p>
             <p>Email</p>
             <Form.Item name="email" validate={validateEmail}>

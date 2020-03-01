@@ -264,7 +264,7 @@ class AdminTable extends React.Component {
     const { fetch } = this;
     confirm({
       title: 'Are you sure delete this user?',
-      content: 'If you delete this user he will no longer be able to login!',
+      content: 'If you delete this user they will no longer be able to login!',
       okText: 'Yes',
       okType: 'danger',
       cancelText: 'No',

@@ -1,41 +1,28 @@
 import React from 'react';
-import { DatePicker } from 'antd';
+import { Form, DatePicker } from 'antd';
 
 export class DateRange extends React.Component {
-  state = {
-    startValue: null,
-    endValue: null,
-    endOpen: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      endOpen: false
+    };
+  }
 
   disabledStartDate = startValue => {
-    const { endValue } = this.state;
-    if (!startValue || !endValue) {
+    const { endDate } = this.props;
+    if (!startValue || !endDate) {
       return false;
     }
-    return startValue.valueOf() > endValue.valueOf();
+    return startValue.valueOf() > endDate.valueOf();
   };
 
   disabledEndDate = endValue => {
-    const { startValue } = this.state;
-    if (!endValue || !startValue) {
+    const { startDate } = this.props;
+    if (!endValue || !startDate) {
       return false;
     }
-    return endValue.valueOf() <= startValue.valueOf();
-  };
-
-  onChange = (field, value) => {
-    this.setState({
-      [field]: value,
-    });
-  };
-
-  onStartChange = value => {
-    this.onChange('startValue', value);
-  };
-
-  onEndChange = value => {
-    this.onChange('endValue', value);
+    return endValue.valueOf() <= startDate.valueOf();
   };
 
   handleStartOpenChange = open => {
@@ -49,37 +36,72 @@ export class DateRange extends React.Component {
   };
 
   render() {
-    const { startValue, endValue, endOpen } = this.state;
+    const { endOpen } = this.state;
+    const {
+      startDate,
+      endDate,
+      setStartDate,
+      setEndDate,
+      failedSubmit,
+      setFailedSubmit
+    } = this.props;
+
     return (
-      <div style={{display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div>
           <p className="datePicker-p-tag">Start Date *</p>
-          <DatePicker
-            disabledDate={this.disabledStartDate}
-            showTime
-            format="YYYY-MM-DD HH:mm:ss"
-            value={startValue}
-            placeholder="Start"
-            onChange={this.onStartChange}
-            onOpenChange={this.handleStartOpenChange}
-          />
+          <Form.Item
+            name="startDate"
+            validateStatus={failedSubmit.startDate ? 'error' : undefined}
+            help={failedSubmit.startDate ? 'Required' : undefined}
+          >
+            <DatePicker
+              name="startDate"
+              disabledDate={this.disabledStartDate}
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
+              value={startDate}
+              placeholder="Start"
+              onChange={date => {
+                setFailedSubmit({
+                  ...failedSubmit,
+                  startDate: false
+                });
+                setStartDate(date);
+              }}
+              // defaultValue={moment(initialValues.startDate)}
+              onOpenChange={this.handleStartOpenChange}
+            />
+          </Form.Item>
         </div>
         <div>
-          <p className="datePicker-p-tag">End Date *</p> {/* These p tags are making it so that they can't stay together */}
-          <DatePicker
-            disabledDate={this.disabledEndDate}
-            showTime
-            format="YYYY-MM-DD HH:mm:ss"
-            value={endValue}
-            placeholder="End"
-            onChange={this.onEndChange}
-            open={endOpen}
-            onOpenChange={this.handleEndOpenChange}
-          />
+          <p className="datePicker-p-tag">End Date *</p>
+          <Form.Item
+            name="endDate"
+            validateStatus={failedSubmit.endDate ? 'error' : undefined}
+            help={failedSubmit.endDate ? 'Required' : undefined}
+          >
+            <DatePicker
+              name="endDate"
+              disabledDate={this.disabledEndDate}
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
+              value={endDate}
+              placeholder="End"
+              onChange={date => {
+                setFailedSubmit({
+                  ...failedSubmit,
+                  endDate: false
+                });
+                setEndDate(date);
+              }}
+              // defaultValue={moment(initialValues.endDate)}
+              open={endOpen}
+              onOpenChange={this.handleEndOpenChange}
+            />
+          </Form.Item>
         </div>
       </div>
     );
   }
 }
-
-          

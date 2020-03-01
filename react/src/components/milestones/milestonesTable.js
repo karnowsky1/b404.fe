@@ -1,8 +1,12 @@
 import React from 'react';
 import axios from 'axios';
-import { Table, Tabs, Progress, Row, Col, Button } from 'antd';
-import { MilestoneModal } from './MilestoneModal'
+import qs from 'qs';
+import { Table, Tabs, Progress, Row, Col, Button, Modal, Divider } from 'antd';
+import { MilestoneModal } from './MilestoneModal';
 import { getAllCompanies } from '../../utils/api';
+import { axiosError } from '../../utils/axiosError';
+
+const { confirm } = Modal;
 
 const { TabPane } = Tabs;
 
@@ -34,7 +38,33 @@ class MilestonesTable extends React.Component {
         title: 'Actions',
         dataIndex: '',
         key: 'x',
-        render: () => <Button type="link">Delete</Button>
+        render: record => (
+          <React.Fragment>
+            <Button
+              type="link"
+              size="small"
+              // onClick={e => this.showEditModal(record)}
+            >
+              Assign
+            </Button>
+            <Divider type="vertical" />
+            <Button
+              type="link"
+              size="small"
+              // onClick={e => this.showEditModal(record)}
+            >
+              Edit
+            </Button>
+            <Divider type="vertical" />
+            <Button
+              type="link"
+              size="small"
+              onClick={e => this.showArchiveConfirm(e, record.id)}
+            >
+              Archive
+            </Button>
+          </React.Fragment>
+        )
       }
     ];
   }
@@ -69,6 +99,27 @@ class MilestonesTable extends React.Component {
     });
   };
 
+  onAddSubmit = async values => {
+    await axios({
+      method: 'post',
+      url: window.__env__.API_URL + '/blink/api/milestone',
+      headers: {
+        Authorization: localStorage.getItem('token'),
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      data: qs.stringify(values),
+      // this is already a big object coming from formik
+      type: 'json'
+    })
+      .then(() => {
+        this.fetch();
+      })
+      .catch(axiosError);
+      this.setState({
+        addvisible: false
+      });
+  };
+
   fetch = (params = {}) => {
     axios({
       method: 'get',
@@ -89,7 +140,8 @@ class MilestonesTable extends React.Component {
             name: entry.name,
             company: entry.companyID,
             startDate: entry.startDate,
-            endDate: entry.completedDate
+            completedDate: entry.completedDate,
+            deliveryDate: entry.deliveryDate
           });
         }
         const pagination = { ...this.state.pagination };
@@ -103,6 +155,36 @@ class MilestonesTable extends React.Component {
       .catch(function(error) {
         console.log(error);
       });
+  };
+
+  showArchiveConfirm = (e, id) => {
+    const { fetch } = this;
+    confirm({
+      title: 'Are you sure archive this Milestone?',
+      content: 'If you archive this Milestone it will go to the arhived tab!',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        axios
+          .delete(window.__env__.API_URL + '/blink/api/milestone/id/' + id, {
+            headers: {
+              Authorization: localStorage.getItem('token')
+            }
+          })
+          .then(response => {
+            if (response.status === 200) {
+              // console.log('works');
+              fetch();
+            } else {
+              // console.log(response);
+            }
+          });
+      },
+      onCancel() {
+        // console.log('Cancel');
+      }
+    });
   };
 
   render() {
@@ -119,7 +201,10 @@ class MilestonesTable extends React.Component {
                     <b>Start Date: {record.startDate}</b>
                   </p>
                   <p>
-                    <b>End Date: {record.endDate}</b>
+                    <b>Delivery Date: {record.deliveryDate}</b>
+                  </p>
+                  <p>
+                    <b>Completed Date: {record.completedDate ? record.completedDate : 'N/A'}</b>
                   </p>
                 </Col>
                 <Col span={12}>
@@ -139,20 +224,18 @@ class MilestonesTable extends React.Component {
             )}
             dataSource={this.state.data}
           />
-          <Button 
-            type="primary"
-            onClick={this.showAddModal}
-            >+ Create
+          <Button type="primary" onClick={this.showAddModal}>
+            + Create
           </Button>
           {this.state.addvisible && (
-              <MilestoneModal
-                onSubmit={this.onAddSubmit}
-                companies={this.state.companyOptions}
-                onCancel={this.handleAddCancel}
-                title="Add Milestone"
-                isAddModal={true}
-              />
-            )}
+            <MilestoneModal
+              onSubmit={this.onAddSubmit}
+              companies={this.state.companyOptions}
+              onCancel={this.handleAddCancel}
+              title="Add Milestone"
+              isAddModal={true}
+            />
+          )}
         </TabPane>
         <TabPane tab="Archived Milestones" key="2">
           <p>Archived Tab</p>
