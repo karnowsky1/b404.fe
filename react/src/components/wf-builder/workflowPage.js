@@ -1,23 +1,14 @@
-import React from "react";
-import {
-  Table,
-  Icon,
-  Button,
-  Row,
-  Col,
-  Card,
-  Modal,
-  Input
-} from "antd";
+import React from 'react';
+import { Table, Icon, Button, Row, Col, Card, Modal, Input } from 'antd';
 import WorkflowBuilder from './workflowBuilder';
-import axios from "axios";
+import axios from 'axios';
 
 const { Search } = Input;
 
 const columns = [
   {
-    title: "Workflow Details",
-    dataIndex: "nameW",
+    title: 'Workflow Details',
+    dataIndex: 'nameW',
     sorter: true,
     render: nameW => (
       <React.Fragment>
@@ -36,8 +27,8 @@ const columns = [
     )
   },
   {
-    title: "Author",
-    dataIndex: "author",
+    title: 'Author',
+    dataIndex: 'author',
     render: author => (
       <React.Fragment>
         {author.name}
@@ -46,8 +37,8 @@ const columns = [
     )
   },
   {
-    title: "Date Created",
-    dataIndex: "date",
+    title: 'Date Created',
+    dataIndex: 'date',
     render: date => (
       <React.Fragment>
         {date.created}
@@ -56,8 +47,8 @@ const columns = [
     )
   },
   {
-    title: "Last Modified",
-    dataIndex: "modified",
+    title: 'Last Modified',
+    dataIndex: 'modified',
     render: modified => (
       <React.Fragment>
         {modified.created}
@@ -66,8 +57,8 @@ const columns = [
     )
   },
   {
-    title: "More",
-    dataIndex: "more",
+    title: 'More',
+    dataIndex: 'more',
     render: more => <Icon type="more" />
   }
 ];
@@ -100,19 +91,19 @@ class WorkflowsTable extends React.Component {
 
   fetch = (params = {}) => {
     axios({
-      method: "get",
+      method: 'get',
       //TODO:Change to API...............................................................................
-      url: "https://demo7818297.mockable.io/",
+      url: 'https://demo7818297.mockable.io/',
       //TODO:Change to API...............................................................................
       response: {
         results: 2,
         params
       },
-      type: "json"
+      type: 'json'
     }).then(response => {
       const pagination = { ...this.state.pagination };
       pagination.total = 10;
-      pagination.size = "small";
+      pagination.size = 'small';
       pagination.pageSize = 4;
       this.setState({
         loading: false,
@@ -169,14 +160,15 @@ class WorkflowsTable extends React.Component {
               + Create
             </Button>
             <Modal
+              // TODO: don't hard code this.
               bodyStyle={{ height: '650px' }}
               title="Create your workflow"
-              width="100"
+              width="66%"
               visible={this.state.visible}
               onOk={this.handleOk}
               onCancel={this.handleCancel}
             >
-            <WorkflowBuilder />        
+              <WorkflowBuilder />
             </Modal>
           </div>
         </Card>

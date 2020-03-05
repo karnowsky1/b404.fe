@@ -4,7 +4,8 @@ import Login from '../components/login/login'
 import Dashboard from '../pages/Dashboard'
 import Documents from '../pages/Documents';
 import Workflow from '../pages/Workflow';
-import Signatures from '../pages/Signatures';
+import Milestones from '../pages/Milestones';
+import Signatures from '../pages/Signatures.js';
 import MainSettings from '../pages/MainSettings';
 import Company from '../pages/Company';
 import People from '../pages/People';
@@ -28,6 +29,7 @@ class Routes extends Component {
           <AppRoute exact path={process.env.PUBLIC_URL + "/dashboard"} component={Dashboard} isPrivate/>
           <AppRoute exact path={process.env.PUBLIC_URL + "/documents"} component={Documents} isPrivate/>
           <AppRoute exact path={process.env.PUBLIC_URL + "/workflow"} component={Workflow} isPrivate/>
+          <AppRoute exact path={process.env.PUBLIC_URL + "/milestones"} component={Milestones} isPrivate/>
           <AppRoute exact path={process.env.PUBLIC_URL + "/signatures"} component={Signatures} isPrivate/>
           <AppRoute exact path={process.env.PUBLIC_URL + "/main-settings"} component={MainSettings} isPrivate/>
           <AppRoute exact path={process.env.PUBLIC_URL + "/company"} component={Company} isPrivate requireAdmin/>
