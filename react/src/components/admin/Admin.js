@@ -49,10 +49,10 @@ class AdminTable extends React.Component {
     editingUser: undefined,
     editingUserCompanies: undefined,
     editingUserID: undefined,
-    pagination: {},
     addvisible: false,
     editvisible: false,
-    companyOptions: []
+    companyOptions: [],
+    pagination: {}
   };
 
   constructor(props) {
