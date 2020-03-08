@@ -4,7 +4,6 @@ import { Form as AntForm, Modal } from 'antd';
 import React, { useState } from 'react';
 import { required } from '../../utils/validators';
 import { DateRange } from '../../utils/DateRange';
-import moment from 'moment';
 
 const { Option } = Select;
 
@@ -25,8 +24,8 @@ const MilestoneModalForm = ({
   isAddModal,
   form
 }) => {
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const [startDate, setStartDate] = useState(initialValues.startDate);
+  const [endDate, setEndDate] = useState(initialValues.deliveryDate);
   const [failedSubmit, setFailedSubmit] = useState({
     startDate: false,
     endDate: false
@@ -93,7 +92,6 @@ const MilestoneModalForm = ({
             {/* //////////////////////////////////////////////////// */}
             <p></p>
             <DateRange
-              // defaultValue={moment(initialValues.startDate)}
               startDate={startDate}
               endDate={endDate}
               setStartDate={setStartDate}

@@ -28,7 +28,7 @@ export default class Uploads extends Component {
     return (
       <Card title="Upload">
         <Card style={{ width: "60%", margin: "auto", height: "40vh", display: "flex", flexDirection: "column", justifyContent: "center", }}>
-          <Dragger {...props} style={{  margin: "auto", padding: "0 0", width: "80%", height: "50%"}}>
+          <Dragger {...props} style={{  margin: "auto", padding: "0 0", width: "70%", height: "50%"}}>
             <p className="ant-upload-drag-icon">
             <Icon type="inbox" theme="outlined"/>
             </p>

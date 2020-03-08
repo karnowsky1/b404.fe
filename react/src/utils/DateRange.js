@@ -69,7 +69,6 @@ export class DateRange extends React.Component {
                 });
                 setStartDate(date);
               }}
-              // defaultValue={moment(initialValues.startDate)}
               onOpenChange={this.handleStartOpenChange}
             />
           </Form.Item>
@@ -95,7 +94,6 @@ export class DateRange extends React.Component {
                 });
                 setEndDate(date);
               }}
-              // defaultValue={moment(initialValues.endDate)}
               open={endOpen}
               onOpenChange={this.handleEndOpenChange}
             />

@@ -6,6 +6,7 @@ import { MilestoneModal } from './MilestoneModal';
 import { getAllCompanies, getMilestone } from '../../utils/api';
 import { axiosError } from '../../utils/axiosError';
 import { AssignTemplateModal } from '../workflow/AssignTemplateModal';
+import moment from 'moment';
 
 
 const { confirm } = Modal;
@@ -30,12 +31,6 @@ class MilestonesTable extends React.Component {
     this.columns = [
       { title: 'Name', dataIndex: 'name', key: 'name' },
       { title: 'Company', dataIndex: 'company', key: 'company' },
-      {
-        title: 'Progress',
-        dataIndex: '',
-        key: 'y',
-        render: () => <Progress percent={50} />
-      },
       {
         title: 'Actions',
         dataIndex: '',
@@ -119,17 +114,17 @@ class MilestonesTable extends React.Component {
   };
 
   showEditModal = async record => {
-    console.log(record)
+    // console.log(record)
     await getMilestone(record.id)
       .then(response =>{
-        console.log(response.data)
+        // console.log(response.data)
         this.setState({
           editingMilestone: {
             name: response.data.name,
             description: response.data.description,
             companyID: response.data.company.companyID, // or companyName
-            startDate: response.data.startDate,
-            deliveryDate: response.data.deliveryDate
+            startDate: moment(response.data.startDate,'MMM, D YYYY'), // update this to include hours mintues and seconds once the backend gets to it
+            deliveryDate: moment(response.data.deliveryDate,'MMM, D YYYY')
           },
           editingMilestoneID: record.id,
           editvisible: true
@@ -234,6 +229,7 @@ class MilestonesTable extends React.Component {
             startDate: entry.startDate,
             completedDate: entry.completedDate,
             deliveryDate: entry.deliveryDate
+            // workflows: 
           });
         }
         const pagination = { ...this.state.pagination };

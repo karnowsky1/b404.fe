@@ -1,10 +1,10 @@
 import { Formik } from 'formik';
-import { Input, Form, SubmitButton, Select } from 'formik-antd';
+import { Form, SubmitButton, Select } from 'formik-antd';
 import { Form as AntForm, Modal } from 'antd';
-import React, { useState } from 'react';
+import React from 'react';
 import { required } from '../../utils/validators';
 
-const { Option } = Select;
+// const { Option } = Select;
 
 const defaults = {
   templates: ''

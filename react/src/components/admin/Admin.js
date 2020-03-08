@@ -16,6 +16,7 @@ import qs from 'qs';
 import { PeopleModal } from './PeopleModal';
 import { axiosError } from '../../utils/axiosError';
 import { getAllCompanies, getPerson } from '../../utils/api';
+import { hash } from './../../utils/hash'
 
 const { confirm } = Modal;
 
@@ -217,7 +218,10 @@ class AdminTable extends React.Component {
           Authorization: localStorage.getItem('token'),
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        data: qs.stringify(values),
+        data: qs.stringify({...values, 
+          // password: JSON.parse(sjcl.encrypt("password",values.password)).ct
+          password: hash(values.password)
+        }),
         // this is already a big object coming from formik
         type: 'json'
       })
