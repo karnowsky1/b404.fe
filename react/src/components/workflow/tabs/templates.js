@@ -1,65 +1,35 @@
 import React from 'react';
-import { Table, Button, Divider, Modal } from 'antd';
+import { Table, Button, Divider, Modal, Spin, message } from 'antd';
 import axios from 'axios';
 import { AssignModal } from '../assignModal';
 import { AssignPeople } from '../assignModal';
 import WorkflowBuilder from '../../wf-builder/workflowBuilder';
-
-const data = [
-  {
-    key: 1,
-    name: 'a1',
-    age: 32,
-    description:
-      'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.'
-  },
-  {
-    key: 2,
-    name: 'qt3',
-    age: 42,
-    description:
-      'My name is Jim Green, I am 42 years old, living in London No. 1 Lake Park.'
-  },
-  {
-    key: 3,
-    name: 'wf7',
-    age: 32,
-    description:
-      'My name is Joe Black, I am 32 years old, living in Sidney No. 1 Lake Park.'
-  }
-];
+import { TOKEN_KEY/*, UUID_KEY*/ } from '../../../constants/auth'
 
 class Templates extends React.Component {
-  state = {
-    data: [],
-    loading: true,
-    companyVisible: false,
-    companyOptions: [],
-    personVisible: false,
-    personOptions: [],
-    personDocuments: []
-  };
 
   constructor(props) {
     super(props);
+    this.state = {
+      workflow: null,
+      data: [],
+      loading: true,
+      companyVisible: false,
+      companyOptions: [],
+      personVisible: false,
+      personOptions: [],
+      personDocuments: []
+    };
     this.columns = [
       { title: 'Type', dataIndex: 'name', key: 'name' },
       { title: 'Description', dataIndex: 'description', key: 'description' },
       {
         title: 'Action',
-        dataIndex: '',
+        dataIndex: this.state.data,
         key: 'x',
-        render: () => (
+        render: (workflow) => (
           <React.Fragment>
-            <Button
-              type="link"
-              size="small"
-              onClick={e => this.showCompanyModal()}
-            >
-              Assign
-            </Button>
-            <Divider type="vertical" />
-            <Button type="link" size="small">
+            <Button type="link" size="small" onClick={e => this.showModal(workflow)}>
               Update
             </Button>
             <Divider type="vertical" />
@@ -72,47 +42,57 @@ class Templates extends React.Component {
     ];
   }
 
-  /*
-  fetch = (params = {}) => {
-    axios({
-      method: "get",
-      url: window.__env__.API_URL + "/blink/api/person",
-      headers: { Authorization: localStorage.getItem("token") },
-      response: {
-        results: 4,
-        params
-      },
-      type: "json"
-    })
-      .then(response => {
-        let conf = [];
-        for (let entry of response.data) {
-          conf.push({
-            name: entry.name,
-            description: entry.description
-          });
+  getWorkflows() {
+    const url = window.__env__.API_URL + '/blink/api/workflow/templates';
+        axios.get(
+        url,
+        {
+            headers: {
+            'Content-Type' : 'application/json',
+            'Authorization' : localStorage.getItem(TOKEN_KEY)
+            }
         }
-        const pagination = { ...this.state.pagination };
-        pagination.pageSize = 4;
+        ).then(response => {
+        if (response.status === 200){
+            this.setState({
+              loading: false
+            });
+            console.log(response);
+            this.setState({
+              data: response.data
+            });
+        }
+        }).catch(function (error) {
         this.setState({
-          loading: false,
-          data: conf,
-          pagination
+          loading: false
         });
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-  };
-  */
+        message.destroy()
+        if (error.response) {
+            // Request made and server responded
+            message.error(error.response.data.error);
+        } else if (error.request) {
+            // The request was made but no response was received
+            message.error("Server not responding");
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            message.error("Error setting up request");
+        }
+        });
+  }
 
   componentDidMount() {
+    this.setState({
+      loading: true
+    });
+    this.getWorkflows();
     this.getAllCompanies();
     this.getAllPeople();
   }
 
-  showCompanyModal = () => {
+  showCompanyModal = (workflow) => {
+    console.log(workflow);
     this.setState({
+      workflow: workflow,
       companyVisible: true
     });
   };
@@ -198,8 +178,9 @@ class Templates extends React.Component {
 
   getAllDocuments() {}
 
-  showModal = () => {
+  showModal = (workflow) => {
     this.setState({
+      workflow: workflow,
       visible: true
     });
   };
@@ -215,23 +196,29 @@ class Templates extends React.Component {
   handleCancel = e => {
     console.log(e);
     this.setState({
+      workflow: null,
       visible: false
     });
   };
 
   render() {
     //const { visible, loading } = this.state;
+    const workflow = this.state.workflow;
     return (
       <React.Fragment>
+        <Spin spinning={this.state.loading}>
         <Table
           columns={this.columns}
           expandedRowRender={record => (
-            <p style={{ margin: 0 }}>{record.description}</p>
+            <p style={{ margin: 0 }}>Created: {record.createdDate}</p>
           )}
-          dataSource={data}
+          dataSource={this.state.data}
+          rowKey={record => record.workflowID}
         />
+        </Spin>
         {this.state.companyVisible && (
           <AssignModal
+            workflow={this.state.workflow}
             companies={this.state.companyOptions}
             onCancel={this.handleCompanyCancel}
             title="Assign Modal"
@@ -240,6 +227,7 @@ class Templates extends React.Component {
         )}
         {this.state.personVisible && (
           <AssignPeople
+            workflow={this.state.workflow}
             person={this.state.personOptions}
             documents={this.state.personDocuments}
             onCancel={this.handlePersonCancel}
@@ -259,7 +247,7 @@ class Templates extends React.Component {
           onCancel={this.handleCancel}
           footer={null}
         >
-          <WorkflowBuilder />
+          <WorkflowBuilder workflow={workflow}/>
         </Modal>
       </React.Fragment>
     );

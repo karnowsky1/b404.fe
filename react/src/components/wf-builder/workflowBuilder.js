@@ -17,6 +17,7 @@ export default class WorkflowBuilder extends Component {
 
     constructor(props) {
         super(props);
+        console.log(this.props);
         this.updateTreeData = this.updateTreeData.bind(this);
         this.addNode = this.addNewNode.bind(this);
         this.removeNode = this.removeNode.bind(this);
@@ -24,7 +25,6 @@ export default class WorkflowBuilder extends Component {
         message.config({
             maxCount: 1,
         });
-
         this.state = {
             wfName: '',
             wfDescription: '',
@@ -76,21 +76,21 @@ export default class WorkflowBuilder extends Component {
         e.preventDefault();
         //const {wfName, username, password, fName, lName, email, title, accessLevelID} = this.state.user
         //const id = UUID
-        const url = window.__env__.API_URL + '/blink/api/workflow'
+        const url = window.__env__.API_URL + '/blink/api/workflow/template'
         const requestObject = {
             name: this.state.wfName.text,
             description: this.state.wfDescription.text,
             steps: this.state.treeData
         }
         this.setState({ loading: true });
-        console.log(requestObject);
+        //console.log(requestObject);
         
         axios.post(
             url,
             requestObject,
             {
             headers: {
-                'Content-Type' : 'application/x-www-form-urlencoded',
+                'Content-Type' : 'application/json',
                 'Authorization' : localStorage.getItem(TOKEN_KEY)
             }
             }
@@ -99,10 +99,11 @@ export default class WorkflowBuilder extends Component {
             if (response.status === 200){
             this.setState({ loading: false });
             message.success('Data saved successfully');
+            window.location.reload(false);
             }
         }).catch(function (error) {
             message.destroy()
-            this.setState({ loading: false });
+            //this.setState({ loading: false });
             if (error.response) {
             // Request made and server responded
             message.error(error.response.data.error);

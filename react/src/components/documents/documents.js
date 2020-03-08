@@ -7,34 +7,109 @@ import {
   Col,
   Card,
   Modal,
-  Upload,
   message,
   Input
 } from 'antd';
 import axios from 'axios';
+import { FormBuilder } from 'cb-react-forms';
+//import { FormGenerator } from 'cb-react-forms';
 
 const { Search } = Input;
 
-/*
-const menu = (
-  <Menu>
-    <Menu.Item>
-      <a target="_blank" rel="" href="">
-        View
-      </a>
-    </Menu.Item>
-    <Menu.Item>
-      <a target="_blank" rel="" href="">
-        Delete
-      </a>
-    </Menu.Item>
-  </Menu>
-);*/
+const items = [
+  {
+    key: "Header",
+    name: "Header Text",
+    icon: "fa fa-header"
+  },
+  {
+    key: "Label",
+    name: "Label",
+    icon: "fa fa-font"
+  },
+  {
+    key: "Paragraph",
+    name: "Paragraph",
+    icon: "fa fa-paragraph"
+  },
+  {
+    key: "LineBreak",
+    name: "Line Break",
+    icon: "fa fa-arrows-h"
+  },
+  {
+    key: "Dropdown",
+    name: "Dropdown",
+    icon: "fa fa-caret-square-o-down"
+  },
+  {
+    key: "Tags",
+    name: "Tags",
+    icon: "fa fa-tags"
+  },
+  {
+    key: "Checkboxes",
+    name: "Checkboxes",
+    icon: "fa fa-check-square-o"
+  },
+  {
+    key: "RadioButtons",
+    name: "Multiple Choice",
+    icon: "fa fa-dot-circle-o"
+  },
+  {
+    key: "TextInput",
+    name: "Text Input",
+    icon: "fa fa-font"
+  },
+  {
+    key: "NumberInput",
+    name: "Number Input",
+    icon: "fa fa-plus"
+  },
+  {
+    key: "TextArea",
+    name: "Multi-line Input",
+    icon: "fa fa-text-height"
+  },
+  {
+    key: "Rating",
+    name: "Rating",
+    icon: "fa fa-star"
+  },
+  {
+    key: "HyperLink",
+    name: "Web site",
+    icon: "fa fa-link"
+  },
+  {
+    key: "Range",
+    name: "Range",
+    icon: "fa fa-sliders"
+  },
+  {
+    key: "Email",
+    name: "Email",
+    icon: "fa fa-at"
+  },
+  {
+    key: "Date",
+    name: "Date",
+    icon: "fa fa-calendar"
+  },
+  {
+    key: "Signature",
+    name: "Signature",
+    icon: "fa fa-edit"
+  }
+];
+
+const onSubmit = (formData) => console.log(formData);
 
 message.config({
   maxCount: 1
 });
-
+/** 
 const props = {
   name: 'file',
   action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
@@ -51,7 +126,7 @@ const props = {
       message.error(`${info.file.name} file upload failed.`);
     }
   }
-};
+};*/
 
 const columns = [
   {
@@ -208,16 +283,16 @@ class DocumentsTable extends React.Component {
               + Create
             </Button>
             <Modal
-              title="Upload your document"
+              title="Create your document"
+              bodyStyle={{ height: '100vh' }}
+              width="80vw"
               visible={this.state.visible}
               onOk={this.handleOk}
               onCancel={this.handleCancel}
             >
-              <Upload {...props}>
-                <Button>
-                  <Icon type="upload" /> Click to Upload
-                </Button>
-              </Upload>
+              
+              <FormBuilder onSubmit={onSubmit} items={items} />
+              
             </Modal>
           </div>
         </Card>

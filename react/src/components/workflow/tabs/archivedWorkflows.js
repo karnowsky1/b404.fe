@@ -1,12 +1,9 @@
 import React from 'react';
-import { Table, Button, Divider, Modal, Spin, message } from 'antd';
+import { Table, Spin, message } from 'antd';
 import axios from 'axios';
-import { AssignModal } from '../assignModal';
-import { AssignPeople } from '../assignModal';
-import WorkflowBuilder from '../../wf-builder/workflowBuilder';
 import { TOKEN_KEY/*, UUID_KEY*/ } from '../../../constants/auth'
 
-class ActiveWorkflows extends React.Component {
+class ArchivedWorkflows extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,29 +19,16 @@ class ActiveWorkflows extends React.Component {
     this.columns = [
       { title: 'Type', dataIndex: 'name', key: 'name' },
       { title: 'Description', dataIndex: 'description', key: 'description' },
-      { title: 'Milestone', dataIndex: 'milestoneID', key: 'milestoneID' },
       {
         title: 'Action',
         dataIndex: this.state.data,
-        key: 'x',
-        render: (workflow) => (
-          <React.Fragment>
-            <Divider type="vertical" />
-            <Button type="link" size="small" onClick={e => this.showModal(workflow)}>
-              Update
-            </Button>
-            <Divider type="vertical" />
-            <Button type="link" size="small">
-              Delete
-            </Button>
-          </React.Fragment>
-        )
+        key: 'x'
       }
     ];
   }
 
   getWorkflows() {
-    const url = window.__env__.API_URL + '/blink/api/workflow/active';
+    const url = window.__env__.API_URL + '/blink/api/workflow/archived';
         axios.get(
         url,
         {
@@ -203,7 +187,7 @@ class ActiveWorkflows extends React.Component {
 
   render() {
     //const { visible, loading } = this.state;
-    const workflow = this.state.workflow;
+    //const workflow = this.state.workflow;
     return (
       <React.Fragment>
         <Spin spinning={this.state.loading}>
@@ -216,41 +200,8 @@ class ActiveWorkflows extends React.Component {
           rowKey={record => record.workflowID}
         />
         </Spin>
-        {this.state.companyVisible && (
-          <AssignModal
-            workflow={this.state.workflow}
-            companies={this.state.companyOptions}
-            onCancel={this.handleCompanyCancel}
-            title="Assign Modal"
-            onOk={this.showPersonModal}
-          />
-        )}
-        {this.state.personVisible && (
-          <AssignPeople
-            workflow={this.state.workflow}
-            person={this.state.personOptions}
-            documents={this.state.personDocuments}
-            onCancel={this.handlePersonCancel}
-            title="Assign Modal"
-            onOk={this.handlePersonOk}
-          />
-        )}
-        <Button type="primary" onClick={this.showModal}>
-          + Create
-        </Button>
-        <Modal
-          bodyStyle={{ height: '81vh' }}
-          title="Create your workflow template"
-          width="75vw"
-          visible={this.state.visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          footer={null}
-        >
-          <WorkflowBuilder workflow={workflow} />
-        </Modal>
       </React.Fragment>
     );
   }
 }
-export default ActiveWorkflows;
+export default ArchivedWorkflows;

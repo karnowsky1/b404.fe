@@ -216,14 +216,13 @@ class SettingsForm extends React.Component {
                 />
               )}
             </Form.Item>
-            <Form.Item label="Password" hasFeedback>
+            <Form.Item label=" New password" hasFeedback>
               {getFieldDecorator('password', {
                 initialValue: this.state.user.password,
                 valuePropName: 'password',
                 rules: [
                   {
-                    required: true,
-                    message: 'Please input your password!'
+                    message: 'Please input your new password!'
                   },
                   {
                     validator: this.validateToNextPassword
@@ -285,7 +284,6 @@ class SettingsForm extends React.Component {
                     message: 'The input is not valid E-mail!'
                   },
                   {
-                    required: true,
                     message: 'Please input your E-mail!'
                   }
                 ]
@@ -297,13 +295,14 @@ class SettingsForm extends React.Component {
                 />
               )}
             </Form.Item>
-            <Form.Item label={<span>Title</span>}>
+            <Form.Item
+              style={{ display: 'none' }} 
+              label={<span>Title</span>}>
               {getFieldDecorator('title', {
                 initialValue: this.state.user.title,
                 valuePropName: 'title',
                 rules: [
                   {
-                    required: true,
                     message: 'Please input your title!',
                     whitespace: true
                   }
