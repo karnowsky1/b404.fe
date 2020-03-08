@@ -330,7 +330,6 @@ class MilestonesTable extends React.Component {
                       <b>Workflow 2</b>
                     </p>
                     <Progress percent={50} size="small" />
-                    <Button type="link">+ Add Workflow</Button>
                   </div>
                 </Col>
               </Row>
