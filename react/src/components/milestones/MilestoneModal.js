@@ -10,7 +10,9 @@ const { Option } = Select;
 const defaults = {
   name: '',
   description: '',
-  companyID: undefined
+  companyID: undefined,
+  startDate: '',
+  deliveryDate: ''
 };
 
 const MilestoneModalForm = ({
@@ -22,8 +24,8 @@ const MilestoneModalForm = ({
   isAddModal,
   form
 }) => {
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const [startDate, setStartDate] = useState(initialValues.startDate);
+  const [endDate, setEndDate] = useState(initialValues.deliveryDate);
   const [failedSubmit, setFailedSubmit] = useState({
     startDate: false,
     endDate: false
