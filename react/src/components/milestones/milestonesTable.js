@@ -67,13 +67,23 @@ class MilestonesTable extends React.Component {
             </Button>
           </React.Fragment>
         ) : (
-          <Button
-              type="link"
-              size="small"
-              onClick={e => this.showArchiveConfirm(e, record.id, "unarchive", "active")}
-            >
-              Unarchive
-            </Button>
+          <React.Fragment>
+            <Button
+                type="link"
+                size="small"
+                onClick={e => this.showArchiveConfirm(e, record.id, "unarchive", "active")}
+              >
+                Unarchive
+              </Button>
+              <Divider type="vertical" />
+              <Button
+                type="link"
+                size="small"
+                onClick={e => this.showDeleteConfirm(e, record.id)}
+              >
+                Delete
+              </Button>
+          </React.Fragment>
         )
       }
     ];
@@ -259,6 +269,31 @@ class MilestonesTable extends React.Component {
             id: id
           }),
           type: 'json'
+        }).then(() => {
+          fetch(); //having an issue with need to refresh both tables 
+        })
+        .catch(axiosError);
+      },
+      onCancel() {
+        // console.log('Cancel');
+      }
+    });
+  };
+
+  showDeleteConfirm = (e, id) => {
+    const { fetch } = this; 
+    confirm({
+      title: `Are you sure you want to delete this Milestone?`,
+      content: `If you delete this Milestone, all associated worklflows will be romoved from the system!`,
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      async onOk() {
+        await  axios
+        .delete(window.__env__.API_URL + '/blink/api/milestone/' + id, {
+          headers: {
+            Authorization: localStorage.getItem('token')
+          }
         }).then(() => {
           fetch(); //having an issue with need to refresh both tables 
         })
