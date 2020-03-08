@@ -42,7 +42,7 @@ class MilestonesTable extends React.Component {
               size="small"
               onClick={e => this.showAssignModal()}
             >
-              Assign
+              Add Workflow
             </Button>
             <Divider type="vertical" />
             <Button
