@@ -1,16 +1,19 @@
 import React from "react";
-import { Table, Button, Input, Divider, Tag } from "antd";
+import { Table, Button, Input, Divider, Tag, Modal, Select } from "antd";
 import axios from "axios";
 import { DocumentsModal } from "./DocumentsModal";
 
 const { Search } = Input;
+const { Option } = Select;
 
 class DocumentsTable extends React.Component {
   state = {
     data: [],
     pagination: {},
     loading: true,
-    documentVisible: false
+    documentVisible: false,
+    uploadVisible: false,
+    select: ""
   };
 
   constructor(props) {
@@ -76,10 +79,36 @@ class DocumentsTable extends React.Component {
     });
   };
 
+  showUploadModal = () => {
+    this.setState({
+      uploadVisible: true
+    });
+  };
+
   handleOk = e => {
     console.log(e);
+    let value = this.state.select;
+    if (value === "") {
+      console.log("Please enter value");
+    } else if (value === "upload") {
+      this.setState({
+        documentVisible: false
+      });
+      this.showUploadModal();
+    } else if (value === "create") {
+      this.setState({
+        documentVisible: false
+      });
+      console.log("This works");
+      //Mislav add this pls
+      //this.showCreateModal();
+    }
+  };
+
+  handleUploadOk = e => {
+    console.log(e);
     this.setState({
-      documentVisible: false
+      uploadVisible: false
     });
   };
 
@@ -87,6 +116,13 @@ class DocumentsTable extends React.Component {
     console.log(e);
     this.setState({
       documentVisible: false
+    });
+  };
+
+  onUploadCancel = e => {
+    console.log(e);
+    this.setState({
+      uploadVisible: false
     });
   };
 
@@ -151,12 +187,31 @@ class DocumentsTable extends React.Component {
             + Create
           </Button>
         </div>
-        {this.state.documentVisible && (
+        <Modal
+          title="Add Document"
+          visible={this.state.documentVisible}
+          onCancel={this.onCancel}
+          onOk={this.handleOk}
+        >
+          <p>Document Type</p>
+          <Select
+            placeholder="Please select action..."
+            style={{ width: "100%" }}
+            id="select_document"
+            onChange={value => {
+              this.setState({ select: value });
+            }}
+          >
+            <Option value="upload">Upload new document</Option>
+            <Option value="create">Create new document</Option>
+          </Select>
+        </Modal>
+        {this.state.uploadVisible && (
           <DocumentsModal
-            onOk={this.handleOk}
-            visible={this.state.documentVisible}
-            onCancel={this.onCancel}
-            title="Add Document"
+            onOk={this.handleUploadOk}
+            onCancel={this.onUploadCancel}
+            visible={this.state.uploadVisible}
+            title="Upload Document"
           />
         )}
       </React.Fragment>
