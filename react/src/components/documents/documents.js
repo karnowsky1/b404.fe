@@ -33,7 +33,7 @@ class DocumentsTable extends React.Component {
         title: "File Type",
         dataIndex: "fileType",
         key: "fileType",
-        render: fileType => <Tag>{fileType}</Tag>
+        render: fileType => <Tag color={this.color(fileType)}>{fileType}</Tag>
       },
       {
         title: "Last Modified",
@@ -57,8 +57,8 @@ class DocumentsTable extends React.Component {
         }
       },
       {
-        title: "More",
-        dataIndex: "more",
+        title: "Actions",
+        dataIndex: "actions",
         render: more => (
           <React.Fragment>
             <Button type="link">Update</Button> <Divider type="vertical" />
@@ -67,6 +67,24 @@ class DocumentsTable extends React.Component {
         )
       }
     ];
+  }
+
+  color(dataC) {
+    let color = "";
+    switch (dataC) {
+      case "file":
+        color = "geekblue";
+        break;
+      case "document":
+        color = "green";
+        break;
+      case "image":
+        color = "purple";
+        break;
+      default:
+        return;
+    }
+    return color;
   }
 
   componentDidMount() {
