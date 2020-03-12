@@ -42,7 +42,8 @@ class DocumentsTable extends React.Component {
         render: mod => (
           <React.Fragment>
             {mod.modified}
-            <p style={{ color: "gainsboro" }}>{mod.time}</p>
+            <Divider type="vertical" />
+            <span style={{ color: "gainsboro" }}>{mod.time}</span>
           </React.Fragment>
         )
       },
@@ -61,8 +62,19 @@ class DocumentsTable extends React.Component {
         dataIndex: "actions",
         render: more => (
           <React.Fragment>
-            <Button type="link">Update</Button> <Divider type="vertical" />
-            <Button type="link">Delete</Button>
+            <Button 
+              type="link"
+              size="small"
+            >
+              Update
+            </Button> 
+            <Divider type="vertical" />
+            <Button 
+              type="link"
+              size="small"
+            >
+              Delete
+            </Button>
           </React.Fragment>
         )
       }
