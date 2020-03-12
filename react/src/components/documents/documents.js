@@ -41,7 +41,7 @@ class DocumentsTable extends React.Component {
         key: "mod",
         render: mod => (
           <React.Fragment>
-            {mod.modified}
+            <span>{mod.modified}</span>
             <Divider type="vertical" />
             <span style={{ color: "gainsboro" }}>{mod.time}</span>
           </React.Fragment>
