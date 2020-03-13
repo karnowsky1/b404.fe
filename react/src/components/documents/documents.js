@@ -80,7 +80,7 @@ class DocumentsTable extends React.Component {
   }
 
   color(dataC) {
-    let color = "red";
+    let color = "";
     switch (dataC) {
       case "file":
         color = "geekblue";
@@ -100,6 +100,8 @@ class DocumentsTable extends React.Component {
       case "archive":
         color = "aquamarine";
         break;
+      default:
+        return;
     }
     return color;
   }
