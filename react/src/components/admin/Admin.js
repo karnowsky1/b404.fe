@@ -16,7 +16,7 @@ import qs from 'qs';
 import { PeopleModal } from './PeopleModal';
 import { axiosError } from '../../utils/axiosError';
 import { getAllCompanies, getPerson } from '../../utils/api';
-import { hash } from './../../utils/hash'
+import { hash } from './../../utils/hash';
 
 const { confirm } = Modal;
 
