@@ -28,18 +28,14 @@ function onChange(e) {
 export const DocumentsModal = ({ visible, onCancel, title, onOk }) => (
   <Modal title={title} visible={visible} onCancel={onCancel} onOk={onOk}>
     <Card>
-      <Input placeholder="Input document name..." />
+      <Input placeholder="Document name..." />
       <p></p>
-      <Checkbox onChange={onChange}>Confiedential</Checkbox>
+      <Checkbox onChange={onChange}>Confidential</Checkbox>
       <p></p>
       <Dragger {...props}>
         <p className="ant-upload-drag-icon"></p>
         <p className="ant-upload-text">
-          Click or drag file to this area to upload
-        </p>
-        <p className="ant-upload-hint">
-          Support for a single or bulk upload. Strictly prohibit from uploading
-          company data or other band files
+          Click here or drag a file to this area to upload.
         </p>
       </Dragger>
     </Card>

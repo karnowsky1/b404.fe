@@ -52,9 +52,7 @@ class DocumentsTable extends React.Component {
         dataIndex: "confidental",
         key: "confidental",
         render: confidental => {
-          if (confidental === "true") {
-            return "Yes";
-          } else return "No";
+          return (confidental? 'Yes' : 'No');
         }
       },
       {
@@ -84,14 +82,23 @@ class DocumentsTable extends React.Component {
   color(dataC) {
     let color = "";
     switch (dataC) {
-      case "file":
+      case "File":
         color = "geekblue";
         break;
-      case "document":
+      case "Document":
         color = "green";
         break;
-      case "image":
+      case "Image":
         color = "purple";
+        break;
+      case "Video":
+        color = "sandybrown";
+        break;
+      case "Executable":
+        color = "springgreen";
+        break;
+      case "Archive":
+        color = "aquamarine";
         break;
       default:
         return;
