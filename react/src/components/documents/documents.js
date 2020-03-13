@@ -239,8 +239,8 @@ class DocumentsTable extends React.Component {
               this.setState({ select: value });
             }}
           >
-            <Option value="upload">Upload new document</Option>
-            <Option value="create">Create new document</Option>
+            <Option value="upload">Upload a file.</Option>
+            <Option value="create">Create a new form template.</Option>
           </Select>
         </Modal>
         {this.state.uploadVisible && (
