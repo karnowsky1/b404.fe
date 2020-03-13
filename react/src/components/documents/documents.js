@@ -80,28 +80,26 @@ class DocumentsTable extends React.Component {
   }
 
   color(dataC) {
-    let color = "";
+    let color = "red";
     switch (dataC) {
-      case "File":
+      case "file":
         color = "geekblue";
         break;
-      case "Document":
+      case "document":
         color = "green";
         break;
-      case "Image":
+      case "image":
         color = "purple";
         break;
-      case "Video":
+      case "video":
         color = "sandybrown";
         break;
-      case "Executable":
+      case "executable":
         color = "springgreen";
         break;
-      case "Archive":
+      case "archive":
         color = "aquamarine";
         break;
-      default:
-        return;
     }
     return color;
   }
