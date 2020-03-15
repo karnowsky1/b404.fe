@@ -3,6 +3,7 @@ import { Form, Input, Tooltip, Icon, Button, Spin, message } from 'antd';
 import axios from 'axios';
 import qs from 'qs';
 import { TOKEN_KEY, UUID_KEY } from '../../constants/auth';
+import { hash } from './../../utils/hash'
 
 class SettingsForm extends React.Component {
   constructor(props) {
@@ -80,7 +81,7 @@ class SettingsForm extends React.Component {
             qs.stringify({
               id,
               username,
-              password,
+              password: hash(password),
               fName,
               lName,
               email,
