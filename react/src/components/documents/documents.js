@@ -1,10 +1,190 @@
-import React from "react";
-import { Table, Button, Input, Divider, Tag, Modal, Select } from "antd";
-import axios from "axios";
-import { DocumentsModal } from "./DocumentsModal";
+import React from 'react';
+import {
+  Table,
+  Icon,
+  Button,
+  Row,
+  Col,
+  Card,
+  Modal,
+  message,
+  Input
+} from 'antd';
+import axios from 'axios';
+import { FormBuilder } from 'cb-react-forms';
+//import { FormGenerator } from 'cb-react-forms';
 
 const { Search } = Input;
-const { Option } = Select;
+
+const items = [
+  {
+    key: "Header",
+    name: "Header Text",
+    icon: "fa fa-header"
+  },
+  {
+    key: "Label",
+    name: "Label",
+    icon: "fa fa-font"
+  },
+  {
+    key: "Paragraph",
+    name: "Paragraph",
+    icon: "fa fa-paragraph"
+  },
+  {
+    key: "LineBreak",
+    name: "Line Break",
+    icon: "fa fa-arrows-h"
+  },
+  {
+    key: "Dropdown",
+    name: "Dropdown",
+    icon: "fa fa-caret-square-o-down"
+  },
+  {
+    key: "Tags",
+    name: "Tags",
+    icon: "fa fa-tags"
+  },
+  {
+    key: "Checkboxes",
+    name: "Checkboxes",
+    icon: "fa fa-check-square-o"
+  },
+  {
+    key: "RadioButtons",
+    name: "Multiple Choice",
+    icon: "fa fa-dot-circle-o"
+  },
+  {
+    key: "TextInput",
+    name: "Text Input",
+    icon: "fa fa-font"
+  },
+  {
+    key: "NumberInput",
+    name: "Number Input",
+    icon: "fa fa-plus"
+  },
+  {
+    key: "TextArea",
+    name: "Multi-line Input",
+    icon: "fa fa-text-height"
+  },
+  {
+    key: "Rating",
+    name: "Rating",
+    icon: "fa fa-star"
+  },
+  {
+    key: "HyperLink",
+    name: "Web site",
+    icon: "fa fa-link"
+  },
+  {
+    key: "Range",
+    name: "Range",
+    icon: "fa fa-sliders"
+  },
+  {
+    key: "Email",
+    name: "Email",
+    icon: "fa fa-at"
+  },
+  {
+    key: "Date",
+    name: "Date",
+    icon: "fa fa-calendar"
+  },
+  {
+    key: "Signature",
+    name: "Signature",
+    icon: "fa fa-edit"
+  }
+];
+
+const onSubmit = (formData) => console.log(formData);
+
+message.config({
+  maxCount: 1
+});
+/** 
+const props = {
+  name: 'file',
+  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+  headers: {
+    authorization: 'authorization-text'
+  },
+  onChange(info) {
+    if (info.file.status !== 'uploading') {
+      console.log(info.file, info.fileList);
+    }
+    if (info.file.status === 'done') {
+      message.success(`${info.file.name} file uploaded successfully`);
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  }
+};*/
+
+const columns = [
+  {
+    title: 'Document Details',
+    dataIndex: 'nameW',
+    sorter: true,
+    render: nameW => (
+      <React.Fragment>
+        <Row>
+          <Col span={3}>
+            <Button type="primary" shape="circle" id="button">
+              {nameW.title.charAt(0)}
+            </Button>
+          </Col>
+          <Col span={12}>
+            {nameW.title}
+            <p>{nameW.updated}</p>
+          </Col>
+        </Row>
+      </React.Fragment>
+    )
+  },
+  {
+    title: 'Author',
+    dataIndex: 'author',
+    render: author => (
+      <React.Fragment>
+        {author.name}
+        <p>{author.created}</p>
+      </React.Fragment>
+    )
+  },
+  {
+    title: 'Date Created',
+    dataIndex: 'date',
+    render: date => (
+      <React.Fragment>
+        {date.created}
+        <p>{date.time}</p>
+      </React.Fragment>
+    )
+  },
+  {
+    title: 'Last Modified',
+    dataIndex: 'modified',
+    render: modified => (
+      <React.Fragment>
+        {modified.created}
+        <p>{modified.time}</p>
+      </React.Fragment>
+    )
+  },
+  {
+    title: 'More',
+    dataIndex: 'more',
+    render: more => <Icon type="more" />
+  }
+];
 
 class DocumentsTable extends React.Component {
   state = {
@@ -212,45 +392,34 @@ class DocumentsTable extends React.Component {
           />
         </div>
         <br></br>
-        <div>
-          <h1>Documents</h1>
-          <Table
-            columns={this.columns}
-            dataSource={this.state.data}
-            loading={this.state.loading}
-            rowKey={record => record.id}
-          />
-          <Button type="primary" onClick={this.showModal}>
-            + Create
-          </Button>
-        </div>
-        <Modal
-          title="Add Document"
-          visible={this.state.documentVisible}
-          onCancel={this.onCancel}
-          onOk={this.handleOk}
-        >
-          <p>Document Type</p>
-          <Select
-            placeholder="Please select action..."
-            style={{ width: "100%" }}
-            id="select_document"
-            onChange={value => {
-              this.setState({ select: value });
-            }}
-          >
-            <Option value="upload">Upload a file.</Option>
-            <Option value="create">Create a new form template.</Option>
-          </Select>
-        </Modal>
-        {this.state.uploadVisible && (
-          <DocumentsModal
-            onOk={this.handleUploadOk}
-            onCancel={this.onUploadCancel}
-            visible={this.state.uploadVisible}
-            title="Upload Document"
-          />
-        )}
+        <Card>
+          <div>
+            <h1>Your Documents</h1>
+            <Table
+              columns={columns}
+              dataSource={this.state.data}
+              loading={this.state.loading}
+              pagination={this.state.pagination}
+              onChange={this.handleTableChange}
+              size="middle"
+            />
+            <Button type="primary" onClick={this.showModal}>
+              + Create
+            </Button>
+            <Modal
+              title="Create your document"
+              bodyStyle={{ height: '100vh' }}
+              width="80vw"
+              visible={this.state.visible}
+              onOk={this.handleOk}
+              onCancel={this.handleCancel}
+            >
+              
+              <FormBuilder onSubmit={onSubmit} items={items} />
+              
+            </Modal>
+          </div>
+        </Card>
       </React.Fragment>
     );
   }

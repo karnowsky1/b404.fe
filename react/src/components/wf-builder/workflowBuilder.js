@@ -21,22 +21,33 @@ export default class WorkflowBuilder extends Component {
         this.addNode = this.addNewNode.bind(this);
         this.removeNode = this.removeNode.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.getAllVerbs = this.getAllVerbs.bind(this);
+        this.handleNameChange = this.handleNameChange.bind(this);
+        this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
         message.config({
             maxCount: 1,
         });
-
+        
         this.state = {
+            workflowID: 0,
             wfName: '',
             wfDescription: '',
+            visible: false,
             loading: false,
             verbs: [],
             treeData: [{
-                title: 1,
-                subtitle: 'Insert description here',
+                title: 0,
+                subtitle: '',
                 expanded: false
             }]
         };
+    }
 
+    componentDidMount() {
+        this.getAllVerbs();
+    }
+
+    getAllVerbs() {
         const url = window.__env__.API_URL + '/blink/api/verb/';
         axios.get(
         url,
@@ -49,16 +60,15 @@ export default class WorkflowBuilder extends Component {
         ).then(response => {
         if (response.status === 200){
             this.setState({
-            verbs: response.data,
-            treeData: [{
-                title: response.data[0].verbID,
-                subtitle: 'Insert description here',
-                expanded: false
-            }]
+                workflowID: this.props.workflow.workflowID,
+                wfName: this.props.workflow.name,
+                wfDescription: this.props.workflow.description,
+                verbs: response.data,
+                treeData: this.props.workflow.steps
             })
         }
         }).catch(function (error) {
-        message.destroy()
+        message.destroy();
         if (error.response) {
             // Request made and server responded
             message.error(error.response.data.error);
@@ -71,49 +81,98 @@ export default class WorkflowBuilder extends Component {
         }
         });
     }
+    
+    componentDidUpdate(prevProps) {
+        if (this.props.workflow !== prevProps.workflow) {
+            if (this.props.workflow !== null) {
+                this.setState({
+                    workflowID: this.props.workflow.workflowID,
+                    treeData: this.props.workflow.steps,
+                    wfName: this.props.workflow.name,
+                    wfDescription: this.props.workflow.description
+                })
+            }
+        }
+    }
 
     handleSubmit = async e => {
         e.preventDefault();
         //const {wfName, username, password, fName, lName, email, title, accessLevelID} = this.state.user
         //const id = UUID
-        const url = window.__env__.API_URL + '/blink/api/workflow'
+        const url = window.__env__.API_URL + '/blink/api/workflow/template'
+        //console.log(this.state);
         const requestObject = {
-            name: this.state.wfName.text,
-            description: this.state.wfDescription.text,
+            workflowID: this.state.workflowID,
+            name: this.state.wfName,
+            description: this.state.wfDescription,
             steps: this.state.treeData
         }
         this.setState({ loading: true });
-        console.log(requestObject);
+        //console.log(requestObject);
         
-        axios.post(
+        if (this.props.isNew) { 
+            axios.post(
+                url,
+                requestObject,
+                {
+                headers: {
+                    'Content-Type' : 'application/json',
+                    'Authorization' : localStorage.getItem(TOKEN_KEY)
+                }
+                }
+            ).then(response => {
+                //this.setState({ loading: true });
+                if (response.status === 200){
+                this.setState({ loading: false });
+                message.success('Data saved successfully');
+                window.location.reload(true);
+                }
+            }).catch(function (error) {
+                message.destroy()
+                //this.setState({ loading: false });
+                if (error.response) {
+                // Request made and server responded
+                message.error(error.response.data.error);
+                } else if (error.request) {
+                // The request was made but no response was received
+                message.error("Server not responding");
+                } else {
+                // Something happened in setting up the request that triggered an Error
+                message.error("Error setting up request");
+                }
+            });
+        } else {
+        axios.put(
             url,
             requestObject,
             {
             headers: {
-                'Content-Type' : 'application/x-www-form-urlencoded',
+                'Content-Type' : 'application/json',
                 'Authorization' : localStorage.getItem(TOKEN_KEY)
             }
             }
-        ).then(response => {
-            //this.setState({ loading: true });
-            if (response.status === 200){
-            this.setState({ loading: false });
-            message.success('Data saved successfully');
-            }
-        }).catch(function (error) {
-            message.destroy()
-            this.setState({ loading: false });
-            if (error.response) {
-            // Request made and server responded
-            message.error(error.response.data.error);
-            } else if (error.request) {
-            // The request was made but no response was received
-            message.error("Server not responding");
-            } else {
-            // Something happened in setting up the request that triggered an Error
-            message.error("Error setting up request");
-            }
-        });
+            ).then(response => {
+                //this.setState({ loading: true });
+                if (response.status === 200){
+                this.setState({ loading: false });
+                message.success('Data saved successfully');
+                window.location.reload(true);
+                }
+            }).catch(function (error) {
+                message.destroy()
+                //this.setState({ loading: false });
+                if (error.response) {
+                // Request made and server responded
+                message.error(error.response.data.error);
+                } else if (error.request) {
+                // The request was made but no response was received
+                message.error("Server not responding");
+                } else {
+                // Something happened in setting up the request that triggered an Error
+                message.error("Error setting up request");
+                }
+            });
+        }
       };
 
     addNewNode(rowInfo) {
@@ -144,6 +203,18 @@ export default class WorkflowBuilder extends Component {
         this.setState({ treeData });
         //console.log(this.state)
     }
+
+    handleNameChange = e => {
+        this.setState({
+            wfName: e.target.value
+        });
+      };
+
+    handleDescriptionChange = e => {
+        this.setState({
+            wfDescription: e.target.value
+        });
+    };
     
     render() {
         const getNodeKey = ({ treeIndex }) => treeIndex;
@@ -152,37 +223,28 @@ export default class WorkflowBuilder extends Component {
                 children.push(<Option key={element.verbID}>{element.description}</Option>);
             });
         return (
-            <div style={{ width: '100%', height: '100%' }}>
+            <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <div style={{display: 'flex'}}>
                 <div style={{display: 'flex', flexDirection: 'row', marginRight: '35px'}}> 
-                <h3 style={{margin: '0'}}>Name: </h3>
-                <Input size="small" onChange={event => {
-                                const text = event.target.value;
-                                this.setState({
-                                    wfName: {text}
-                                  });
-                                }} 
+                <h5 style={{margin: '0'}}>Name: </h5>
+                <Input value={this.state.wfName} size="small" onChange={this.handleNameChange} 
                 placeholder="Enter workflow name..." >
                 </Input>
                 </div>
                 <div style={{display: 'flex', flexDirection: 'row'}}>
-                <h3 style={{margin: '0'}}>Description: </h3>
-                <Input size="small" onChange={event => {
-                                const text = event.target.value;
-                                this.setState({
-                                    wfDescription: {text}
-                                  });
-                                }} 
+                <h5 style={{margin: '0'}}>Description: </h5>
+                <Input value={this.state.wfDescription} size="small" onChange={this.handleDescriptionChange} 
                 placeholder="Enter workflow description..." >
                 </Input>
                 </div>
                 </div>
                 <SortableTree
+                         style={{width: '100%', display: 'flex', flexDirection: 'column', position: 'relative', paddingLeft: '15%'}}
                          treeData={this.state.treeData}
                          onChange={this.updateTreeData}
                          generateNodeProps={rowInfo => ({
                          title: (
-                            <Select defaultValue="1" size="small" style={{ width: 120 }} onChange={event => {
+                            <Select value={rowInfo.node.title.toString()} size="small" style={{ width: 120 }} onChange={event => {
                                 const { path } = rowInfo;
                                 const title = parseInt(event);
                                    this.setState(state => ({
@@ -196,7 +258,7 @@ export default class WorkflowBuilder extends Component {
                                    }}>
                             {children}
                             </Select>
-                             ),
+                            ),
                             subtitle: (
                             <Input
                             style={{ marginTop: '12px' }}

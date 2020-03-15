@@ -1,34 +1,18 @@
 import React from 'react';
-import { Table, Button, Divider, Modal, Spin, message } from 'antd';
+import { Table, Spin, message, Button, Divider, Modal } from 'antd';
 import axios from 'axios';
-import { AssignModal } from '../assignModal';
-import { AssignPeople } from '../assignModal';
-import WorkflowBuilder from '../../wf-builder/workflowBuilder';
-import { TOKEN_KEY/*, UUID_KEY*/ } from '../../../constants/auth';
+import { TOKEN_KEY/*, UUID_KEY*/ } from '../../../constants/auth'
+import qs from 'qs';
 
 const { confirm } = Modal;
 
-const defaultWorkflow = {
-  name: '',
-  description: '',
-  steps: [{
-      title: 1,
-      subtitle: 'Insert description here...',
-      expanded: false
-  }]
-}
-
-class Templates extends React.Component {
-
+class ArchivedWorkflows extends React.Component {
   constructor(props) {
     super(props);
-    this.showModalDefault = this.showModalDefault.bind(this);
     this.state = {
       workflow: null,
       data: [],
       loading: true,
-      visible: false,
-      isNew: false,
       companyVisible: false,
       companyOptions: [],
       personVisible: false,
@@ -44,12 +28,16 @@ class Templates extends React.Component {
         key: 'x',
         render: (workflow) => (
           <React.Fragment>
-            <Button type="link" size="small" onClick={e => this.showModal(workflow)}>
-              Update
-            </Button>
-            <Divider type="vertical" />
             <Button type="link" size="small" onClick={e => this.showDeleteConfirm(e, workflow.workflowID)}>
               Delete
+            </Button>
+            <Divider type="vertical" />
+            <Button
+              type="link"
+              size="small"
+              onClick={e => this.showArchiveConfirm(e, workflow.workflowID)}
+            >
+              Unarchive
             </Button>
           </React.Fragment>
         )
@@ -58,7 +46,7 @@ class Templates extends React.Component {
   }
 
   getWorkflows() {
-    const url = window.__env__.API_URL + '/blink/api/workflow/templates';
+    const url = window.__env__.API_URL + '/blink/api/workflow/archived';
         axios.get(
         url,
         {
@@ -191,6 +179,8 @@ class Templates extends React.Component {
       });
   }
 
+  getAllDocuments() {}
+
   showDeleteConfirm = (e, id) => {
     confirm({
       title: 'Are you sure delete this workflow?',
@@ -220,20 +210,40 @@ class Templates extends React.Component {
     });
   };
 
-  getAllDocuments() {}
+  showArchiveConfirm = (e, id) => {
+    confirm({
+      title: 'Are you sure you want to unarchive this Workflow?',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        axios
+          .put(window.__env__.API_URL + '/blink/api/workflow/unarchive',qs.stringify({
+            id
+          }), {
+            headers: {
+              'Content-Type' : 'application/x-www-form-urlencoded',
+              'Authorization': localStorage.getItem('token')
+            }
+          })
+          .then(response => {
+            if (response.status === 200) {
+              // console.log('works');
+              window.location.reload(false);
+            } else {
+              // console.log(response);
+            }
+          });
+      },
+      onCancel() {
+        // console.log('Cancel');
+      }
+    });
+  };
 
   showModal = (workflow) => {
     this.setState({
       workflow: workflow,
-      isNew: false,
-      visible: true
-    });
-  };
-
-  showModalDefault() {
-    this.setState({
-      workflow: defaultWorkflow,
-      isNew: true,
       visible: true
     });
   };
@@ -249,12 +259,13 @@ class Templates extends React.Component {
   handleCancel = e => {
     console.log(e);
     this.setState({
-      workflow: null,
       visible: false
     });
   };
 
   render() {
+    //const { visible, loading } = this.state;
+    //const workflow = this.state.workflow;
     return (
       <React.Fragment>
         <Spin spinning={this.state.loading}>
@@ -267,41 +278,8 @@ class Templates extends React.Component {
           rowKey={record => record.workflowID}
         />
         </Spin>
-        {this.state.companyVisible && (
-          <AssignModal
-            workflow={this.state.workflow}
-            companies={this.state.companyOptions}
-            onCancel={this.handleCompanyCancel}
-            title="Assign Modal"
-            onOk={this.showPersonModal}
-          />
-        )}
-        {this.state.personVisible && (
-          <AssignPeople
-            workflow={this.state.workflow}
-            person={this.state.personOptions}
-            documents={this.state.personDocuments}
-            visible={this.state.visible}
-            onCancel={this.handlePersonCancel}
-            title="Assign Modal"
-            onOk={this.handlePersonOk}
-          />
-        )}
-        <Button type="primary" onClick={this.showModalDefault}>
-          + Create
-        </Button>
-        <Modal
-          bodyStyle={{ height: '81vh' }}
-          title={this.state.isNew ? <h1>Create a new workflow template</h1> : <h1>Edit workflow template</h1>}
-          width="75vw"
-          footer={null}
-          visible={this.state.visible}
-          onOk={this.handleOk} 
-          onCancel={this.handleCancel}>
-        <WorkflowBuilder isNew={this.state.isNew} workflow={this.state.workflow}/>
-        </Modal>
       </React.Fragment>
     );
   }
 }
-export default Templates;
+export default ArchivedWorkflows;
