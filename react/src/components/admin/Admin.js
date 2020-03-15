@@ -8,7 +8,6 @@ import {
   Tag,
   Divider,
   Modal,
-  Icon,
   message
 } from 'antd';
 import axios from 'axios';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Button, Card, Divider, Icon, Modal} from 'antd';
+import { Table, Button, Card, Divider, Modal} from 'antd';
 import axios from 'axios';
 import qs from 'qs';
 import { CompanyModal } from './CompanyModal';
