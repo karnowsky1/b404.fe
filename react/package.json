@@ -26,6 +26,7 @@
     "react-scripts": "3.3.0",
     "react-sortable-tree": "^2.7.1",
     "redux": "^4.0.5",
+    "sjcl": "^1.0.8",
     "sonarqube-scanner": "^2.5.0"
   },
   "scripts": {

@@ -4,6 +4,10 @@ import Login from '../components/login/login'
 import Dashboard from '../pages/Dashboard'
 import Documents from '../pages/Documents';
 import Workflow from '../pages/Workflow';
+import Approve from '../pages/Approve';
+import Complete from '../pages/Complete';
+import Submission from '../pages/Submission';
+import Uploads from '../pages/Uploads';
 import Milestones from '../pages/Milestones';
 import Signatures from '../pages/Signatures.js';
 import MainSettings from '../pages/MainSettings';
@@ -29,6 +33,10 @@ class Routes extends Component {
           <AppRoute exact path={process.env.PUBLIC_URL + "/dashboard"} component={Dashboard} isPrivate/>
           <AppRoute exact path={process.env.PUBLIC_URL + "/documents"} component={Documents} isPrivate/>
           <AppRoute exact path={process.env.PUBLIC_URL + "/workflow"} component={Workflow} isPrivate/>
+          <AppRoute exact path={process.env.PUBLIC_URL + "/approve"} component={Approve} isPrivate/>
+          <AppRoute exact path={process.env.PUBLIC_URL + "/complete"} component={Complete} isPrivate/>
+          <AppRoute exact path={process.env.PUBLIC_URL + "/submission"} component={Submission} isPrivate/>
+          <AppRoute exact path={process.env.PUBLIC_URL + "/upload"} component={Uploads} isPrivate/>
           <AppRoute exact path={process.env.PUBLIC_URL + "/milestones"} component={Milestones} isPrivate/>
           <AppRoute exact path={process.env.PUBLIC_URL + "/signatures"} component={Signatures} isPrivate/>
           <AppRoute exact path={process.env.PUBLIC_URL + "/main-settings"} component={MainSettings} isPrivate/>

@@ -190,71 +190,195 @@ class DocumentsTable extends React.Component {
   state = {
     data: [],
     pagination: {},
-    loading: true
+    loading: true,
+    documentVisible: false,
+    uploadVisible: false,
+    select: ""
   };
+
+  constructor(props) {
+    super(props);
+    this.columns = [
+      {
+        title: "Document Name",
+        dataIndex: "title",
+        key: "title"
+      },
+      {
+        title: "Last Modified By",
+        dataIndex: "name",
+        key: "name"
+      },
+      {
+        title: "File Type",
+        dataIndex: "fileType",
+        key: "fileType",
+        render: fileType => <Tag color={this.color(fileType)}>{fileType}</Tag>
+      },
+      {
+        title: "Last Modified",
+        dataIndex: "mod",
+        key: "mod",
+        render: mod => (
+          <React.Fragment>
+            <span>{mod.modified}</span>
+            <Divider type="vertical" />
+            <span style={{ color: "gainsboro" }}>{mod.time}</span>
+          </React.Fragment>
+        )
+      },
+      {
+        title: "Confidential",
+        dataIndex: "confidental",
+        key: "confidental",
+        render: confidental => {
+          return (confidental? 'Yes' : 'No');
+        }
+      },
+      {
+        title: "Actions",
+        dataIndex: "actions",
+        render: more => (
+          <React.Fragment>
+            <Button 
+              type="link"
+              size="small"
+            >
+              Update
+            </Button> 
+            <Divider type="vertical" />
+            <Button 
+              type="link"
+              size="small"
+            >
+              Delete
+            </Button>
+          </React.Fragment>
+        )
+      }
+    ];
+  }
+
+  color(dataC) {
+    let color = "";
+    switch (dataC) {
+      case "file":
+        color = "geekblue";
+        break;
+      case "document":
+        color = "green";
+        break;
+      case "image":
+        color = "purple";
+        break;
+      case "video":
+        color = "sandybrown";
+        break;
+      case "executable":
+        color = "springgreen";
+        break;
+      case "archive":
+        color = "aquamarine";
+        break;
+      default:
+        return;
+    }
+    return color;
+  }
 
   componentDidMount() {
     this.fetch();
   }
 
-  handleTableChange = (pagination, filters, sorter) => {
-    const pager = { ...this.state.pagination };
-    pager.current = pagination.current;
-    this.setState({
-      pagination: pager
-    });
-    this.fetch({
-      results: pagination.pageSize,
-      page: pagination.current,
-      sortField: sorter.field,
-      sortOrder: sorter.order,
-      ...filters
-    });
-  };
-
-  fetch = (params = {}) => {
-    axios({
-      method: 'get',
-      //TODO:Change to API...............................................................................
-      url: 'https://demo7818297.mockable.io/',
-      //TODO:Change to API...............................................................................
-      response: {
-        results: 2,
-        params
-      },
-      type: 'json'
-    }).then(response => {
-      const pagination = { ...this.state.pagination };
-      pagination.total = 10;
-      pagination.size = 'small';
-      pagination.pageSize = 4;
-      this.setState({
-        loading: false,
-        data: response.data,
-        pagination
-      });
-    });
-  };
-
   showModal = () => {
     this.setState({
-      visible: true
+      documentVisible: true
+    });
+  };
+
+  showUploadModal = () => {
+    this.setState({
+      uploadVisible: true
     });
   };
 
   handleOk = e => {
     console.log(e);
-    this.setState({
-      visible: false
-    });
-    this.fetch();
+    let value = this.state.select;
+    if (value === "") {
+      console.log("Please enter value");
+    } else if (value === "upload") {
+      this.setState({
+        documentVisible: false
+      });
+      this.showUploadModal();
+    } else if (value === "create") {
+      this.setState({
+        documentVisible: false
+      });
+      console.log("This works");
+      //Mislav add this pls
+      //this.showCreateModal();
+    }
   };
 
-  handleCancel = e => {
+  handleUploadOk = e => {
     console.log(e);
     this.setState({
-      visible: false
+      uploadVisible: false
     });
+  };
+
+  onCancel = e => {
+    console.log(e);
+    this.setState({
+      documentVisible: false
+    });
+  };
+
+  onUploadCancel = e => {
+    console.log(e);
+    this.setState({
+      uploadVisible: false
+    });
+  };
+
+  fetch = (params = {}) => {
+    axios({
+      method: "get",
+      url: "http://demo1986594.mockable.io",
+      response: {
+        results: 4,
+        params
+      },
+      type: "json"
+    })
+      .then(response => {
+        let conf = [];
+        for (let entry of response.data) {
+          conf.push({
+            id: entry.key,
+            title: entry.title,
+            name: entry.name,
+            updated: entry.updated,
+            modified: entry.modified,
+            time: entry.time,
+            confidental: entry.confidental,
+            fileType: entry.fileType,
+            mod: { modified: entry.modified, time: entry.time }
+          });
+        }
+        const pagination = { ...this.state.pagination };
+        pagination.pageSize = 4;
+        this.setState({
+          loading: false,
+          data: conf,
+          pagination
+        });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   };
 
   render() {

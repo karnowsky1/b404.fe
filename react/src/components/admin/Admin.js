@@ -8,7 +8,6 @@ import {
   Tag,
   Divider,
   Modal,
-  Icon,
   message
 } from 'antd';
 import axios from 'axios';
@@ -16,6 +15,7 @@ import qs from 'qs';
 import { PeopleModal } from './PeopleModal';
 import { axiosError } from '../../utils/axiosError';
 import { getAllCompanies, getPerson } from '../../utils/api';
+import { hash } from './../../utils/hash';
 
 const { confirm } = Modal;
 
@@ -49,10 +49,10 @@ class AdminTable extends React.Component {
     editingUser: undefined,
     editingUserCompanies: undefined,
     editingUserID: undefined,
-    pagination: {},
     addvisible: false,
     editvisible: false,
-    companyOptions: []
+    companyOptions: [],
+    pagination: {}
   };
 
   constructor(props) {
@@ -217,7 +217,10 @@ class AdminTable extends React.Component {
           Authorization: localStorage.getItem('token'),
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        data: qs.stringify(values),
+        data: qs.stringify({...values, 
+          // password: JSON.parse(sjcl.encrypt("password",values.password)).ct
+          password: hash(values.password)
+        }),
         // this is already a big object coming from formik
         type: 'json'
       })
@@ -464,13 +467,11 @@ class AdminTable extends React.Component {
             />
             <Button
               type="primary"
-              shape="circle"
+              //shape="circle"
               size="default"
               onClick={this.showAddModal}
             >
-              <b>
-                <Icon type="plus" />
-              </b>
+              + Create
             </Button>
             {this.state.addvisible && (
               <PeopleModal
