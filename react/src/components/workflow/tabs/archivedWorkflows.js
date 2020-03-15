@@ -1,7 +1,10 @@
 import React from 'react';
-import { Table, Spin, message } from 'antd';
+import { Table, Spin, message, Button, Divider, Modal } from 'antd';
 import axios from 'axios';
 import { TOKEN_KEY/*, UUID_KEY*/ } from '../../../constants/auth'
+import qs from 'qs';
+
+const { confirm } = Modal;
 
 class ArchivedWorkflows extends React.Component {
   constructor(props) {
@@ -22,7 +25,22 @@ class ArchivedWorkflows extends React.Component {
       {
         title: 'Action',
         dataIndex: this.state.data,
-        key: 'x'
+        key: 'x',
+        render: (workflow) => (
+          <React.Fragment>
+            <Button type="link" size="small" onClick={e => this.showDeleteConfirm(e, workflow.workflowID)}>
+              Delete
+            </Button>
+            <Divider type="vertical" />
+            <Button
+              type="link"
+              size="small"
+              onClick={e => this.showArchiveConfirm(e, workflow.workflowID)}
+            >
+              Unarchive
+            </Button>
+          </React.Fragment>
+        )
       }
     ];
   }
@@ -162,6 +180,66 @@ class ArchivedWorkflows extends React.Component {
   }
 
   getAllDocuments() {}
+
+  showDeleteConfirm = (e, id) => {
+    confirm({
+      title: 'Are you sure delete this workflow?',
+      content: 'If you delete this workflow it will become unusable!',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        axios
+          .delete(window.__env__.API_URL + '/blink/api/workflow/' + id, {
+            headers: {
+              'Authorization': localStorage.getItem('token')
+            }
+          })
+          .then(response => {
+            if (response.status === 200) {
+              // console.log('works');
+              window.location.reload(false);
+            } else {
+              // console.log(response);
+            }
+          });
+      },
+      onCancel() {
+        // console.log('Cancel');
+      }
+    });
+  };
+
+  showArchiveConfirm = (e, id) => {
+    confirm({
+      title: 'Are you sure you want to unarchive this Workflow?',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        axios
+          .put(window.__env__.API_URL + '/blink/api/workflow/unarchive',qs.stringify({
+            id
+          }), {
+            headers: {
+              'Content-Type' : 'application/x-www-form-urlencoded',
+              'Authorization': localStorage.getItem('token')
+            }
+          })
+          .then(response => {
+            if (response.status === 200) {
+              // console.log('works');
+              window.location.reload(false);
+            } else {
+              // console.log(response);
+            }
+          });
+      },
+      onCancel() {
+        // console.log('Cancel');
+      }
+    });
+  };
 
   showModal = (workflow) => {
     this.setState({

@@ -216,16 +216,15 @@ class SettingsForm extends React.Component {
                 />
               )}
             </Form.Item>
-            <Form.Item label=" New password" hasFeedback>
+            <Form.Item label="New password" hasFeedback>
               {getFieldDecorator('password', {
                 initialValue: this.state.user.password,
                 valuePropName: 'password',
                 rules: [
                   {
-                    message: 'Please input your new password!'
-                  },
-                  {
-                    validator: this.validateToNextPassword
+                    type: "regexp",
+                    pattern: new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
+                    message: "Wrong format!"
                   }
                 ]
               })(

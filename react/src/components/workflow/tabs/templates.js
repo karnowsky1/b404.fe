@@ -4,16 +4,31 @@ import axios from 'axios';
 import { AssignModal } from '../assignModal';
 import { AssignPeople } from '../assignModal';
 import WorkflowBuilder from '../../wf-builder/workflowBuilder';
-import { TOKEN_KEY/*, UUID_KEY*/ } from '../../../constants/auth'
+import { TOKEN_KEY/*, UUID_KEY*/ } from '../../../constants/auth';
+
+const { confirm } = Modal;
+
+const defaultWorkflow = {
+  name: '',
+  description: '',
+  steps: [{
+      title: 1,
+      subtitle: 'Insert description here...',
+      expanded: false
+  }]
+}
 
 class Templates extends React.Component {
 
   constructor(props) {
     super(props);
+    this.showModalDefault = this.showModalDefault.bind(this);
     this.state = {
       workflow: null,
       data: [],
       loading: true,
+      visible: false,
+      isNew: false,
       companyVisible: false,
       companyOptions: [],
       personVisible: false,
@@ -33,7 +48,7 @@ class Templates extends React.Component {
               Update
             </Button>
             <Divider type="vertical" />
-            <Button type="link" size="small">
+            <Button type="link" size="small" onClick={e => this.showDeleteConfirm(e, workflow.workflowID)}>
               Delete
             </Button>
           </React.Fragment>
@@ -176,11 +191,49 @@ class Templates extends React.Component {
       });
   }
 
+  showDeleteConfirm = (e, id) => {
+    confirm({
+      title: 'Are you sure delete this workflow?',
+      content: 'If you delete this workflow it will become unusable!',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        axios
+          .delete(window.__env__.API_URL + '/blink/api/workflow/' + id, {
+            headers: {
+              'Authorization': localStorage.getItem('token')
+            }
+          })
+          .then(response => {
+            if (response.status === 200) {
+              // console.log('works');
+              window.location.reload(false);
+            } else {
+              // console.log(response);
+            }
+          });
+      },
+      onCancel() {
+        // console.log('Cancel');
+      }
+    });
+  };
+
   getAllDocuments() {}
 
   showModal = (workflow) => {
     this.setState({
       workflow: workflow,
+      isNew: false,
+      visible: true
+    });
+  };
+
+  showModalDefault() {
+    this.setState({
+      workflow: defaultWorkflow,
+      isNew: true,
       visible: true
     });
   };
@@ -202,8 +255,6 @@ class Templates extends React.Component {
   };
 
   render() {
-    //const { visible, loading } = this.state;
-    const workflow = this.state.workflow;
     return (
       <React.Fragment>
         <Spin spinning={this.state.loading}>
@@ -230,24 +281,24 @@ class Templates extends React.Component {
             workflow={this.state.workflow}
             person={this.state.personOptions}
             documents={this.state.personDocuments}
+            visible={this.state.visible}
             onCancel={this.handlePersonCancel}
             title="Assign Modal"
             onOk={this.handlePersonOk}
           />
         )}
-        <Button type="primary" onClick={this.showModal}>
+        <Button type="primary" onClick={this.showModalDefault}>
           + Create
         </Button>
         <Modal
           bodyStyle={{ height: '81vh' }}
-          title="Create your workflow template"
+          title={this.state.isNew ? <h1>Create a new workflow template</h1> : <h1>Edit workflow template</h1>}
           width="75vw"
-          visible={this.state.visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
           footer={null}
-        >
-          <WorkflowBuilder workflow={workflow}/>
+          visible={this.state.visible}
+          onOk={this.handleOk} 
+          onCancel={this.handleCancel}>
+        <WorkflowBuilder isNew={this.state.isNew} workflow={this.state.workflow}/>
         </Modal>
       </React.Fragment>
     );
