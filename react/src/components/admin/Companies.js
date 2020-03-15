@@ -212,15 +212,14 @@ class Companies extends React.Component {
             />
             <Button
               type="primary"
-              //shape="circle"
+              shape="circle"
               size="default"
               onClick={this.showAddModal}
             >
-              + Create
+              <b>
+                <Icon type="plus" />
+              </b>
             </Button>
-
-
-
             {this.state.addvisible && (
               <CompanyModal
                 onSubmit={this.onAddSubmit}

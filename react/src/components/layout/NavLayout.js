@@ -73,10 +73,10 @@ class NavLayout extends React.Component {
                 }
               >
                 <Menu.Item key="6">
-                  <NavLink to="/company">Companies</NavLink>
+                  <NavLink to="/company">Company</NavLink>
                 </Menu.Item>
                 <Menu.Item key="7">
-                  <NavLink to="/people">Users</NavLink>
+                  <NavLink to="/people">People</NavLink>
                 </Menu.Item>
               </SubMenu>
             )}
