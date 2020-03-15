@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Button, Card, Divider, Icon, Modal} from 'antd';
+import { Table, Button, Card, Divider, Modal} from 'antd';
 import axios from 'axios';
 import qs from 'qs';
 import { CompanyModal } from './CompanyModal';
@@ -212,13 +212,11 @@ class Companies extends React.Component {
             />
             <Button
               type="primary"
-              shape="circle"
+              //shape="circle"
               size="default"
               onClick={this.showAddModal}
             >
-              <b>
-                <Icon type="plus" />
-              </b>
+              + Create
             </Button>
             {this.state.addvisible && (
               <CompanyModal
