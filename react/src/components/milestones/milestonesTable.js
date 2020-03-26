@@ -206,19 +206,18 @@ class MilestonesTable extends React.Component {
     this.fetch();
   }
 
-  fetch = (params = {}) => {
+  fetch = async e => {
     const { content } = this.props
-    axios({
+     await axios({
       method: 'get',
       url: window.__env__.API_URL + `/blink/api/milestone/${content}`,
       headers: { Authorization: localStorage.getItem('token') },
       response: {
-        results: 4,
-        params
+        results: 4
       },
       type: 'json'
     })
-      .then(response => {
+      .then( async response => {
         let conf = [];
         for (let entry of response.data) {
           conf.push({
@@ -231,7 +230,22 @@ class MilestonesTable extends React.Component {
             deliveryDate: entry.deliveryDate
             // workflows: 
           });
+          conf.forEach(async item => {
+             await axios({
+              method: 'get',
+              url: window.__env__.API_URL + `/blink/api/workflow/milestone/${item.id}`,
+              headers: { Authorization: localStorage.getItem('token') },
+              response: {
+                results: 4
+              },
+              type: 'json'
+            })
+            .then(response => {
+              item.workflows = response.data
+            })
+          });
         }
+        // console.log(conf)
         const pagination = { ...this.state.pagination };
         pagination.pageSize = 4;
         this.setState({
@@ -321,15 +335,37 @@ class MilestonesTable extends React.Component {
                   </p>
                 </Col>
                 <Col span={12}>
-                  <div style={{ width: 200 }}>
-                    <p>
-                      <b>Workflow 1</b>
+                  <div >
+                    {/* <p> */}
+                    {/* {console.log(record)} */}
+                      {
+                      record.workflows && record.workflows.map(({name, percentComplete, workflowID}) => ( 
+                        <div key={workflowID}>
+                          <span style={{ width: 200 }}>
+                            <b>{name}</b>
+                          </span>
+                          <Divider type="vertical" />
+                          <Button
+                            type="link"
+                            size="small"
+                            onClick={e => this.showEditModal(record)}
+                          >
+                            Update Workflow
+                          </Button>
+                          <p></p>
+                          <Progress style={{ width: 310 }} percent={percentComplete} size="small" />
+                          <p></p>
+                        </div>
+                      ))
+                      }
+                    {                      
+                    /* <b>Workflow 1</b>
                     </p>
                     <Progress percent={50} size="small" />
                     <p>
                       <b>Workflow 2</b>
                     </p>
-                    <Progress percent={50} size="small" />
+                    <Progress percent={50} size="small" /> */}
                   </div>
                 </Col>
               </Row>
