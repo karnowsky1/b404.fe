@@ -162,7 +162,7 @@ class SettingsForm extends React.Component {
     return (
       <div className="settings-main">
         <Card>
-            <h3>Main Settings</h3>
+            <h3 class="headers">Main Settings</h3>
             <div className="settings-inner">
               <Spin spinning={this.state.loading}>
                 <Form
