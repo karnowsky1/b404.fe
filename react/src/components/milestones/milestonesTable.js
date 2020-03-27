@@ -419,7 +419,7 @@ class MilestonesTable extends React.Component {
               onSubmit={this.onAssignSubmit}
               templates={this.state.assignWorkflowTemplates}
               onCancel={this.handleAssignCancel}
-              title="Add a Workflow Template"
+              title="Assign a Workflow Template to this Milestone"
               isAddModal={false}
             />
           )}
