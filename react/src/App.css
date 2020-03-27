@@ -1,7 +1,9 @@
-
+.ant-layout-content {
+  min-height: auto!important;
+}
 
 .settings-inner {
-  width: 60%;
+  width: 50%;
   margin: 0px auto;
   margin-top: 40px;
 }
