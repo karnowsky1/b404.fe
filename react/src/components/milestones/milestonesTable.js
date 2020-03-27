@@ -109,8 +109,8 @@ class MilestonesTable extends React.Component {
     });
   };
 
-  showAssignModal = () => {
-    getWorkflowTemplates()
+  showAssignModal = async e => {
+    await getWorkflowTemplates()
       .then(response => {
         this.setState({
           assignWorkflowTemplates: response.data.map(template => ({
@@ -293,7 +293,7 @@ class MilestonesTable extends React.Component {
           }),
           type: 'json'
         }).then(() => {
-          fetch(); //having an issue with need to refresh both tables 
+          window.location.reload(false);
         })
         .catch(axiosError);
       },
