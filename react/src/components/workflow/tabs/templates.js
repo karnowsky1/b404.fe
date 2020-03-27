@@ -292,7 +292,7 @@ class Templates extends React.Component {
         </Button>
         <Modal
           bodyStyle={{ height: '81vh' }}
-          title={this.state.isNew ? <h1>Create a new workflow template</h1> : <h1>Edit workflow template</h1>}
+          title={this.state.isNew ? "Create a new workflow template" : "Edit workflow template"}
           width="75vw"
           footer={null}
           visible={this.state.visible}

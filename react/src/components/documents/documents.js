@@ -284,7 +284,6 @@ class DocumentsTable extends React.Component {
             </Button>
             <Modal
               title="Create your document"
-              bodyStyle={{ height: '100vh' }}
               width="80vw"
               visible={this.state.visible}
               onOk={this.handleOk}
