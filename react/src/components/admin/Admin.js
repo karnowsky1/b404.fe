@@ -431,7 +431,7 @@ class AdminTable extends React.Component {
       <React.Fragment>
         <div>
           <Card>
-            <h1>Users</h1>
+            <h3 class="headers">Users</h3>
             <Table
               columns={this.columns}
               rowKey={record => record.id}
