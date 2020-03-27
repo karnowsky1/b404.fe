@@ -3,7 +3,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { Table, Progress, Row, Col, Button, Modal, Divider } from 'antd';
 import { MilestoneModal } from './MilestoneModal';
-import { getAllCompanies, getMilestone } from '../../utils/api';
+import { getAllCompanies, getMilestone, getWorkflowTemplates } from '../../utils/api';
 import { axiosError } from '../../utils/axiosError';
 import { AssignTemplateModal } from '../workflow/AssignTemplateModal';
 import moment from 'moment';
@@ -21,6 +21,8 @@ class MilestonesTable extends React.Component {
     assignvisible: false,
     editingMilestone: undefined,
     editingMilestoneID: undefined,
+    assignWorkflowTemplates: undefined,
+    assignWorkflowToMilestoneID: undefined,
     companyOptions: [],
     content: "",
     pagination: {}
@@ -108,9 +110,20 @@ class MilestonesTable extends React.Component {
   };
 
   showAssignModal = () => {
-    this.setState({
-      assignvisible: true
-    });
+    getWorkflowTemplates()
+      .then(response => {
+        this.setState({
+          assignWorkflowTemplates: response.data.map(template => ({
+            value: template.workflowID,
+            key: template.workflowID,
+            label: template.name
+          })),
+          assignvisible: true
+        })
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
 
   showEditModal = async record => {
@@ -402,9 +415,9 @@ class MilestonesTable extends React.Component {
 
           {this.state.assignvisible && (
             <AssignTemplateModal
-              initialValues={this.state.editingMilestone}
-              onSubmit={this.onEditSubmit}
-              companies={this.state.companyOptions}
+              initialValues={this.state.assignWorkflowTemplates}
+              onSubmit={this.onAssignSubmit}
+              templates={this.state.assignWorkflowTemplates}
               onCancel={this.handleAssignCancel}
               title="Add a Workflow Template"
               isAddModal={false}

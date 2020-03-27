@@ -21,3 +21,10 @@ export const getMilestone = (uuid) =>
     }
   });
 
+export const getWorkflowTemplates = () => 
+axios.get(window.__env__.API_URL + `/blink/api/workflow/templates`, {
+  headers: {
+    Authorization: localStorage.getItem('token')
+  }
+});
+
