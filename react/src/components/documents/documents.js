@@ -270,7 +270,7 @@ class DocumentsTable extends React.Component {
         <br></br>
         <Card>
           <div>
-            <h1>Your Documents</h1>
+            <h3>Your Documents</h3>
             <Table
               columns={columns}
               dataSource={this.state.data}
