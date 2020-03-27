@@ -98,9 +98,7 @@ class MilestonesTable extends React.Component {
           }))
         });
       })
-      .catch(error => {
-        console.error(error);
-      });
+      .catch(axiosError);
   }
 
   showAddModal = () => {
@@ -121,9 +119,7 @@ class MilestonesTable extends React.Component {
           assignvisible: true
         })
       })
-      .catch(error => {
-        console.error(error);
-      });
+      .catch(axiosError);
   };
 
   showEditModal = async record => {
@@ -267,9 +263,7 @@ class MilestonesTable extends React.Component {
           pagination
         });
       })
-      .catch(function(error) {
-        console.log(error);
-      });
+      .catch(axiosError);
   };
 
   showArchiveConfirm = (e, id, request, oppositeTab) => {

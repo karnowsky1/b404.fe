@@ -22,9 +22,16 @@ export const getMilestone = (uuid) =>
   });
 
 export const getWorkflowTemplates = () => 
-axios.get(window.__env__.API_URL + `/blink/api/workflow/templates`, {
-  headers: {
-    Authorization: localStorage.getItem('token')
-  }
-});
+  axios.get(window.__env__.API_URL + `/blink/api/workflow/templates`, {
+    headers: {
+      Authorization: localStorage.getItem('token')
+    }
+  });
 
+export const getVerbs = () =>
+  axios.get(window.__env__.API_URL + '/blink/api/verb/', {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': localStorage.getItem('token')
+    }
+  })
