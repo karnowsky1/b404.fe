@@ -273,7 +273,6 @@ class MilestonesTable extends React.Component {
   };
 
   showArchiveConfirm = (e, id, request, oppositeTab) => {
-    const { fetch } = this; 
     confirm({
       title: `Are you sure you want to ${request} this Milestone?`,
       content: `If you ${request} this Milestone it will go to the ${oppositeTab} tab!`,
