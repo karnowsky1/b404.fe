@@ -1,23 +1,21 @@
 import React, { Component } from 'react';
 import SortableTree from 'react-sortable-tree';
-import { addNodeUnderParent, removeNodeAtPath, changeNodeAtPath } from 'react-sortable-tree';
-import { axiosError } from '../../utils/axiosError';
 import {
-  Button,
-  Input,
-  Select,
-  message
-} from 'antd';
+  addNodeUnderParent,
+  removeNodeAtPath,
+  changeNodeAtPath
+} from 'react-sortable-tree';
+import { axiosError } from '../../utils/axiosError';
+import { Button, Input, Select, message, Switch } from 'antd';
 import 'react-sortable-tree/style.css';
 //import qs from 'qs';
 import axios from 'axios';
-import { TOKEN_KEY/*, UUID_KEY*/ } from '../../constants/auth'
-import { getVerbs } from '../../utils/api';
+import { TOKEN_KEY, DEFAULT_TREE } from '../../constants';
+import { getVerbs, getPerson } from '../../utils/api';
 
 const { Option } = Select;
 
 export default class WorkflowBuilder extends Component {
-
   constructor(props) {
     super(props);
     this.updateTreeData = this.updateTreeData.bind(this);
@@ -27,8 +25,9 @@ export default class WorkflowBuilder extends Component {
     this.getAllVerbs = this.getAllVerbs.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+    this.setTreeData = this.setTreeData.bind(this);
     message.config({
-      maxCount: 1,
+      maxCount: 1
     });
 
     this.state = {
@@ -38,16 +37,14 @@ export default class WorkflowBuilder extends Component {
       visible: false,
       loading: false,
       verbs: [],
-      treeData: [{
-        title: 0,
-        subtitle: '',
-        expanded: false
-      }]
+      people: [],
+      treeData: [DEFAULT_TREE]
     };
   }
 
   componentDidMount() {
     this.getAllVerbs();
+    this.getAllPeople();
   }
 
   getAllVerbs() {
@@ -60,9 +57,20 @@ export default class WorkflowBuilder extends Component {
             wfDescription: this.props.workflow.description,
             verbs: response.data,
             treeData: this.props.workflow.steps
-          })
+          });
         }
-    }).catch(axiosError);
+      })
+      .catch(axiosError);
+  }
+  getAllPeople() {
+    getPerson()
+      .then(response => {
+        response.status === 200 &&
+          this.setState({
+            people: response.data
+          });
+      })
+      .catch(axiosError);
   }
 
   componentDidUpdate(prevProps) {
@@ -73,7 +81,7 @@ export default class WorkflowBuilder extends Component {
           treeData: this.props.workflow.steps,
           wfName: this.props.workflow.name,
           wfDescription: this.props.workflow.description
-        })
+        });
       }
     }
   }
@@ -82,64 +90,62 @@ export default class WorkflowBuilder extends Component {
     e.preventDefault();
     //const {wfName, username, password, fName, lName, email, title, accessLevelID} = this.state.user
     //const id = UUID
-    const url = window.__env__.API_URL + '/blink/api/workflow/template'
-    //console.log(this.state);
+    const url = window.__env__.API_URL + '/blink/api/workflow/template';
     const requestObject = {
       workflowID: this.state.workflowID,
       name: this.state.wfName,
       description: this.state.wfDescription,
       steps: this.state.treeData
-    }
+    };
     this.setState({ loading: true });
-    //console.log(requestObject);
 
     if (this.props.isNew) {
-      axios.post(
-        url,
-        requestObject,
-        {
+      axios
+        .post(url, requestObject, {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem(TOKEN_KEY)
+            Authorization: localStorage.getItem(TOKEN_KEY)
           }
-        }
-      ).then(response => {
-        //this.setState({ loading: true });
-        if (response.status === 200) {
-          this.setState({ loading: false });
-          message.success('Data saved successfully');
-          window.location.reload(true);
-        }
-      }).catch(axiosError);
+        })
+        .then(response => {
+          //this.setState({ loading: true });
+          if (response.status === 200) {
+            this.setState({ loading: false });
+            message.success('Data saved successfully');
+            window.location.reload(true);
+          }
+        })
+        .catch(axiosError);
     } else {
-      axios.put(
-        url,
-        requestObject,
-        {
+      axios
+        .put(url, requestObject, {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem(TOKEN_KEY)
+            Authorization: localStorage.getItem(TOKEN_KEY)
           }
-        }
-      ).then(response => {
-        //this.setState({ loading: true });
-        if (response.status === 200) {
-          this.setState({ loading: false });
-          message.success('Data saved successfully');
-          window.location.reload(true);
-        }
-      }).catch(axiosError);
+        })
+        .then(response => {
+          if (response.status === 200) {
+            this.setState({ loading: false });
+            message.success('Data saved successfully');
+            window.location.reload(true);
+          }
+        })
+        .catch(axiosError);
     }
   };
 
   addNewNode(rowInfo) {
-    const NEW_NODE = { title: this.state.verbs[0].verbID, subtitle: 'Insert description here...' };
+    const NEW_NODE = {
+      ...DEFAULT_TREE,
+      title: this.state.verbs[0].verbID
+    };
     const newTree = addNodeUnderParent({
       treeData: this.state.treeData,
       newNode: NEW_NODE,
       expandParent: true,
       parentKey: rowInfo ? rowInfo.treeIndex : undefined,
-      getNodeKey: ({ treeIndex }) => treeIndex,
+      getNodeKey: ({ treeIndex }) => treeIndex
     });
     this.updateTreeData(newTree.treeData);
   }
@@ -149,16 +155,24 @@ export default class WorkflowBuilder extends Component {
     const newTree = removeNodeAtPath({
       treeData: this.state.treeData,
       path,
-      getNodeKey: ({ treeIndex }) => treeIndex,
+      getNodeKey: ({ treeIndex }) => treeIndex
     });
     if (newTree.length !== 0) {
       this.updateTreeData(newTree);
     }
   }
 
+  setTreeData(tree) {
+    return {
+      ...tree,
+      title: tree.children && tree.children.length ? 0 : tree.title,
+      children: tree.children ? tree.children.map(this.setTreeData) : []
+    };
+  }
+
   updateTreeData(treeData) {
-    this.setState({ treeData });
-    //console.log(this.state)
+    const newTrees = treeData.map(this.setTreeData);
+    this.setState({ treeData: newTrees });
   }
 
   handleNameChange = e => {
@@ -177,42 +191,78 @@ export default class WorkflowBuilder extends Component {
     const getNodeKey = ({ treeIndex }) => treeIndex;
     const children = [];
     this.state.verbs.forEach(element => {
-      children.push(<Option key={element.verbID}>{element.description}</Option>);
+      children.push(
+        <Option key={element.verbID}>{element.description}</Option>
+      );
     });
+
     return (
-      <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
         <div style={{ display: 'flex' }}>
-          <div style={{ display: 'flex', flexDirection: 'row', marginRight: '35px' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              marginRight: '35px'
+            }}
+          >
             <h5 style={{ margin: '0' }}>Name: </h5>
-            <Input value={this.state.wfName} size="small" onChange={this.handleNameChange}
-              placeholder="Enter workflow name..." >
-            </Input>
+            <Input
+              value={this.state.wfName}
+              size="small"
+              onChange={this.handleNameChange}
+              placeholder="Enter workflow name..."
+            ></Input>
           </div>
           <div style={{ display: 'flex', flexDirection: 'row' }}>
             <h5 style={{ margin: '0' }}>Description: </h5>
-            <Input value={this.state.wfDescription} size="small" onChange={this.handleDescriptionChange}
-              placeholder="Enter workflow description..." >
-            </Input>
+            <Input
+              value={this.state.wfDescription}
+              size="small"
+              onChange={this.handleDescriptionChange}
+              placeholder="Enter workflow description..."
+            ></Input>
           </div>
         </div>
         <SortableTree
-          style={{ width: '100%', display: 'flex', flexDirection: 'column', position: 'relative', paddingLeft: '15%' }}
+          style={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            position: 'relative',
+            paddingLeft: '5px'
+          }}
           treeData={this.state.treeData}
           onChange={this.updateTreeData}
           generateNodeProps={rowInfo => ({
             title: (
-              <Select value={rowInfo.node.title.toString()} size="small" style={{ width: 120 }} onChange={event => {
-                const { path } = rowInfo;
-                const title = parseInt(event);
-                this.setState(state => ({
-                  treeData: changeNodeAtPath({
-                    treeData: state.treeData,
-                    path,
-                    getNodeKey,
-                    newNode: { ...rowInfo.node, title },
-                  }),
-                }));
-              }}>
+              <Select
+                value={rowInfo.node.title.toString()}
+                size="small"
+                disabled={
+                  rowInfo.node.children && !!rowInfo.node.children.length
+                }
+                style={{ width: 120 }}
+                onChange={event => {
+                  const { path } = rowInfo;
+                  const title = parseInt(event);
+                  this.setState(state => ({
+                    treeData: changeNodeAtPath({
+                      treeData: state.treeData,
+                      path,
+                      getNodeKey,
+                      newNode: { ...rowInfo.node, title }
+                    })
+                  }));
+                }}
+              >
                 {children}
               </Select>
             ),
@@ -230,31 +280,74 @@ export default class WorkflowBuilder extends Component {
                       treeData: state.treeData,
                       path,
                       getNodeKey,
-                      newNode: { ...rowInfo.node, subtitle },
-                    }),
+                      newNode: { ...rowInfo.node, subtitle }
+                    })
                   }));
                 }}
               />
             ),
             buttons: [
-              <div>
-                <Button label='Delete'
-                  onClick={(event) => this.removeNode(rowInfo)}>Remove
-                                        </Button>
-                <Button label='Add'
-                  onClick={(event) => this.addNewNode(rowInfo)}>Add
-                                        </Button>
-              </div>,
+              <div style={{ display: 'flex' }}>
+                <Button
+                  style={{ marginRight: 5 }}
+                  label="Delete"
+                  onClick={event => this.removeNode(rowInfo)}
+                >
+                  Remove
+                </Button>
+                <Button
+                  label="Add"
+                  onClick={event => this.addNewNode(rowInfo)}
+                  style={{ marginRight: 5 }}
+                >
+                  Add
+                </Button>
+                <div>
+                  <div>Asynchronous</div>
+                  <Switch
+                    checked={rowInfo.node.asynchronous}
+                    disabled={
+                      !(rowInfo.node.children && rowInfo.node.children.length)
+                    }
+                    onClick={checked => {
+                      const { path } = rowInfo;
+
+                      this.setState(state => ({
+                        treeData: changeNodeAtPath({
+                          treeData: state.treeData,
+                          path,
+                          getNodeKey,
+                          newNode: {
+                            ...rowInfo.node,
+                            asynchronous: checked
+                          }
+                        })
+                      }));
+                    }}
+                  />
+                </div>
+              </div>
             ],
             style: {
-              height: '50px',
+              height: '60px'
             }
-          })}>
-        </SortableTree>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '-60px' }}>
-          <Button type="primary" loading={this.state.loading} label='submit' onClick={this.handleSubmit}>
+          })}
+        ></SortableTree>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginTop: '-60px'
+          }}
+        >
+          <Button
+            type="primary"
+            loading={this.state.loading}
+            label="submit"
+            onClick={this.handleSubmit}
+          >
             Submit
-                </Button>
+          </Button>
         </div>
       </div>
     );

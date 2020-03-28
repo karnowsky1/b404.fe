@@ -4,7 +4,7 @@ import axios from 'axios';
 import { AssignModal } from '../assignModal';
 import { AssignPeople } from '../assignModal';
 import WorkflowBuilder from '../../wf-builder/workflowBuilder';
-import { TOKEN_KEY/*, UUID_KEY*/ } from '../../../constants/auth';
+import { TOKEN_KEY, DEFAULT_TREE } from '../../../constants';
 import qs from 'qs';
 
 const { confirm } = Modal;
@@ -12,15 +12,10 @@ const { confirm } = Modal;
 const defaultWorkflow = {
   name: '',
   description: '',
-  steps: [{
-      title: 1,
-      subtitle: 'Insert description here...',
-      expanded: false
-  }]
-}
+  steps: [DEFAULT_TREE]
+};
 
 class ActiveWorkflows extends React.Component {
-
   constructor(props) {
     super(props);
     this.showModalDefault = this.showModalDefault.bind(this);
@@ -43,13 +38,21 @@ class ActiveWorkflows extends React.Component {
         title: 'Action',
         dataIndex: this.state.data,
         key: 'x',
-        render: (workflow) => (
+        render: workflow => (
           <React.Fragment>
-            <Button type="link" size="small" onClick={e => this.showModal(workflow)}>
+            <Button
+              type="link"
+              size="small"
+              onClick={e => this.showModal(workflow)}
+            >
               Update
             </Button>
             <Divider type="vertical" />
-            <Button type="link" size="small" onClick={e => this.showDeleteConfirm(e, workflow.workflowID)}>
+            <Button
+              type="link"
+              size="small"
+              onClick={e => this.showDeleteConfirm(e, workflow.workflowID)}
+            >
               Delete
             </Button>
             <Divider type="vertical" />
@@ -68,40 +71,40 @@ class ActiveWorkflows extends React.Component {
 
   getWorkflows() {
     const url = window.__env__.API_URL + '/blink/api/workflow/active';
-        axios.get(
-        url,
-        {
-            headers: {
-            'Content-Type' : 'application/json',
-            'Authorization' : localStorage.getItem(TOKEN_KEY)
-            }
+    axios
+      .get(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: localStorage.getItem(TOKEN_KEY)
         }
-        ).then(response => {
-        if (response.status === 200){
-            this.setState({
-              loading: false
-            });
-            console.log(response);
-            this.setState({
-              data: response.data
-            });
+      })
+      .then(response => {
+        if (response.status === 200) {
+          this.setState({
+            loading: false
+          });
+          console.log(response);
+          this.setState({
+            data: response.data
+          });
         }
-        }).catch(function (error) {
+      })
+      .catch(function(error) {
         this.setState({
           loading: false
         });
-        message.destroy()
+        message.destroy();
         if (error.response) {
-            // Request made and server responded
-            message.error(error.response.data.error);
+          // Request made and server responded
+          message.error(error.response.data.error);
         } else if (error.request) {
-            // The request was made but no response was received
-            message.error("Server not responding");
+          // The request was made but no response was received
+          message.error('Server not responding');
         } else {
-            // Something happened in setting up the request that triggered an Error
-            message.error("Error setting up request");
+          // Something happened in setting up the request that triggered an Error
+          message.error('Error setting up request');
         }
-        });
+      });
   }
 
   componentDidMount() {
@@ -113,7 +116,7 @@ class ActiveWorkflows extends React.Component {
     this.getAllPeople();
   }
 
-  showCompanyModal = (workflow) => {
+  showCompanyModal = workflow => {
     console.log(workflow);
     this.setState({
       workflow: workflow,
@@ -202,7 +205,7 @@ class ActiveWorkflows extends React.Component {
 
   getAllDocuments() {}
 
-  showModal = (workflow) => {
+  showModal = workflow => {
     this.setState({
       workflow: workflow,
       isNew: false,
@@ -216,7 +219,7 @@ class ActiveWorkflows extends React.Component {
       isNew: true,
       visible: true
     });
-  };
+  }
 
   handleOk = e => {
     console.log(e);
@@ -245,7 +248,7 @@ class ActiveWorkflows extends React.Component {
         axios
           .delete(window.__env__.API_URL + '/blink/api/workflow/' + id, {
             headers: {
-              'Authorization': localStorage.getItem('token')
+              Authorization: localStorage.getItem('token')
             }
           })
           .then(response => {
@@ -272,14 +275,18 @@ class ActiveWorkflows extends React.Component {
       cancelText: 'No',
       onOk() {
         axios
-          .put(window.__env__.API_URL + '/blink/api/workflow/archive',qs.stringify({
-            id
-          }), {
-            headers: {
-              'Content-Type' : 'application/x-www-form-urlencoded',
-              'Authorization': localStorage.getItem('token')
+          .put(
+            window.__env__.API_URL + '/blink/api/workflow/archive',
+            qs.stringify({
+              id
+            }),
+            {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: localStorage.getItem('token')
+              }
             }
-          })
+          )
           .then(response => {
             if (response.status === 200) {
               // console.log('works');
@@ -299,14 +306,14 @@ class ActiveWorkflows extends React.Component {
     return (
       <React.Fragment>
         <Spin spinning={this.state.loading}>
-        <Table
-          columns={this.columns}
-          expandedRowRender={record => (
-            <p style={{ margin: 0 }}>Created: {record.createdDate}</p>
-          )}
-          dataSource={this.state.data}
-          rowKey={record => record.workflowID}
-        />
+          <Table
+            columns={this.columns}
+            expandedRowRender={record => (
+              <p style={{ margin: 0 }}>Created: {record.createdDate}</p>
+            )}
+            dataSource={this.state.data}
+            rowKey={record => record.workflowID}
+          />
         </Spin>
         {this.state.companyVisible && (
           <AssignModal
@@ -333,13 +340,20 @@ class ActiveWorkflows extends React.Component {
         </Button>
         <Modal
           bodyStyle={{ height: '81vh' }}
-          title={this.state.isNew ? <h1>Create a new workflow template</h1> : <h1>Edit workflow template</h1>}
+          title={
+            this.state.isNew ? (
+              <h1>Create a new workflow template</h1>
+            ) : (
+              <h1>Edit workflow template</h1>
+            )
+          }
           width="75vw"
           footer={null}
           visible={this.state.visible}
-          onOk={this.handleOk} 
-          onCancel={this.handleCancel}>
-        <WorkflowBuilder workflow={this.state.workflow}/>
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+        >
+          <WorkflowBuilder workflow={this.state.workflow} />
         </Modal>
       </React.Fragment>
     );

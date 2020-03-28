@@ -8,7 +8,7 @@ export const getAllCompanies = () =>
   });
 
 export const getPerson = (uuid) => 
-  axios.get(window.__env__.API_URL + `/blink/api/person/id/${uuid}`, {
+  axios.get(window.__env__.API_URL + (uuid ? `/blink/api/person/id/${uuid}` : '/blink/api/person/'), {
     headers: {
       Authorization: localStorage.getItem('token')
     }
