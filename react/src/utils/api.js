@@ -42,8 +42,7 @@ export const getVerbs = () =>
 
 export const getWorkflow = uuid =>
   axios.get(
-    window.__env__.API_URL +
-      (uuid ? `/blink/api/workflow/id/${uuid}` : '/blink/api/workflow/'),
+    window.__env__.API_URL + '/blink/api/workflow/' + (uuid ? `${uuid}` : ''),
     {
       headers: {
         Authorization: localStorage.getItem('token')

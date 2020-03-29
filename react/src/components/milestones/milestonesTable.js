@@ -151,11 +151,10 @@ class MilestonesTable extends React.Component {
     });
   };
 
-  showWorkflowModal = workflow => {
+  showWorkflowModal = e => {
     this.setState({
-      workflow: workflow,
       isNew: false,
-      visible: true
+      workflowBuilderVisible: true
     });
   };
 
@@ -180,6 +179,12 @@ class MilestonesTable extends React.Component {
     });
   };
 
+  handleWorkflowCancel = e => {
+    this.setState({
+      workflowBuilderVisible: false
+    });
+  };
+
   onAddSubmit = async values => {
     await axios({
       method: 'post',
@@ -196,9 +201,7 @@ class MilestonesTable extends React.Component {
         this.fetch();
       })
       .catch(axiosError);
-    this.setState({
-      addvisible: false
-    });
+    this.handleAddCancel();
   };
 
   onEditSubmit = async values => {
@@ -228,23 +231,21 @@ class MilestonesTable extends React.Component {
         this.fetch();
       })
       .catch(axiosError);
-    this.setState({
-      editvisible: false
-    });
+    this.handleEditCancel();
     this.fetch();
   };
 
   onAssignSubmit = async values => {
     console.log(values);
-    console.log(values.length - 1);
-    await getWorkflow(values.length - 1)
+    await getWorkflow(values.templateID)
       .then(response => {
         this.setState({
-          workflow: response
+          workflow: response.data
         });
       })
       .catch(axiosError);
     this.handleAssignCancel();
+    this.showWorkflowModal();
   };
 
   fetch = async e => {
@@ -458,10 +459,26 @@ class MilestonesTable extends React.Component {
           />
         )}
         {this.state.workflowBuilderVisible && (
-          <WorkflowBuilder
-            isNewWorkflow={false}
-            workflow={this.state.workflow}
-          />
+          <Modal
+            bodyStyle={{ height: '81vh' }}
+            title={
+              this.state.isNew ? (
+                <h1>Create a new workflow template</h1>
+              ) : (
+                <h1>Create a concrete workflow</h1>
+              )
+            }
+            width="75vw"
+            footer={null}
+            onOk={this.handleOk}
+            onCancel={this.handleWorkflowCancel}
+            visible={true}
+          >
+            <WorkflowBuilder
+              isNewWorkflow={false}
+              workflow={this.state.workflow}
+            />
+          </Modal>
         )}
       </React.Fragment>
     );
