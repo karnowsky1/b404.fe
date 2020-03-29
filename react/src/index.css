@@ -17,6 +17,10 @@ body {
   margin-bottom: 25px!important;
 }
 
+.wfInputText {
+  padding: 8px;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

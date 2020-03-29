@@ -203,7 +203,7 @@ export default class WorkflowBuilder extends Component {
           flexDirection: 'column'
         }}
       >
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', marginBottom: '30px' }}>
           <div
             style={{
               display: 'flex',
@@ -211,21 +211,19 @@ export default class WorkflowBuilder extends Component {
               marginRight: '35px'
             }}
           >
-            <h5 style={{ margin: '0' }}>Name: </h5>
+            <h6 class="wfInputText">Name: </h6>
             <Input
               value={this.state.wfName}
-              size="small"
               onChange={this.handleNameChange}
               placeholder="Enter workflow name..."
             ></Input>
           </div>
           <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <h5 style={{ margin: '0' }}>Description: </h5>
+            <h6 class="wfInputText">Description: </h6>
             <Input
               value={this.state.wfDescription}
-              size="small"
               onChange={this.handleDescriptionChange}
-              placeholder="Enter workflow description..."
+              placeholder="Enter description..."
             ></Input>
           </div>
         </div>
