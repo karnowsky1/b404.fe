@@ -37,22 +37,23 @@ class Pending extends React.Component {
       type: "json"
     })
       .then(response => {
-        let conf = [];
-        for (let entry of response.data) {
-          conf.push({
-            id: entry.workflowID
-            // key: entry.workflowID,
-            // name: entry.name,
-            // description: entry.description,
-            // dateC: entry.createdDate,
-            // dateM: entry.lastUpdatedDate
-          });
-        }
+        console.log(response);
+        // let conf = [];
+        // for (let entry of response.data) {
+        //   conf.push({
+        //     id: entry.workflowID
+        //     key: entry.workflowID,
+        //     name: entry.name,
+        //     description: entry.description,
+        //     dateC: entry.createdDate,
+        //     dateM: entry.lastUpdatedDate
+        //   });
+        // }
         const pagination = { ...this.state.pagination };
         pagination.pageSize = 4;
         this.setState({
           loading: false,
-          data: conf,
+          data: response.data,
           pagination
         });
       })

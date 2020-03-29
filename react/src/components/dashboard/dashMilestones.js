@@ -58,19 +58,27 @@ class DashMilestones extends React.Component {
         let conf = [];
         for (let entry of response.data) {
           conf.push({
-            id: entry.milestoneID,
-            key: entry.milestoneID,
+            id: entry.mileStoneID,
             name: entry.name,
             date: entry.createdDate,
             company: entry.company.companyName
           });
         }
+
+        let newConf = [];
+
+        if (conf.length > 4) {
+          newConf = conf.slice(0, 4);
+        } else {
+          newConf = conf;
+        }
+
         const pagination = { ...this.state.pagination };
         pagination.pageSize = 4;
         this.setState({
           loading: false,
-          data: conf,
-          pagination
+          data: newConf,
+          pagination: false
         });
       })
       .catch(function(error) {
@@ -84,15 +92,16 @@ class DashMilestones extends React.Component {
         <h3>Your Milestones</h3>
         <Table
           columns={columns}
-          rowKey={records => records.id}
+          rowKey={record => record.id}
           dataSource={this.state.data}
           pagination={this.state.pagination}
           loading={this.state.loading}
-          onChange={this.handleTableChange}
         />
+        <br />
         <Button type="link">
           <Link to="/milestones">View All</Link>
         </Button>
+        <br />
       </React.Fragment>
     );
   }

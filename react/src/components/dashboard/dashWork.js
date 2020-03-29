@@ -59,19 +59,27 @@ class DashWorkflow extends React.Component {
         for (let entry of response.data) {
           conf.push({
             id: entry.workflowID,
-            key: entry.workflowID,
             name: entry.name,
             description: entry.description,
             dateC: entry.createdDate,
             dateM: entry.lastUpdatedDate
           });
         }
+
+        let newConf = [];
+
+        if (conf.length > 4) {
+          newConf = conf.slice(0, 4);
+        } else {
+          newConf = conf;
+        }
+
         const pagination = { ...this.state.pagination };
         pagination.pageSize = 4;
         this.setState({
           loading: false,
-          data: conf,
-          pagination
+          data: newConf,
+          pagination: false
         });
       })
       .catch(function(error) {
@@ -90,9 +98,11 @@ class DashWorkflow extends React.Component {
           loading={this.state.loading}
           onChange={this.handleTableChange}
         />
+        <br />
         <Button type="link">
           <Link to="/workflow">View All</Link>
         </Button>
+        <br />
       </React.Fragment>
     );
   }
