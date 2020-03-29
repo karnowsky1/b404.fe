@@ -143,3 +143,15 @@ code {
   cursor: pointer;
   margin-right: 30px;
 }
+
+.rst__rowTitleWithSubtitle {
+  font-size: 85%;
+  display: block;
+  height: 0.8rem;
+}
+
+.rst__rowTitle {
+  font-size: 85%;
+  display: block;
+  height: 0.8rem;
+}

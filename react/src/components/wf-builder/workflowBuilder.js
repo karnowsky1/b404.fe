@@ -191,9 +191,7 @@ export default class WorkflowBuilder extends Component {
     const getNodeKey = ({ treeIndex }) => treeIndex;
     const children = [];
     this.state.verbs.forEach(element => {
-      children.push(
-        <Option key={element.verbID}>{element.description}</Option>
-      );
+      children.push(<Option key={element.verbID}>{element.name}</Option>);
     });
 
     return (
@@ -268,7 +266,10 @@ export default class WorkflowBuilder extends Component {
             ),
             subtitle: (
               <Input
-                style={{ marginTop: '12px' }}
+                style={{
+                  marginTop: '12px'
+                }}
+                placeholder="Enter a description"
                 value={rowInfo.node.subtitle}
                 size="small"
                 onChange={event => {
