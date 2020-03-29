@@ -338,7 +338,7 @@ export default class WorkflowBuilder extends Component {
           style={{
             display: 'flex',
             justifyContent: 'flex-end',
-            marginTop: '-60px'
+            marginTop: '1rem'
           }}
         >
           <Button
