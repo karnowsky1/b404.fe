@@ -3,7 +3,8 @@ import { Form, Input, Tooltip, Icon, Card, Button, Spin, message } from 'antd';
 import axios from 'axios';
 import qs from 'qs';
 import { TOKEN_KEY, UUID_KEY } from '../../constants/auth';
-import { hash } from './../../utils/hash'
+import { hash } from './../../utils/hash';
+import SignatureCanvas from 'react-signature-canvas';
 
 class SettingsForm extends React.Component {
   constructor(props) {
@@ -81,7 +82,7 @@ class SettingsForm extends React.Component {
             qs.stringify({
               id,
               username,
-              password: hash(password),
+              password: password ? hash(password) : '',
               fName,
               lName,
               email,
@@ -131,6 +132,7 @@ class SettingsForm extends React.Component {
     this.setState({
       user: { ...this.state.user, [e.target.name]: e.target.value }
     });
+    console.log(this.sigCanvas.toDataURL());
   };
 
   render() {
@@ -162,7 +164,7 @@ class SettingsForm extends React.Component {
     return (
       <div className="settings-main">
         <Card>
-            <h3 class="headers">Main Settings</h3>
+            <h3 className="headers">Main Settings</h3>
             <div className="settings-inner">
               <Spin spinning={this.state.loading}>
                 <Form
@@ -335,6 +337,11 @@ class SettingsForm extends React.Component {
                       />
                     )}
                   </Form.Item>
+                  <SignatureCanvas ref={(ref) => { this.sigCanvas = ref; }} 
+                                       penColor='green'
+                                       canvasProps={{width: 500, height: 200, className: 'sigCanvas'}}
+                                       onEnd={this.handleChange}
+                  />
                   <Form.Item {...tailFormItemLayout}>
                     <Button type="primary" htmlType="submit">
                       Update
