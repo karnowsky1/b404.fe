@@ -54,8 +54,8 @@ class NavLayout extends React.Component {
                 </NavLink>
               </Menu.Item>
             ))}
-
-            <div style={{ padding: '10px' }}>Settings</div>
+            <Menu.Divider style={{backgroundColor: '#313C4E'}}/>
+            {/* <div style={{ padding: '10px', fontSize: '.8em' }}>Settings</div> */}
             <Menu.Item key="5">
               <NavLink to="/main-settings">
                 <Icon type="setting" />

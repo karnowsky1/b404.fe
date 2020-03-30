@@ -13,6 +13,7 @@ import {
 import axios from 'axios';
 import { FormBuilder } from 'cb-react-forms';
 //import { FormGenerator } from 'cb-react-forms';
+import ReactToPrint from 'react-to-print';
 
 const { Search } = Input;
 
@@ -270,7 +271,7 @@ class DocumentsTable extends React.Component {
         <br></br>
         <Card>
           <div>
-            <h1>Your Documents</h1>
+            <h3 className="headers">Your Documents</h3>
             <Table
               columns={columns}
               dataSource={this.state.data}
@@ -283,15 +284,19 @@ class DocumentsTable extends React.Component {
               + Create
             </Button>
             <Modal
+              ref={el => (this.componentRef = el)}
               title="Create your document"
-              bodyStyle={{ height: '100vh' }}
               width="80vw"
               visible={this.state.visible}
               onOk={this.handleOk}
               onCancel={this.handleCancel}
             >
               
-              <FormBuilder onSubmit={onSubmit} items={items} />
+              <FormBuilder ref={el => (this.componentRef = el)} onSubmit={onSubmit} items={items} />
+              <ReactToPrint
+                trigger={() => <Button>Print this out!</Button>}
+                content={() => this.componentRef}
+              />
               
             </Modal>
           </div>
