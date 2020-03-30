@@ -93,6 +93,7 @@ class DashWorkflow extends React.Component {
             <p>{record.dateM}</p>
           </div>
         ))}
+        <br />
         <Button type="link">
           <Link to="/workflow">View All</Link>
         </Button>
