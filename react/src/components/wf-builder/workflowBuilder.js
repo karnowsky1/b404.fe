@@ -10,8 +10,8 @@ import { Button, Input, Select, message, Switch } from 'antd';
 import 'react-sortable-tree/style.css';
 //import qs from 'qs';
 import axios from 'axios';
-import { TOKEN_KEY, DEFAULT_TREE } from '../../constants';
-import { getVerbs, getPerson } from '../../utils/api';
+import { TOKEN_KEY, DEFAULT_TREE, ASSIGN_DEFAULT_TREE } from '../../constants';
+import { getVerbs, getPerson, getFileByMilestone } from '../../utils/api';
 
 const { Option } = Select;
 
@@ -26,6 +26,7 @@ export default class WorkflowBuilder extends Component {
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
     this.setTreeData = this.setTreeData.bind(this);
+    this.setWorkflowData = this.setWorkflowData.bind(this);
     message.config({
       maxCount: 1
     });
@@ -38,32 +39,51 @@ export default class WorkflowBuilder extends Component {
       loading: false,
       verbs: [],
       people: [],
-      treeData: [DEFAULT_TREE]
+      files: [],
+      defaultTree: this.props.isAssignWorkflow
+        ? [ASSIGN_DEFAULT_TREE]
+        : [DEFAULT_TREE],
+      treeData: this.props.isAssignWorkflow
+        ? [ASSIGN_DEFAULT_TREE]
+        : [DEFAULT_TREE]
     };
   }
 
   componentDidMount() {
+    console.log(this.state.defaultTree);
     this.getAllVerbs();
-    this.getAllPeople();
+    this.props.isAssignWorkflow && this.getAllPeople();
+    this.props.isAssignWorkflow && this.getAllFiles(this.props.milestoneID);
+    this.setWorkflowData();
+    console.log('this is the concrete workflow');
+    console.log(this.props.workflow.steps);
   }
 
-  getAllVerbs() {
-    getVerbs()
+  // new parts of the tree (person | file) mapped to the workflow steps
+  // if there's a step that doesn't require a file, it defaults to 0, can provide it or it defaults on the backend regardless
+  // try to get that file, get empty blob, kind of like
+
+  // template file has a workflowID of 0
+
+  // have to pass in the workflow ID when routing the user to the submission page
+  // either via localStorage or Redux, or sesion
+
+  // hit the insertFile endpoint with the optional stepID to submit a new document like a dropbox
+
+  getAllVerbs = async e => {
+    await getVerbs()
       .then(response => {
         if (response.status === 200) {
           this.setState({
-            workflowID: this.props.workflow.workflowID,
-            wfName: this.props.workflow.name,
-            wfDescription: this.props.workflow.description,
-            verbs: response.data,
-            treeData: this.props.workflow.steps
+            verbs: response.data
           });
         }
       })
       .catch(axiosError);
-  }
-  getAllPeople() {
-    getPerson()
+  };
+
+  getAllPeople = async e => {
+    await getPerson()
       .then(response => {
         response.status === 200 &&
           this.setState({
@@ -71,7 +91,39 @@ export default class WorkflowBuilder extends Component {
           });
       })
       .catch(axiosError);
+  };
+
+  getAllFiles = async milestoneID => {
+    await getFileByMilestone(milestoneID)
+      .then(response => {
+        this.setState({
+          files: response.data
+        });
+      })
+      .catch(axiosError);
+  };
+
+  setWorkflowData() {
+    this.setState({
+      workflowID: this.props.workflow.workflowID,
+      wfName: this.props.workflow.name,
+      wfDescription: this.props.workflow.description,
+      treeData: this.props.workflow.steps
+    });
   }
+
+  workflowConcreteStepConversion() {
+    console.log(this.props.workflow.steps);
+    const concreteWorkflow = this.props.workflow.steps.map(obj => ({
+      ...obj,
+      person: '',
+      fileID: ''
+    }));
+    console.log('this is the concrete workflow');
+    console.log(concreteWorkflow);
+  }
+
+  setTreeDataState() {}
 
   componentDidUpdate(prevProps) {
     if (this.props.workflow !== prevProps.workflow) {
@@ -137,7 +189,7 @@ export default class WorkflowBuilder extends Component {
 
   addNewNode(rowInfo) {
     const NEW_NODE = {
-      ...DEFAULT_TREE,
+      ...this.state.defaultTree,
       title: this.state.verbs[0].verbID
     };
     const newTree = addNodeUnderParent({
@@ -190,8 +242,14 @@ export default class WorkflowBuilder extends Component {
   render() {
     const getNodeKey = ({ treeIndex }) => treeIndex;
     const children = [];
+    const people = [];
     this.state.verbs.forEach(element => {
       children.push(<Option key={element.verbID}>{element.name}</Option>);
+    });
+    this.state.people.forEach(element => {
+      people.push(
+        <Option key={element.uuid}>{element.fName + element.lName}</Option>
+      );
     });
 
     return (
@@ -240,6 +298,31 @@ export default class WorkflowBuilder extends Component {
           treeData={this.state.treeData}
           onChange={this.updateTreeData}
           generateNodeProps={rowInfo => ({
+            uuid: (
+              <Select
+                value={rowInfo.node.uuid && rowInfo.node.uuid.toString()}
+                size="small"
+                placeholder="Select Person"
+                disabled={
+                  rowInfo.node.children && !!rowInfo.node.children.length
+                }
+                style={{ width: 120 }}
+                onChange={event => {
+                  const { path } = rowInfo;
+                  const uuid = parseInt(event);
+                  this.setState(state => ({
+                    treeData: changeNodeAtPath({
+                      treeData: state.treeData,
+                      path,
+                      getNodeKey,
+                      newNode: { ...rowInfo.node, uuid }
+                    })
+                  }));
+                }}
+              >
+                {people}
+              </Select>
+            ),
             title: (
               <Select
                 value={rowInfo.node.title.toString()}
@@ -289,6 +372,29 @@ export default class WorkflowBuilder extends Component {
             ),
             buttons: [
               <div style={{ display: 'flex' }}>
+                <Select
+                  value={rowInfo.node.uuid && rowInfo.node.uuid.toString()}
+                  size="small"
+                  placeholder="Select Person"
+                  disabled={
+                    rowInfo.node.children && !!rowInfo.node.children.length
+                  }
+                  style={{ width: 120 }}
+                  onChange={event => {
+                    const { path } = rowInfo;
+                    const uuid = parseInt(event);
+                    this.setState(state => ({
+                      treeData: changeNodeAtPath({
+                        treeData: state.treeData,
+                        path,
+                        getNodeKey,
+                        newNode: { ...rowInfo.node, uuid }
+                      })
+                    }));
+                  }}
+                >
+                  {people}
+                </Select>
                 <Button
                   style={{ marginRight: 5 }}
                   label="Delete"

@@ -49,7 +49,7 @@ class MilestonesTable extends React.Component {
               <Button
                 type="link"
                 size="small"
-                onClick={e => this.showAssignModal()}
+                onClick={e => this.showAssignModal(record)}
               >
                 Add Workflow
               </Button>
@@ -118,7 +118,7 @@ class MilestonesTable extends React.Component {
     });
   };
 
-  showAssignModal = async e => {
+  showAssignModal = async record => {
     await getWorkflowTemplates()
       .then(response => {
         this.setState({
@@ -127,7 +127,8 @@ class MilestonesTable extends React.Component {
             key: template.workflowID,
             label: template.name
           })),
-          assignvisible: true
+          assignvisible: true,
+          assignWorkflowToMilestoneID: record.id
         });
       })
       .catch(axiosError);
@@ -401,7 +402,7 @@ class MilestonesTable extends React.Component {
                           <p></p>
                           <Progress
                             style={{ width: 310 }}
-                            percent={percentComplete}
+                            percent={percentComplete * 100}
                             size="small"
                           />
                           <p></p>
@@ -476,7 +477,9 @@ class MilestonesTable extends React.Component {
           >
             <WorkflowBuilder
               isNewWorkflow={false}
+              isAssignWorkflow={true}
               workflow={this.state.workflow}
+              milestoneID={this.state.assignWorkflowToMilestoneID}
             />
           </Modal>
         )}

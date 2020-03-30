@@ -353,7 +353,10 @@ class ActiveWorkflows extends React.Component {
           onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
-          <WorkflowBuilder workflow={this.state.workflow} />
+          <WorkflowBuilder
+            workflow={this.state.workflow}
+            isAssignWorkflow={false}
+          />
         </Modal>
       </React.Fragment>
     );

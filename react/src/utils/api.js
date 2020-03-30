@@ -40,6 +40,22 @@ export const getVerbs = () =>
     }
   });
 
+export const getFileByMilestone = uuid =>
+  axios.get(window.__env__.API_URL + `/blink/api/file/milestone/${uuid}`, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: localStorage.getItem('token')
+    }
+  });
+
+export const getFileByID = uuid =>
+  axios.get(window.__env__.API_URL + `/blink/api/file/id/${uuid}`, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: localStorage.getItem('token')
+    }
+  });
+
 export const getWorkflow = uuid =>
   axios.get(
     window.__env__.API_URL + '/blink/api/workflow/' + (uuid ? `${uuid}` : ''),

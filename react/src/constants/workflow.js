@@ -4,3 +4,12 @@ export const DEFAULT_TREE = {
   asynchronous: false,
   expanded: false
 };
+
+export const ASSIGN_DEFAULT_TREE = {
+  title: 0,
+  subtitle: '',
+  asynchronous: false,
+  expanded: false,
+  file: 0,
+  person: 0
+};
