@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { Button, Progress } from "antd";
+import { Button, Progress, Card } from "antd";
 import { TOKEN_KEY /*, UUID_KEY*/ } from "../../constants/auth";
 import { Link } from "react-router-dom";
 
@@ -79,18 +79,20 @@ class DashWorkflow extends React.Component {
           <div
             style={{
               display: "inline-block",
-              padding: "8em",
+              padding: "5em",
               textAlign: "center"
             }}
             key={record.id}
           >
-            <Progress type="circle" percent={record.percentComplete * 100} />
-            <p />
-            <p>
-              <b>{record.name}</b>
-            </p>
-            <p>Last Modified:</p>
-            <p>{record.dateM}</p>
+            <Card style={{ width: 220, height: 300 }}>
+              <Progress type="circle" percent={record.percentComplete * 100} />
+              <p />
+              <p>
+                <b>{record.name}</b>
+              </p>
+              <p>Last Modified:</p>
+              <p>{record.dateM}</p>
+            </Card>
           </div>
         ))}
         <br />
