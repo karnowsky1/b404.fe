@@ -392,13 +392,15 @@ class MilestonesTable extends React.Component {
                             <b>{name}</b>
                           </span>
                           <Divider type="vertical" />
-                          <Button
-                            type="link"
-                            size="small"
-                            onClick={e => this.showEditModal(record)}
-                          >
-                            Update Workflow
-                          </Button>
+                          {this.props.content === 'active' && (
+                            <Button
+                              type="link"
+                              size="small"
+                              onClick={e => this.showEditModal(record)}
+                            >
+                              Update Workflow
+                            </Button>
+                          )}
                           <p></p>
                           <Progress
                             style={{ width: 310 }}
