@@ -125,14 +125,12 @@ class ActiveWorkflows extends React.Component {
   };
 
   handleCompanyOk = e => {
-    console.log(e);
     this.setState({
       companyVisible: false
     });
   };
 
   handleCompanyCancel = e => {
-    console.log(e);
     this.setState({
       companyVisible: false
     });
@@ -146,14 +144,12 @@ class ActiveWorkflows extends React.Component {
   };
 
   handlePersonOk = e => {
-    console.log(e);
     this.setState({
       personVisible: false
     });
   };
 
   handlePersonCancel = e => {
-    console.log(e);
     this.setState({
       personVisible: false
     });
@@ -335,9 +331,6 @@ class ActiveWorkflows extends React.Component {
             onOk={this.handlePersonOk}
           />
         )}
-        <Button type="primary" onClick={this.showModalDefault}>
-          + Create
-        </Button>
         <Modal
           bodyStyle={{ height: '81vh' }}
           title={
@@ -355,7 +348,8 @@ class ActiveWorkflows extends React.Component {
         >
           <WorkflowBuilder
             workflow={this.state.workflow}
-            isAssignWorkflow={false}
+            isConcreteWorkflow={!this.state.isNew}
+            updateWorkflow={true}
           />
         </Modal>
       </React.Fragment>

@@ -477,7 +477,7 @@ class MilestonesTable extends React.Component {
           >
             <WorkflowBuilder
               isNewWorkflow={false}
-              isAssignWorkflow={true}
+              isConcreteWorkflow={true}
               workflow={this.state.workflow}
               milestoneID={this.state.assignWorkflowToMilestoneID}
             />
