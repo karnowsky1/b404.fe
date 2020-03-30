@@ -1,26 +1,8 @@
 import React from "react";
 import axios from "axios";
-import { Table, Button } from "antd";
+import { Button, Progress } from "antd";
 import { TOKEN_KEY /*, UUID_KEY*/ } from "../../constants/auth";
 import { Link } from "react-router-dom";
-
-const columns = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name"
-  },
-  {
-    title: "Created Date",
-    dataIndex: "dateC",
-    key: "dateC"
-  },
-  {
-    title: "Last Modified",
-    dataIndex: "dateM",
-    key: "dateM"
-  }
-];
 
 class DashWorkflow extends React.Component {
   constructor(props) {
@@ -62,7 +44,8 @@ class DashWorkflow extends React.Component {
             name: entry.name,
             description: entry.description,
             dateC: entry.createdDate,
-            dateM: entry.lastUpdatedDate
+            dateM: entry.lastUpdatedDate,
+            percentComplete: entry.percentComplete
           });
         }
 
@@ -86,23 +69,33 @@ class DashWorkflow extends React.Component {
         console.log(error);
       });
   };
+
   render() {
     return (
       <React.Fragment>
-        <h3>Your Workflows</h3>
-        <Table
-          columns={columns}
-          rowKey={record => record.id}
-          dataSource={this.state.data}
-          pagination={this.state.pagination}
-          loading={this.state.loading}
-          onChange={this.handleTableChange}
-        />
         <br />
+        <h3>Your Workflows</h3>
+        {this.state.data.map(record => (
+          <div
+            style={{
+              display: "inline-block",
+              padding: "8em",
+              textAlign: "center"
+            }}
+            key={record.id}
+          >
+            <Progress type="circle" percent={record.percentComplete * 100} />
+            <p />
+            <p>
+              <b>{record.name}</b>
+            </p>
+            <p>Last Modified:</p>
+            <p>{record.dateM}</p>
+          </div>
+        ))}
         <Button type="link">
           <Link to="/workflow">View All</Link>
         </Button>
-        <br />
       </React.Fragment>
     );
   }

@@ -1,26 +1,8 @@
 import React from "react";
 import axios from "axios";
-import { Table, Button } from "antd";
+import { Button, Card } from "antd";
 import { TOKEN_KEY /*, UUID_KEY*/ } from "../../constants/auth";
 import { Link } from "react-router-dom";
-
-const columns = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name"
-  },
-  {
-    title: "Company",
-    dataIndex: "company",
-    key: "company"
-  },
-  {
-    title: "Date Started",
-    dataIndex: "date",
-    key: "date"
-  }
-];
 
 class DashMilestones extends React.Component {
   constructor(props) {
@@ -90,18 +72,27 @@ class DashMilestones extends React.Component {
     return (
       <React.Fragment>
         <h3>Your Milestones</h3>
-        <Table
-          columns={columns}
-          rowKey={record => record.id}
-          dataSource={this.state.data}
-          pagination={this.state.pagination}
-          loading={this.state.loading}
-        />
+        {this.state.data.map(record => (
+          <div
+            style={{ display: "inline-block", padding: "2em" }}
+            key={record.id}
+          >
+            <Card title={record.name} style={{ width: 300 }} key={record.id}>
+              <p>
+                <b>Company Name:</b>
+              </p>
+              <p>{record.company}</p>
+              <p>
+                <b>Date Started:</b>
+              </p>
+              <p>{record.date}</p>
+            </Card>
+          </div>
+        ))}
         <br />
         <Button type="link">
           <Link to="/milestones">View All</Link>
         </Button>
-        <br />
       </React.Fragment>
     );
   }
