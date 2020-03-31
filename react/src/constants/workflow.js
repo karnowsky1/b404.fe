@@ -11,5 +11,5 @@ export const ASSIGN_DEFAULT_TREE = {
   asynchronous: false,
   expanded: false,
   file: 0,
-  person: 0
+  uuid: 0
 };

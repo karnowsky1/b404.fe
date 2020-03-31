@@ -26,6 +26,7 @@ class MilestonesTable extends React.Component {
     assignvisible: false,
     workflowBuilderVisible: false,
     workflow: [],
+    updateWorkflow: false,
     editingMilestone: undefined,
     editingMilestoneID: undefined,
     assignWorkflowTemplates: undefined,
@@ -152,7 +153,13 @@ class MilestonesTable extends React.Component {
     });
   };
 
-  showWorkflowModal = e => {
+  showWorkflowModal = workflow => {
+    workflow &&
+      this.setState({
+        workflow: workflow,
+        assignWorkflowToMilestoneID: workflow.milestoneID,
+        updateWorkflow: true
+      });
     this.setState({
       isNew: false,
       workflowBuilderVisible: true
@@ -160,21 +167,18 @@ class MilestonesTable extends React.Component {
   };
 
   handleAddCancel = e => {
-    // console.log(e);
     this.setState({
       addvisible: false
     });
   };
 
   handleEditCancel = e => {
-    // console.log(e);
     this.setState({
       editvisible: false
     });
   };
 
   handleAssignCancel = e => {
-    // console.log(e);
     this.setState({
       assignvisible: false
     });
@@ -289,7 +293,6 @@ class MilestonesTable extends React.Component {
             });
           });
         }
-        // console.log(conf)
         const pagination = { ...this.state.pagination };
         pagination.pageSize = 4;
         this.setState({
@@ -385,32 +388,30 @@ class MilestonesTable extends React.Component {
                   {/* <p> */}
                   {/* {console.log(record)} */}
                   {record.workflows &&
-                    record.workflows.map(
-                      ({ name, percentComplete, workflowID }) => (
-                        <div key={workflowID}>
-                          <span style={{ width: 200 }}>
-                            <b>{name}</b>
-                          </span>
-                          <Divider type="vertical" />
-                          {this.props.content === 'active' && (
-                            <Button
-                              type="link"
-                              size="small"
-                              onClick={e => this.showEditModal(record)}
-                            >
-                              Update Workflow
-                            </Button>
-                          )}
-                          <p></p>
-                          <Progress
-                            style={{ width: 310 }}
-                            percent={percentComplete * 100}
+                    record.workflows.map(({ ...workflow }) => (
+                      <div key={workflow.workflowID}>
+                        <span style={{ width: 200 }}>
+                          <b>{workflow.name}</b>
+                        </span>
+                        <Divider type="vertical" />
+                        {this.props.content === 'active' && (
+                          <Button
+                            type="link"
                             size="small"
-                          />
-                          <p></p>
-                        </div>
-                      )
-                    )}
+                            onClick={e => this.showWorkflowModal(workflow)}
+                          >
+                            Update Workflow
+                          </Button>
+                        )}
+                        <p></p>
+                        <Progress
+                          style={{ width: 310 }}
+                          percent={workflow.percentComplete * 100}
+                          size="small"
+                        />
+                        <p></p>
+                      </div>
+                    ))}
                   {/* <b>Workflow 1</b>
                     </p>
                     <Progress percent={50} size="small" />
@@ -478,10 +479,12 @@ class MilestonesTable extends React.Component {
             visible={true}
           >
             <WorkflowBuilder
-              isNewWorkflow={false}
+              isNew={false}
               isConcreteWorkflow={true}
               workflow={this.state.workflow}
               milestoneID={this.state.assignWorkflowToMilestoneID}
+              updateWorkflow={this.state.updateWorkflow}
+              onCancel={this.handleWorkflowCancel}
             />
           </Modal>
         )}

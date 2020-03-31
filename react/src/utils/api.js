@@ -18,6 +18,13 @@ export const getPerson = uuid =>
     }
   );
 
+export const getPeopleByCompany = uuid =>
+  axios.get(window.__env__.API_URL + `/blink/api/company/people/${uuid}`, {
+    headers: {
+      Authorization: localStorage.getItem('token')
+    }
+  });
+
 export const getMilestone = uuid =>
   axios.get(window.__env__.API_URL + `/blink/api/milestone/${uuid}`, {
     headers: {

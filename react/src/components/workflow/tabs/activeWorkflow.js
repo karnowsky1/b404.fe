@@ -1,11 +1,12 @@
 import React from 'react';
-import { Table, Button, Divider, Modal, Spin, message } from 'antd';
+import { Table, Button, Divider, Modal, Spin } from 'antd';
 import axios from 'axios';
 import { AssignModal } from '../assignModal';
 import { AssignPeople } from '../assignModal';
 import WorkflowBuilder from '../../wf-builder/workflowBuilder';
 import { TOKEN_KEY, DEFAULT_TREE } from '../../../constants';
 import qs from 'qs';
+import { axiosError } from '../../../utils/axiosError';
 
 const { confirm } = Modal;
 
@@ -93,17 +94,7 @@ class ActiveWorkflows extends React.Component {
         this.setState({
           loading: false
         });
-        message.destroy();
-        if (error.response) {
-          // Request made and server responded
-          message.error(error.response.data.error);
-        } else if (error.request) {
-          // The request was made but no response was received
-          message.error('Server not responding');
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          message.error('Error setting up request');
-        }
+        axiosError();
       });
   }
 
@@ -218,7 +209,6 @@ class ActiveWorkflows extends React.Component {
   }
 
   handleOk = e => {
-    console.log(e);
     this.setState({
       visible: false
     });
@@ -226,7 +216,6 @@ class ActiveWorkflows extends React.Component {
   };
 
   handleCancel = e => {
-    console.log(e);
     this.setState({
       workflow: null,
       visible: false
@@ -337,7 +326,7 @@ class ActiveWorkflows extends React.Component {
             this.state.isNew ? (
               <h1>Create a new workflow template</h1>
             ) : (
-              <h1>Edit workflow template</h1>
+              <h1>Edit Active Workflow</h1>
             )
           }
           width="75vw"
@@ -350,6 +339,7 @@ class ActiveWorkflows extends React.Component {
             workflow={this.state.workflow}
             isConcreteWorkflow={!this.state.isNew}
             updateWorkflow={true}
+            onCancel={this.handleCancel}
           />
         </Modal>
       </React.Fragment>
