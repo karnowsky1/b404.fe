@@ -38,17 +38,13 @@ class Pending extends React.Component {
     })
       .then(response => {
         console.log(response);
-        // let conf = [];
-        // for (let entry of response.data) {
-        //   conf.push({
-        //     id: entry.workflowID
-        //     key: entry.workflowID,
-        //     name: entry.name,
-        //     description: entry.description,
-        //     dateC: entry.createdDate,
-        //     dateM: entry.lastUpdatedDate
-        //   });
-        // }
+        let conf = [];
+        for (let entry of response.data) {
+          conf.push({
+            id: entry.stepID,
+            name: entry.subtitle
+          });
+        }
         const pagination = { ...this.state.pagination };
         pagination.pageSize = 4;
         this.setState({
