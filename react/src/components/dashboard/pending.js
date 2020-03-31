@@ -1,8 +1,8 @@
-import React from "react";
-import axios from "axios";
-import { Card, Button } from "antd";
-import { TOKEN_KEY /*, UUID_KEY*/ } from "../../constants/auth";
-import { Link } from "react-router-dom";
+import React from 'react';
+import axios from 'axios';
+import { Card, Button } from 'antd';
+import { TOKEN_KEY /*, UUID_KEY*/ } from '../../constants/auth';
+import { Link } from 'react-router-dom';
 
 class Pending extends React.Component {
   constructor(props) {
@@ -24,17 +24,17 @@ class Pending extends React.Component {
 
   fetch = (params = {}) => {
     axios({
-      method: "get",
-      url: window.__env__.API_URL + "/blink/api/workflow/pending",
+      method: 'get',
+      url: window.__env__.API_URL + '/blink/api/workflow/pending',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: localStorage.getItem(TOKEN_KEY)
       },
       response: {
         results: 4,
         params
       },
-      type: "json"
+      type: 'json'
     })
       .then(response => {
         console.log(response);
@@ -70,26 +70,35 @@ class Pending extends React.Component {
     return (
       <React.Fragment>
         <h3>Pending Tasks</h3>
-        {this.state.data.map(record => (
+        {this.state.data ? 
+          this.state.data.map(record => (
           <div
-            style={{ display: "inline-block", padding: "2em" }}
+            style={{ display: 'inline-block', padding: '2em' }}
             key={record.id}
           >
-            <Card style={{ width: 300, height: 70, display: "inline-block" }}>
+            <Card style={{ width: 300, height: 70, display: 'inline-block' }}>
               <p>
                 <b>{record.name}</b>
                 <Button
-                  type="primary"
-                  shape="round"
-                  size="small"
-                  style={{ float: "right" }}
+                  type='primary'
+                  shape='round'
+                  size='small'
+                  style={{ float: 'right' }}
                 >
-                  <Link to="/">View</Link>
+                  <Link to='/'>View</Link>
                 </Button>
               </p>
             </Card>
           </div>
-        ))}
+        )): 
+          <div
+              style={{ display: 'inline-block', padding: '2em' }}
+          >
+            <Card style={{ width: 300, height: 70, display: 'inline-block', textAlign: 'center' }}>
+              <p>No Current Tasks</p>
+            </Card>
+          </div>
+        }
         <br />
       </React.Fragment>
     );
