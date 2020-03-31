@@ -78,7 +78,7 @@ export default class WorkflowBuilder extends Component {
     this.props.isConcreteWorkflow && this.getAllPeople(milestoneID);
     this.props.isConcreteWorkflow && this.getAllFiles(milestoneID);
 
-    this.setWorkflowData();
+    this.props.workflow && this.setWorkflowData();
     console.log('this is the concrete workflow');
     console.log(this.props.workflow.steps);
 
@@ -179,7 +179,7 @@ export default class WorkflowBuilder extends Component {
     console.log(this.props.workflow);
     const requestObject = {
       workflowID: this.state.workflow.workflowID,
-      name: this.state.workflow.name,
+      name: this.state.wfName,
       description: this.state.wfDescription,
       steps: this.state.treeData
     };
@@ -188,7 +188,7 @@ export default class WorkflowBuilder extends Component {
 
     if (this.props.isNew && !this.props.isConcreteWorkflow) {
       // new workflow template
-      axios
+      await axios
         .post(url, requestObject, {
           headers: {
             'Content-Type': 'application/json',
@@ -198,14 +198,16 @@ export default class WorkflowBuilder extends Component {
         .then(response => {
           //this.setState({ loading: true });
           if (response.status === 200) {
-            this.successfulResponsSubmission();
+            // this.successfulResponsSubmission();
+            console.log('workflow template');
+            console.log(requestObject);
           }
         })
         .catch(axiosError);
       onCancel();
     } else if (!this.props.isNew && !this.props.isConcreteWorkflow) {
       // updating an existing workflow template
-      axios
+      await axios
         .put(url, requestObject, {
           headers: {
             'Content-Type': 'application/json',
@@ -221,7 +223,7 @@ export default class WorkflowBuilder extends Component {
       onCancel();
     } else if (!this.props.updateWorkflow && this.props.isConcreteWorkflow) {
       // assigning/ creating a concrete workflow
-      axios
+      await axios
         .post(concreteWorkflowUrl, requestObject, {
           headers: {
             'Content-Type': 'application/json',
@@ -238,7 +240,7 @@ export default class WorkflowBuilder extends Component {
       onCancel();
     } else if (this.props.updateWorkflow && this.props.isConcreteWorkflow) {
       // updating a concrete workflow
-      axios
+      await axios
         .put(concreteWorkflowUrl, requestObject, {
           headers: {
             'Content-Type': 'application/json',
