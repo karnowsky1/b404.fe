@@ -346,7 +346,7 @@ export default class WorkflowBuilder extends Component {
           flexDirection: 'column'
         }}
       >
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', marginBottom: '30px' }}>
           <div
             style={{
               display: 'flex',
@@ -354,23 +354,19 @@ export default class WorkflowBuilder extends Component {
               marginRight: '35px'
             }}
           >
-            <div className="flex_column">
-              <h5 style={{ margin: '0' }}>Name: </h5>
-              <Input
-                value={this.state.wfName}
-                size="small"
-                onChange={this.handleNameChange}
-                placeholder="Enter workflow name..."
-              ></Input>
-            </div>
+            <h6 class="wfInputText">Name: </h6>
+            <Input
+              value={this.state.wfName}
+              onChange={this.handleNameChange}
+              placeholder="Enter workflow name..."
+            ></Input>
           </div>
-          <div className="flex_column">
-            <h5 style={{ margin: '0' }}>Description: </h5>
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <h6 class="wfInputText">Description: </h6>
             <Input
               value={this.state.wfDescription}
-              size="small"
               onChange={this.handleDescriptionChange}
-              placeholder="Enter workflow description..."
+              placeholder="Enter description..."
             ></Input>
           </div>
           {this.props.isConcreteWorkflow && (
