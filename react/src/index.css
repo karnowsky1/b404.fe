@@ -14,7 +14,7 @@ body {
 }
 
 .headers {
-  margin-bottom: 25px!important;
+  margin-bottom: 25px !important;
 }
 
 code {
@@ -146,6 +146,11 @@ code {
 .logout {
   cursor: pointer;
   margin-right: 30px;
+}
+
+.flex_column {
+  display: 'flex';
+  flex-direction: 'column';
 }
 
 .rst__rowTitleWithSubtitle {

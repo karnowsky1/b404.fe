@@ -6,6 +6,7 @@ import {
   changeNodeAtPath
 } from 'react-sortable-tree';
 import { axiosError } from '../../utils/axiosError';
+import { DateRange } from '../../utils/DateRange';
 import { Button, Input, Select, message, Switch } from 'antd';
 import 'react-sortable-tree/style.css';
 //import qs from 'qs';
@@ -42,6 +43,8 @@ export default class WorkflowBuilder extends Component {
       wfDescription: '',
       visible: false,
       loading: false,
+      startDate: '',
+      deliveryDate: '',
       verbs: [],
       people: [],
       files: [],
@@ -198,7 +201,7 @@ export default class WorkflowBuilder extends Component {
         .then(response => {
           //this.setState({ loading: true });
           if (response.status === 200) {
-            // this.successfulResponsSubmission();
+            this.successfulResponseSubmission();
             console.log('workflow template');
             console.log(requestObject);
           }
@@ -216,7 +219,7 @@ export default class WorkflowBuilder extends Component {
         })
         .then(response => {
           if (response.status === 200) {
-            this.successfulResponsSubmission();
+            this.successfulResponseSubmission();
           }
         })
         .catch(axiosError);
@@ -233,7 +236,7 @@ export default class WorkflowBuilder extends Component {
         .then(response => {
           //this.setState({ loading: true });
           if (response.status === 200) {
-            this.successfulResponsSubmission();
+            this.successfulResponseSubmission();
           }
         })
         .catch(axiosError);
@@ -250,7 +253,7 @@ export default class WorkflowBuilder extends Component {
         .then(response => {
           //this.setState({ loading: true });
           if (response.status === 200) {
-            this.successfulResponsSubmission();
+            this.successfulResponseSubmission();
           }
         })
         .catch(axiosError);
@@ -258,7 +261,7 @@ export default class WorkflowBuilder extends Component {
     }
   };
 
-  successfulResponsSubmission() {
+  successfulResponseSubmission() {
     this.setState({ loading: false });
     message.success('Data saved successfully');
     window.location.reload(true);
@@ -350,15 +353,17 @@ export default class WorkflowBuilder extends Component {
               marginRight: '35px'
             }}
           >
-            <h5 style={{ margin: '0' }}>Name: </h5>
-            <Input
-              value={this.state.wfName}
-              size="small"
-              onChange={this.handleNameChange}
-              placeholder="Enter workflow name..."
-            ></Input>
+            <div className="flex_column">
+              <h5 style={{ margin: '0' }}>Name: </h5>
+              <Input
+                value={this.state.wfName}
+                size="small"
+                onChange={this.handleNameChange}
+                placeholder="Enter workflow name..."
+              ></Input>
+            </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <div className="flex_column">
             <h5 style={{ margin: '0' }}>Description: </h5>
             <Input
               value={this.state.wfDescription}
@@ -367,6 +372,23 @@ export default class WorkflowBuilder extends Component {
               placeholder="Enter workflow description..."
             ></Input>
           </div>
+          {this.props.isConcreteWorkflow && (
+            <DateRange
+              // startDate={startDate}
+              // endDate={endDate}
+              // setStartDate={setStartDate}
+              // setEndDate={setEndDate}
+              // failedSubmit={failedSubmit}
+              // setFailedSubmit={setFailedSubmit}
+              startDate=""
+              endDate=""
+              setStartDate=""
+              setEndDate=""
+              failedSubmit=""
+              setFailedSubmit=""
+              isMilestone={false}
+            />
+          )}
         </div>
         <SortableTree
           style={{

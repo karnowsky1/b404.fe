@@ -49,7 +49,11 @@ export class DateRange extends React.Component {
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div>
-          <p className="datePicker-p-tag">Start Date *</p>
+          {this.props.isMilestone ? (
+            <p className="datePicker-p-tag">Start Date *</p>
+          ) : (
+            <h5 style={{ margin: '0' }}>Start Date *</h5>
+          )}
           <Form.Item
             name="startDate"
             validateStatus={failedSubmit.startDate ? 'error' : undefined}
@@ -74,7 +78,11 @@ export class DateRange extends React.Component {
           </Form.Item>
         </div>
         <div>
-          <p className="datePicker-p-tag">End Date *</p>
+          {this.props.isMilestone ? (
+            <p className="datePicker-p-tag">End Date *</p>
+          ) : (
+            <h5 style={{ margin: '0' }}>End Date *</h5>
+          )}
           <Form.Item
             name="endDate"
             validateStatus={failedSubmit.endDate ? 'error' : undefined}

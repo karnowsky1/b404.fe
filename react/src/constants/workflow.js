@@ -11,5 +11,7 @@ export const ASSIGN_DEFAULT_TREE = {
   asynchronous: false,
   expanded: false,
   file: 0,
-  uuid: 0
+  uuid: 0,
+  startDate: '',
+  deliveryDate: ''
 };

@@ -98,6 +98,7 @@ const MilestoneModalForm = ({
               setEndDate={setEndDate}
               failedSubmit={failedSubmit}
               setFailedSubmit={setFailedSubmit}
+              isMilestone={true}
             />
             <p></p>
             <SubmitButton>Submit</SubmitButton>

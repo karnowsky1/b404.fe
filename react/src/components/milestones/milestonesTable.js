@@ -98,9 +98,9 @@ class MilestonesTable extends React.Component {
     ];
   }
 
-  componentDidMount() {
+  componentDidMount = async e => {
     this.fetch();
-    getAllCompanies()
+    await getAllCompanies()
       .then(response => {
         this.setState({
           companyOptions: response.data.map(company => ({
@@ -111,7 +111,7 @@ class MilestonesTable extends React.Component {
         });
       })
       .catch(axiosError);
-  }
+  };
 
   showAddModal = () => {
     this.setState({
