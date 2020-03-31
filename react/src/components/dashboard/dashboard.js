@@ -7,9 +7,9 @@ class Dash extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <Pending></Pending>
         <DashWorkflow></DashWorkflow>
         <DashMilestones></DashMilestones>
+        <Pending></Pending>
       </React.Fragment>
     );
   }

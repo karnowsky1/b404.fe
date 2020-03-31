@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { List, Button } from "antd";
+import { Card, Button } from "antd";
 import { TOKEN_KEY /*, UUID_KEY*/ } from "../../constants/auth";
 import { Link } from "react-router-dom";
 
@@ -45,11 +45,20 @@ class Pending extends React.Component {
             name: entry.subtitle
           });
         }
+
+        let newConf = [];
+
+        if (conf.length > 4) {
+          newConf = conf.slice(0, 4);
+        } else {
+          newConf = conf;
+        }
+
         const pagination = { ...this.state.pagination };
         pagination.pageSize = 4;
         this.setState({
           loading: false,
-          data: response.data,
+          data: newConf,
           pagination
         });
       })
@@ -61,19 +70,26 @@ class Pending extends React.Component {
     return (
       <React.Fragment>
         <h3>Pending Tasks</h3>
-        <Button type="link" style={{ float: "right" }}>
-          <Link to="/">View All</Link>
-        </Button>
-        <br />
-        <List
-          dataSource={this.state.data}
-          renderItem={item => (
-            <List.Item key={item.id}>
-              <List.Item.Meta title={item.name} />
-              <div>{item.id}</div>
-            </List.Item>
-          )}
-        />
+        {this.state.data.map(record => (
+          <div
+            style={{ display: "inline-block", padding: "2em" }}
+            key={record.id}
+          >
+            <Card style={{ width: 300, height: 70, display: "inline-block" }}>
+              <p>
+                <b>{record.name}</b>
+                <Button
+                  type="primary"
+                  shape="round"
+                  size="small"
+                  style={{ float: "right" }}
+                >
+                  <Link to="/">View</Link>
+                </Button>
+              </p>
+            </Card>
+          </div>
+        ))}
         <br />
       </React.Fragment>
     );
