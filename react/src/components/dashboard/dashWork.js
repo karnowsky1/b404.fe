@@ -79,7 +79,7 @@ class DashWorkflow extends React.Component {
           <div
             style={{
               display: "inline-block",
-              padding: "5em",
+              padding: "2em",
               textAlign: "center"
             }}
             key={record.id}
@@ -96,9 +96,11 @@ class DashWorkflow extends React.Component {
           </div>
         ))}
         <br />
-        <Button type="link">
-          <Link to="/workflow">View All</Link>
-        </Button>
+        <div class="viewAllBlockBtn">
+          <Button type="default" block>
+            <Link to="/workflow">View All</Link>
+          </Button>
+        </div>
       </React.Fragment>
     );
   }

@@ -90,9 +90,11 @@ class DashMilestones extends React.Component {
           </div>
         ))}
         <br />
-        <Button type="link">
-          <Link to="/milestones">View All</Link>
-        </Button>
+        <div class="viewAllBlockBtn">
+          <Button type="default" block>
+            <Link to="/milestones">View All</Link>
+          </Button>
+        </div>
       </React.Fragment>
     );
   }
