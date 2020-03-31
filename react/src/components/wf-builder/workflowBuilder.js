@@ -6,7 +6,7 @@ import {
   changeNodeAtPath
 } from 'react-sortable-tree';
 import { axiosError } from '../../utils/axiosError';
-import { DateRange } from '../../utils/DateRange';
+import { WorkflowDateRange } from '../../utils/WorkflowDateRange';
 import { Button, Input, Select, message, Switch } from 'antd';
 import 'react-sortable-tree/style.css';
 //import qs from 'qs';
@@ -18,7 +18,6 @@ import {
   getPeopleByCompany,
   getMilestone
 } from '../../utils/api';
-import { WorkflowDateRange } from '../../utils/WorkflowDateRange';
 
 const { Option } = Select;
 
@@ -354,15 +353,21 @@ export default class WorkflowBuilder extends Component {
               marginRight: '35px'
             }}
           >
-            <h6 class="wfInputText">Name: </h6>
+            <h6 className="wfInputText">Name: </h6>
             <Input
               value={this.state.wfName}
               onChange={this.handleNameChange}
               placeholder="Enter workflow name..."
             ></Input>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <h6 class="wfInputText">Description: </h6>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              marginRight: '35px'
+            }}
+          >
+            <h6 className="wfInputText">Description: </h6>
             <Input
               value={this.state.wfDescription}
               onChange={this.handleDescriptionChange}
@@ -370,21 +375,30 @@ export default class WorkflowBuilder extends Component {
             ></Input>
           </div>
           {this.props.isConcreteWorkflow && (
-            <WorkflowDateRange
-              // startDate={startDate}
-              // endDate={endDate}
-              // setStartDate={setStartDate}
-              // setEndDate={setEndDate}
-              // failedSubmit={failedSubmit}
-              // setFailedSubmit={setFailedSubmit}
-              startDate=""
-              endDate=""
-              setStartDate=""
-              setEndDate=""
-              failedSubmit=""
-              setFailedSubmit=""
-              isMilestone={false}
-            />
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                marginRight: '35px'
+              }}
+            >
+              <h6 className="wfInputText"> {'Start & End Date:'} </h6>
+              <WorkflowDateRange
+                // startDate={startDate}
+                // endDate={endDate}
+                // setStartDate={setStartDate}
+                // setEndDate={setEndDate}
+                // failedSubmit={failedSubmit}
+                // setFailedSubmit={setFailedSubmit}
+                startDate=""
+                endDate=""
+                setStartDate=""
+                setEndDate=""
+                failedSubmit=""
+                setFailedSubmit=""
+                isMilestone={false}
+              />
+            </div>
           )}
         </div>
         <SortableTree
