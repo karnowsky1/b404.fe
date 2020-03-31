@@ -18,6 +18,7 @@ import {
   getPeopleByCompany,
   getMilestone
 } from '../../utils/api';
+import { WorkflowDateRange } from '../../utils/WorkflowDateRange';
 
 const { Option } = Select;
 
@@ -373,7 +374,7 @@ export default class WorkflowBuilder extends Component {
             ></Input>
           </div>
           {this.props.isConcreteWorkflow && (
-            <DateRange
+            <WorkflowDateRange
               // startDate={startDate}
               // endDate={endDate}
               // setStartDate={setStartDate}
