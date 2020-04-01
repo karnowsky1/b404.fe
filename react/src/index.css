@@ -21,6 +21,12 @@ body {
   padding: 8px;
 }
 
+.viewAllBlockBtn {
+  width: 100%;
+  padding: 1em 2em 3em 1em;
+  max-width: 77em;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
