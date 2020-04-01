@@ -204,7 +204,7 @@ class Companies extends React.Component {
     return (
       <div>
         <Card>
-            <h3 class="headers">Companies</h3>
+            <h3 className="headers">Companies</h3>
             <Table
               columns={this.columns}
               rowKey={record => record.id}

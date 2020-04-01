@@ -42,7 +42,10 @@ class Pending extends React.Component {
         for (let entry of response.data) {
           conf.push({
             id: entry.stepID,
-            name: entry.subtitle
+            name: entry.subtitle,
+            title: entry.title,
+            workflowID: entry.workflowID,
+            fileID: entry.fileID
           });
         }
 
@@ -66,6 +69,38 @@ class Pending extends React.Component {
         console.log(error);
       });
   };
+
+  navigate(id) {
+    let action;
+    //console.log(id);
+    this.state.data.forEach(element => {
+      if(element.id === id) {
+        localStorage.setItem("stepId", element.id);
+        if(element.fileID !== 0) {
+          localStorage.setItem("fileId", element.fileID);
+        } else localStorage.setItem("fileId", 0);
+        switch(element.title) {
+          case 1:
+            action = '/approve'
+            break
+          case 2:
+            action = '/upload'
+            break
+          case 3:
+            action = '/complete'
+            break
+          case 4:
+            action = '/submission'
+            break  
+          default:
+            action = '/'
+            break
+        }
+      }
+    });
+    return action
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -84,8 +119,9 @@ class Pending extends React.Component {
                   shape='round'
                   size='small'
                   style={{ float: 'right' }}
+                  onClick={e => this.navigate(record.id)}
                 >
-                  <Link to='/'>View</Link>
+                <Link to={this.navigate(record.id)}>View</Link>
                 </Button>
               </p>
             </Card>

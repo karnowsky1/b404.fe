@@ -7,6 +7,8 @@ import WorkflowBuilder from '../../wf-builder/workflowBuilder';
 import { TOKEN_KEY, DEFAULT_TREE } from '../../../constants';
 import qs from 'qs';
 
+let currentComponent;
+
 const { confirm } = Modal;
 
 const defaultWorkflow = {
@@ -90,7 +92,7 @@ class ActiveWorkflows extends React.Component {
         }
       })
       .catch(function(error) {
-        this.setState({
+        currentComponent.setState({
           loading: false
         });
         message.destroy();
@@ -108,6 +110,7 @@ class ActiveWorkflows extends React.Component {
   }
 
   componentDidMount() {
+    currentComponent = this;
     this.setState({
       loading: true
     });

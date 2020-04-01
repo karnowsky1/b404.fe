@@ -90,7 +90,7 @@ class DashMilestones extends React.Component {
           </div>
         ))}
         <br />
-        <div class="viewAllBlockBtn">
+        <div className="viewAllBlockBtn">
           <Button type="default" block>
             <Link to="/milestones">View All</Link>
           </Button>
