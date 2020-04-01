@@ -498,6 +498,7 @@ export default class WorkflowBuilder extends Component {
             position: 'relative',
             paddingLeft: '5px'
           }}
+          rowHeight={70}
           treeData={this.state.treeData}
           onChange={this.updateTreeData}
           generateNodeProps={rowInfo => ({
