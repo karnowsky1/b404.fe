@@ -458,8 +458,7 @@ export default class WorkflowBuilder extends Component {
               />
             </Form.Item>
           </div>
-        </div>
-        {this.props.isConcreteWorkflow && (
+          {this.props.isConcreteWorkflow && (
           <div
             style={{
               display: 'flex',
@@ -490,6 +489,8 @@ export default class WorkflowBuilder extends Component {
             </Form.Item>
           </div>
         )}
+        </div>
+        
         <SortableTree
           style={{
             width: '100%',
