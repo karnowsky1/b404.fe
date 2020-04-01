@@ -323,11 +323,9 @@ class ActiveWorkflows extends React.Component {
         <Modal
           bodyStyle={{ height: '81vh' }}
           title={
-            this.state.isNew ? (
-              "Create a new workflow template"
-            ) : (
-              "Edit Active Workflow"
-            )
+            this.state.isNew
+              ? 'Create a new workflow template'
+              : 'Edit Active Workflow'
           }
           width="75vw"
           footer={null}

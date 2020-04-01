@@ -460,36 +460,36 @@ export default class WorkflowBuilder extends Component {
           </div>
         </div>
         {this.props.isConcreteWorkflow && (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                marginRight: 35,
-                marginBottom: 30
-              }}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              marginRight: 35,
+              marginBottom: 30
+            }}
+          >
+            <h6 className="wfInputText"> {'Start & End Date:'} </h6>
+            <Form.Item
+              validateStatus={dateRangeValidation ? 'error' : 'success'}
+              help={dateRangeValidation}
             >
-              <h6 className="wfInputText"> {'Start & End Date:'} </h6>
-              <Form.Item
-                validateStatus={dateRangeValidation ? 'error' : 'success'}
-                help={dateRangeValidation}
-              >
-                <WorkflowDateRange
-                  onChange={dates => {
-                    this.setState({
-                      defaultRange: dates
-                    });
-                  }}
-                  defaultRange={this.state.defaultRange}
-                  format={SEND_DATE_FORMAT}
-                  onBlur={() =>
-                    this.setState({
-                      defaultRangeEdited: true
-                    })
-                  }
-                />
-              </Form.Item>
-            </div>
-          )}
+              <WorkflowDateRange
+                onChange={dates => {
+                  this.setState({
+                    defaultRange: dates
+                  });
+                }}
+                defaultRange={this.state.defaultRange}
+                format={SEND_DATE_FORMAT}
+                onBlur={() =>
+                  this.setState({
+                    defaultRangeEdited: true
+                  })
+                }
+              />
+            </Form.Item>
+          </div>
+        )}
         <SortableTree
           style={{
             width: '100%',
