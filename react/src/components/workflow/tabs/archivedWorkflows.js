@@ -4,6 +4,8 @@ import axios from 'axios';
 import { TOKEN_KEY/*, UUID_KEY*/ } from '../../../constants/auth'
 import qs from 'qs';
 
+let currentComponent;
+
 const { confirm } = Modal;
 
 class ArchivedWorkflows extends React.Component {
@@ -66,7 +68,7 @@ class ArchivedWorkflows extends React.Component {
             });
         }
         }).catch(function (error) {
-        this.setState({
+        currentComponent.setState({
           loading: false
         });
         message.destroy()
@@ -84,6 +86,7 @@ class ArchivedWorkflows extends React.Component {
   }
 
   componentDidMount() {
+    currentComponent = this;
     this.setState({
       loading: true
     });

@@ -6,6 +6,8 @@ import { TOKEN_KEY, UUID_KEY } from '../../constants/auth';
 import { hash } from './../../utils/hash';
 import SignatureCanvas from 'react-signature-canvas';
 
+let currentComponent;
+
 class SettingsForm extends React.Component {
   constructor(props) {
     super(props);
@@ -22,6 +24,8 @@ class SettingsForm extends React.Component {
   }
 
   componentDidMount() {
+    currentComponent = this;
+
     this.setState({ loading: true });
 
     const url =
@@ -45,7 +49,9 @@ class SettingsForm extends React.Component {
       })
       .catch(function(error) {
         message.destroy();
-        this.setState({ loading: false });
+        currentComponent.setState({
+          loading: false
+        });
         if (error.response) {
           // Request made and server responded
           message.error(error.response.data.error);
@@ -104,7 +110,9 @@ class SettingsForm extends React.Component {
           })
           .catch(function(error) {
             message.destroy();
-            this.setState({ loading: false });
+            currentComponent.setState({
+              loading: false
+            });
             if (error.response) {
               // Request made and server responded
               message.error(error.response.data.error);

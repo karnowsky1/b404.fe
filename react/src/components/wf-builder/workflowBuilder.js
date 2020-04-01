@@ -211,7 +211,7 @@ export default class WorkflowBuilder extends Component {
               marginRight: '35px'
             }}
           >
-            <h6 class="wfInputText">Name: </h6>
+            <h6 className="wfInputText">Name: </h6>
             <Input
               value={this.state.wfName}
               onChange={this.handleNameChange}
@@ -219,7 +219,7 @@ export default class WorkflowBuilder extends Component {
             ></Input>
           </div>
           <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <h6 class="wfInputText">Description: </h6>
+            <h6 className="wfInputText">Description: </h6>
             <Input
               value={this.state.wfDescription}
               onChange={this.handleDescriptionChange}

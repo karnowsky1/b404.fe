@@ -96,7 +96,7 @@ class DashWorkflow extends React.Component {
           </div>
         ))}
         <br />
-        <div class="viewAllBlockBtn">
+        <div className="viewAllBlockBtn">
           <Button type="default" block>
             <Link to="/workflow">View All</Link>
           </Button>
