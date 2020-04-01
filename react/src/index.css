@@ -17,8 +17,13 @@ body {
   margin-bottom: 25px !important;
 }
 
+.rst__node {
+  height: 70px!important;
+}
+
 .wfInputText {
-  padding: 8px;
+  padding: 10px 8px 8px 0px;
+  font-size: 14px;
 }
 
 .viewAllBlockBtn {
