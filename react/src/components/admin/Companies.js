@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Button, Card, Divider, Modal} from 'antd';
+import { Table, Button, Card, Divider, Modal } from 'antd';
 import axios from 'axios';
 import qs from 'qs';
 import { CompanyModal } from './CompanyModal';
@@ -67,7 +67,7 @@ class Companies extends React.Component {
         let conf = [];
         for (let entry of response.data) {
           conf.push({
-            id: entry.companyID,            
+            id: entry.companyID,
             companies: entry.companyName
           });
         }
@@ -85,7 +85,7 @@ class Companies extends React.Component {
   };
 
   componentDidMount() {
-    this.fetch()
+    this.fetch();
   }
 
   showAddModal = () => {
@@ -117,7 +117,7 @@ class Companies extends React.Component {
 
   onAddSubmit = async values => {
     // console.log("Valeus Resoponse " + values)
-    console.log(values.companyName)
+    console.log(values.companyName);
     await axios({
       method: 'post',
       url: window.__env__.API_URL + '/blink/api/company',
@@ -125,7 +125,7 @@ class Companies extends React.Component {
         Authorization: localStorage.getItem('token'),
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      // data: qs.stringify({name: values.companyName}), 
+      // data: qs.stringify({name: values.companyName}),
       // did it like this because the values in state didn't match the API
       // everything has to line up, endpoints, and state
       data: qs.stringify(values),
@@ -173,12 +173,13 @@ class Companies extends React.Component {
     const { fetch } = this;
     confirm({
       title: 'Are you sure delete this Company?',
-      content: 'If you delete this Company users will no longer be assinged to that company!',
+      content:
+        'If you delete this Company users will no longer be assinged to that company!',
       okText: 'Yes',
       okType: 'danger',
       cancelText: 'No',
       onOk() {
-        console.log(id)
+        console.log(id);
         axios
           .delete(window.__env__.API_URL + '/blink/api/company/id/' + id, {
             headers: {
@@ -204,43 +205,43 @@ class Companies extends React.Component {
     return (
       <div>
         <Card>
-            <h3 class="headers">Companies</h3>
-            <Table
-              columns={this.columns}
-              rowKey={record => record.id}
-              dataSource={this.state.data}
+          <h3 className="headers">Companies</h3>
+          <Table
+            columns={this.columns}
+            rowKey={record => record.id}
+            dataSource={this.state.data}
+          />
+          <Button
+            type="primary"
+            //shape="circle"
+            size="default"
+            onClick={this.showAddModal}
+          >
+            + Create
+          </Button>
+          {this.state.addvisible && (
+            <CompanyModal
+              onSubmit={this.onAddSubmit}
+              // companies={this.state.companyOptions}
+              onCancel={this.handleAddCancel}
+              // roles={optionsR}
+              title="Add Company"
             />
-            <Button
-              type="primary"
-              //shape="circle"
-              size="default"
-              onClick={this.showAddModal}
-            >
-              + Create
-            </Button>
-            {this.state.addvisible && (
-              <CompanyModal
-                onSubmit={this.onAddSubmit}
-                // companies={this.state.companyOptions}
-                onCancel={this.handleAddCancel}
-                // roles={optionsR}
-                title="Add Company"
-              />
-            )}
-            {this.state.editvisible && (
-              <CompanyModal
-                initialValues={this.state.editingCompany}
-                onSubmit={this.onEditSubmit}
-                // companies={this.state.companyOptions}
-                onCancel={this.handleEditCancel}
-                // roles={optionsR}
-                title="Edit Company"
-              />
-            )}
-          </Card>
+          )}
+          {this.state.editvisible && (
+            <CompanyModal
+              initialValues={this.state.editingCompany}
+              onSubmit={this.onEditSubmit}
+              // companies={this.state.companyOptions}
+              onCancel={this.handleEditCancel}
+              // roles={optionsR}
+              title="Edit Company"
+            />
+          )}
+        </Card>
       </div>
-    )
+    );
   }
 }
 
-export default Companies
+export default Companies;

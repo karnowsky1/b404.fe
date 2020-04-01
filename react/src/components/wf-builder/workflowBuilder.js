@@ -7,7 +7,7 @@ import {
 } from 'react-sortable-tree';
 import { axiosError } from '../../utils/axiosError';
 import { WorkflowDateRange } from '../../utils/WorkflowDateRange';
-import { Button, Input, Select, message, Switch } from 'antd';
+import { Button, Input, Select, message, Switch, Form } from 'antd';
 import 'react-sortable-tree/style.css';
 //import qs from 'qs';
 import axios from 'axios';
@@ -24,6 +24,7 @@ import {
   getPeopleByCompany,
   getMilestone
 } from '../../utils/api';
+import { required } from '../../utils/validators';
 import moment from 'moment';
 
 const { Option } = Select;
@@ -48,11 +49,14 @@ export default class WorkflowBuilder extends Component {
       workflowID: 0,
       wfName: '',
       wfDescription: '',
+      wfNameEdited: false,
+      wfDescriptionEdited: false,
       visible: false,
       loading: false,
       startDate: undefined,
       deliveryDate: undefined,
       defaultRange: undefined,
+      defaultRangeEdited: false,
       verbs: [],
       people: [],
       files: [],
@@ -208,10 +212,10 @@ export default class WorkflowBuilder extends Component {
           description: this.state.wfDescription,
           steps: this.state.treeData,
           startDate:
-            this.state.defaultRange &&
+            this.state.defaultRange.length &&
             this.state.defaultRange[0].format(SEND_DATE_FORMAT),
           deliveryDate:
-            this.state.defaultRange &&
+            this.state.defaultRange.length &&
             this.state.defaultRange[1].format(SEND_DATE_FORMAT),
           milestoneID: this.state.milestoneID
         }
@@ -316,6 +320,7 @@ export default class WorkflowBuilder extends Component {
   }
 
   removeNode(rowInfo) {
+    console.log(rowInfo);
     const { path } = rowInfo;
     const newTree = removeNodeAtPath({
       treeData: this.state.treeData,
@@ -379,6 +384,21 @@ export default class WorkflowBuilder extends Component {
     this.state.files.forEach(element => {
       files.push(<Option key={element.fileID}>{element.name}</Option>);
     });
+    const nameValidation = this.state.wfNameEdited
+      ? required(this.state.wfName)
+      : '';
+    const descriptionValidation = this.state.wfDescriptionEdited
+      ? required(this.state.wfDescription)
+      : '';
+    const dateRangeValidation = this.state.defaultRangeEdited
+      ? required(this.state.defaultRange)
+      : '';
+
+    console.log(
+      this.state.defaultRange,
+      this.state.defaultRangeEdited,
+      dateRangeValidation
+    );
 
     return (
       <div
@@ -398,11 +418,21 @@ export default class WorkflowBuilder extends Component {
             }}
           >
             <h6 className="wfInputText">Name: </h6>
-            <Input
-              value={this.state.wfName}
-              onChange={this.handleNameChange}
-              placeholder="Enter workflow name..."
-            ></Input>
+            <Form.Item
+              validateStatus={nameValidation ? 'error' : 'success'}
+              help={nameValidation}
+            >
+              <Input
+                value={this.state.wfName}
+                onChange={this.handleNameChange}
+                placeholder="Enter workflow name..."
+                onBlur={() =>
+                  this.setState({
+                    wfNameEdited: true
+                  })
+                }
+              />
+            </Form.Item>
           </div>
           <div
             style={{
@@ -412,11 +442,21 @@ export default class WorkflowBuilder extends Component {
             }}
           >
             <h6 className="wfInputText">Description: </h6>
-            <Input
-              value={this.state.wfDescription}
-              onChange={this.handleDescriptionChange}
-              placeholder="Enter description..."
-            ></Input>
+            <Form.Item
+              validateStatus={descriptionValidation ? 'error' : 'success'}
+              help={descriptionValidation}
+            >
+              <Input
+                value={this.state.wfDescription}
+                onChange={this.handleDescriptionChange}
+                placeholder="Enter description..."
+                onBlur={() =>
+                  this.setState({
+                    wfDescriptionEdited: true
+                  })
+                }
+              />
+            </Form.Item>
           </div>
           {this.props.isConcreteWorkflow && (
             <div
@@ -427,24 +467,25 @@ export default class WorkflowBuilder extends Component {
               }}
             >
               <h6 className="wfInputText"> {'Start & End Date:'} </h6>
-              {console.log('this is the default range')}
-              {console.log(this.state.defaultRange)}
-              <WorkflowDateRange
-                // startDate={startDate}
-                // endDate={endDate}
-                // setStartDate={setStartDate}
-                // setEndDate={setEndDate}
-                // failedSubmit={failedSubmit}
-                // setFailedSubmit={setFailedSubmit}
-                onChange={dates => {
-                  this.setState({
-                    defaultRange: dates
-                  });
-                  // setStartDate(date);
-                }}
-                defaultRange={this.state.defaultRange}
-                format={SEND_DATE_FORMAT}
-              />
+              <Form.Item
+                validateStatus={dateRangeValidation ? 'error' : 'success'}
+                help={dateRangeValidation}
+              >
+                <WorkflowDateRange
+                  onChange={dates => {
+                    this.setState({
+                      defaultRange: dates
+                    });
+                  }}
+                  defaultRange={this.state.defaultRange}
+                  format={SEND_DATE_FORMAT}
+                  onBlur={() =>
+                    this.setState({
+                      defaultRangeEdited: true
+                    })
+                  }
+                />
+              </Form.Item>
             </div>
           )}
         </div>
@@ -470,6 +511,7 @@ export default class WorkflowBuilder extends Component {
                   }
                   style={{ width: 120 }}
                   onChange={event => {
+                    console.log(rowInfo);
                     const { path } = rowInfo;
                     const title = parseInt(event);
                     this.setState(state => ({
@@ -497,6 +539,7 @@ export default class WorkflowBuilder extends Component {
                   value={rowInfo.node.subtitle}
                   size="small"
                   onChange={event => {
+                    console.log(rowInfo);
                     const { path } = rowInfo;
                     const subtitle = event.target.value;
 
@@ -543,6 +586,7 @@ export default class WorkflowBuilder extends Component {
                         }
                         style={{ width: 160 }}
                         onChange={event => {
+                          console.log(rowInfo);
                           const { path } = rowInfo;
                           const uuid = event;
                           console.log('what is this parse int');
@@ -576,6 +620,7 @@ export default class WorkflowBuilder extends Component {
                         }
                         style={{ width: 160 }}
                         onChange={event => {
+                          console.log(rowInfo);
                           const { path } = rowInfo;
                           const fileID = parseInt(event);
                           this.setState(state => ({
@@ -616,6 +661,7 @@ export default class WorkflowBuilder extends Component {
                       !(rowInfo.node.children && rowInfo.node.children.length)
                     }
                     onClick={checked => {
+                      console.log(rowInfo);
                       const { path } = rowInfo;
 
                       this.setState(state => ({
@@ -651,6 +697,11 @@ export default class WorkflowBuilder extends Component {
             loading={this.state.loading}
             label="submit"
             onClick={this.handleSubmit}
+            disabled={
+              required(this.state.wfName) ||
+              required(this.state.wfDescription) ||
+              required(this.state.defaultRange)
+            }
           >
             Submit
           </Button>

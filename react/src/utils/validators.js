@@ -3,23 +3,22 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$
 
 export const validateEmail = email => {
   if (!email) {
-    return
+    return;
   } else if (!emailRegex.test(email)) {
-    console.log(email)
+    console.log(email);
     return 'Invalid email address';
   }
 };
 
-
 export const required = input => {
-  if (!input) {
+  if (!input || (typeof input.length === 'number' && input.length === 0)) {
     return 'Required';
   }
-}
+};
 
 export const validatePassword = password => {
   if (!password) {
-    return
+    return;
   } else if (!passwordRegex.test(password)) {
     return 'Password must contain at least eight characters, at least one number and both lower and uppercase letters and special characters';
   }
@@ -32,6 +31,3 @@ export const validateRequiredPassword = password => {
     return 'Password must contain at least eight characters, at least one number and both lower and uppercase letters and special characters';
   }
 };
-
-
-

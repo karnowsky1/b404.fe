@@ -41,11 +41,7 @@ class NavLayout extends React.Component {
             </div>
           )}
 
-          <Menu
-            theme="dark"
-            mode="inline"
-            defaultSelectedKeys={[this.props.path]}
-          >
+          <Menu theme="dark" mode="inline" selectedKeys={[this.props.path]}>
             {MAIN_ROUTES.map(({ name, path, icon }) => (
               <Menu.Item key={path}>
                 <NavLink to={path}>
@@ -54,7 +50,7 @@ class NavLayout extends React.Component {
                 </NavLink>
               </Menu.Item>
             ))}
-            <Menu.Divider style={{backgroundColor: '#313C4E'}}/>
+            <Menu.Divider style={{ backgroundColor: '#313C4E' }} />
             {/* <div style={{ padding: '10px', fontSize: '.8em' }}>Settings</div> */}
             <Menu.Item key="5">
               <NavLink to="/main-settings">
