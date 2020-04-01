@@ -324,9 +324,9 @@ class ActiveWorkflows extends React.Component {
           bodyStyle={{ height: '81vh' }}
           title={
             this.state.isNew ? (
-              <h1>Create a new workflow template</h1>
+              "Create a new workflow template"
             ) : (
-              <h1>Edit Active Workflow</h1>
+              "Edit Active Workflow"
             )
           }
           width="75vw"

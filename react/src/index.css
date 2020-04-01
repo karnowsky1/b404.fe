@@ -32,6 +32,10 @@ code {
   border-radius: 0.5%;
 }
 
+.wfBuilderSpan {
+  font-size: 13px;
+}
+
 .img-container img {
   width: 55%;
   max-width: 600px;
@@ -167,4 +171,8 @@ code {
   font-size: 85%;
   display: block;
   height: 0.8rem;
+}
+
+.rst__rowLabel {
+  padding-right: 60px!important;
 }

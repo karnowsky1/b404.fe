@@ -389,7 +389,7 @@ export default class WorkflowBuilder extends Component {
           flexDirection: 'column'
         }}
       >
-        <div style={{ display: 'flex', marginBottom: '30px' }}>
+        <div style={{ display: 'flex', marginBottom: 16 }}>
           <div
             style={{
               display: 'flex',
@@ -418,12 +418,14 @@ export default class WorkflowBuilder extends Component {
               placeholder="Enter description..."
             ></Input>
           </div>
-          {this.props.isConcreteWorkflow && (
+        </div>
+        {this.props.isConcreteWorkflow && (
             <div
               style={{
                 display: 'flex',
                 flexDirection: 'row',
-                marginRight: '35px'
+                marginRight: 35,
+                marginBottom: 30
               }}
             >
               <h6 className="wfInputText"> {'Start & End Date:'} </h6>
@@ -447,7 +449,6 @@ export default class WorkflowBuilder extends Component {
               />
             </div>
           )}
-        </div>
         <SortableTree
           style={{
             width: '100%',
@@ -461,7 +462,7 @@ export default class WorkflowBuilder extends Component {
           generateNodeProps={rowInfo => ({
             title: (
               <div>
-                <span>Verb: </span>
+                <span class="wfBuilderSpan">Verb: </span>
                 <Select
                   value={rowInfo.node.title.toString()}
                   size="small"
@@ -488,10 +489,10 @@ export default class WorkflowBuilder extends Component {
             ),
             subtitle: (
               <div>
-                <span>Descr: </span>
+                <span class="wfBuilderSpan">Descr: </span>
                 <Input
                   style={{
-                    marginTop: '12px'
+                    marginTop: '20px'
                   }}
                   placeholder="Enter a description"
                   value={rowInfo.node.subtitle}
@@ -523,7 +524,7 @@ export default class WorkflowBuilder extends Component {
                     }}
                   >
                     <div>
-                      <span>Person: </span>
+                      <span class="wfBuilderSpan">Person: </span>
                       <Select
                         value={
                           rowInfo.node.uuid && rowInfo.node.uuid.toString()
@@ -561,8 +562,8 @@ export default class WorkflowBuilder extends Component {
                         {people}
                       </Select>
                     </div>
-                    <div>
-                      <span>File: </span>
+                    <div style={{ marginLeft: 25 }}>
+                      <span class="wfBuilderSpan">File: </span>
                       <Select
                         value={
                           rowInfo.node.fileID && rowInfo.node.fileID.toString()
@@ -574,7 +575,7 @@ export default class WorkflowBuilder extends Component {
                           rowInfo.node.children &&
                           !!rowInfo.node.children.length
                         }
-                        style={{ width: 160 }}
+                        style={{ width: 160, marginTop: 9 }}
                         onChange={event => {
                           const { path } = rowInfo;
                           const fileID = parseInt(event);
@@ -595,7 +596,7 @@ export default class WorkflowBuilder extends Component {
                 )}
 
                 <Button
-                  style={{ marginRight: 5 }}
+                  style={{ marginRight: 5, marginTop: 9 }}
                   label="Delete"
                   onClick={event => this.removeNode(rowInfo)}
                 >
@@ -604,7 +605,7 @@ export default class WorkflowBuilder extends Component {
                 <Button
                   label="Add"
                   onClick={event => this.addNewNode(rowInfo)}
-                  style={{ marginRight: 5 }}
+                  style={{ marginRight: 10, marginTop: 9 }}
                 >
                   Add
                 </Button>
@@ -635,7 +636,7 @@ export default class WorkflowBuilder extends Component {
               </div>
             ],
             style: {
-              height: '60px'
+              height: '70px'
             }
           })}
         ></SortableTree>
