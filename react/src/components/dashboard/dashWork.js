@@ -79,12 +79,12 @@ class DashWorkflow extends React.Component {
           <div
             style={{
               display: "inline-block",
-              padding: "2em",
+              padding: "1.2em",
               textAlign: "center"
             }}
             key={record.id}
           >
-            <Card style={{ width: 220, height: 300 }}>
+            <Card style={{ width: 265, maxHeight: 300 }}>
               <Progress type="circle" percent={record.percentComplete * 100} />
               <p />
               <p>
