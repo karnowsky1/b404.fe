@@ -15,7 +15,8 @@ import {
   TOKEN_KEY,
   DEFAULT_TREE,
   ASSIGN_DEFAULT_TREE,
-  DATE_FORMAT
+  SEND_DATE_FORMAT,
+  RECEIVE_DATE_FORMAT
 } from '../../constants';
 import {
   getVerbs,
@@ -83,7 +84,8 @@ export default class WorkflowBuilder extends Component {
     console.log(this.props.workflow);
     this.props.workflow &&
       this.setState({
-        workflow: this.props.workflow
+        workflow: this.props.workflow,
+        milestoneID: milestoneID
       });
     this.props.isConcreteWorkflow && this.getAllPeople(milestoneID);
     this.props.isConcreteWorkflow && this.getAllFiles(milestoneID);
@@ -150,11 +152,11 @@ export default class WorkflowBuilder extends Component {
       wfDescription: this.props.workflow.description,
       treeData: this.props.workflow.steps,
       startDate: this.props.workflow.startDate,
-      deliveryDate: this.props.workflow.startDate,
-      defaultRange: [
-        moment('Jan 1, 2019', DATE_FORMAT),
-        moment('Feb 1, 2019', DATE_FORMAT)
-      ]
+      deliveryDate: this.props.workflow.startDate
+      // defaultRange: [
+      //   moment('Jan 1, 2019 00:00:00', RECEIVE_DATE_FORMAT),
+      //   moment('Feb 1, 2019 00:00:00', RECEIVE_DATE_FORMAT)
+      // ]
     });
   }
 
@@ -188,13 +190,17 @@ export default class WorkflowBuilder extends Component {
 
     console.log('this is the workflow ID');
     console.log(this.props.workflow);
+
     const requestObject = {
       workflowID: this.state.workflow.workflowID,
       name: this.state.wfName,
       description: this.state.wfDescription,
-      steps: this.state.treeData
+      steps: this.state.treeData,
+      startDate: this.state.defaultRange[0].format(SEND_DATE_FORMAT),
+      deliveryDate: this.state.defaultRange[1].format(SEND_DATE_FORMAT),
+      milestoneID: this.state.milestoneID
     };
-
+    console.log(requestObject);
     this.setState({ loading: true });
 
     if (this.props.isNew && !this.props.isConcreteWorkflow) {
@@ -327,6 +333,17 @@ export default class WorkflowBuilder extends Component {
     });
   };
 
+  handleDateChange = e => {
+    // this.setState({
+    //   defaultRange: e.target.value
+    // });
+    // console.log('This better fucking work');
+    // console.log(e.target);
+    // console.log(e.target.format(SEND_DATE_FORMAT));
+    // console.log(e.target.value.dateStrings[0]);
+    // console.log(e.target.value.dateStrings[1]);
+  };
+
   render() {
     const getNodeKey = ({ treeIndex }) => treeIndex;
     const children = [];
@@ -400,9 +417,14 @@ export default class WorkflowBuilder extends Component {
                 // setEndDate={setEndDate}
                 // failedSubmit={failedSubmit}
                 // setFailedSubmit={setFailedSubmit}
-
+                onChange={dates => {
+                  this.setState({
+                    defaultRange: dates
+                  });
+                  // setStartDate(date);
+                }}
                 defaultRange={this.state.defaultRange}
-                format={DATE_FORMAT}
+                format={SEND_DATE_FORMAT}
               />
             </div>
           )}

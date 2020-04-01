@@ -13,6 +13,7 @@ import { axiosError } from '../../utils/axiosError';
 import { AssignTemplateModal } from '../workflow/AssignTemplateModal';
 import moment from 'moment';
 import WorkflowBuilder from '../wf-builder/workflowBuilder';
+import { RECEIVE_DATE_FORMAT } from '../../constants';
 
 const { confirm } = Modal;
 
@@ -144,8 +145,8 @@ class MilestonesTable extends React.Component {
           name: response.data.name,
           description: response.data.description,
           companyID: response.data.company.companyID, // or companyName
-          startDate: moment(response.data.startDate, 'MMM, D YYYY'), // update this to include hours mintues and seconds once the backend gets to it
-          deliveryDate: moment(response.data.deliveryDate, 'MMM, D YYYY')
+          startDate: moment(response.data.startDate, RECEIVE_DATE_FORMAT), // update this to include hours mintues and seconds once the backend gets to it
+          deliveryDate: moment(response.data.deliveryDate, RECEIVE_DATE_FORMAT)
         },
         editingMilestoneID: record.id,
         editvisible: true
@@ -154,16 +155,17 @@ class MilestonesTable extends React.Component {
   };
 
   showWorkflowModal = workflow => {
-    workflow &&
-      this.setState({
-        workflow: workflow,
-        assignWorkflowToMilestoneID: workflow.milestoneID,
-        updateWorkflow: true
-      });
-    this.setState({
-      isNew: false,
-      workflowBuilderVisible: true
-    });
+    workflow
+      ? this.setState({
+          workflow: workflow,
+          assignWorkflowToMilestoneID: workflow.milestoneID,
+          updateWorkflow: true
+        })
+      : this.setState({
+          isNew: false,
+          workflowBuilderVisible: true,
+          updateWorkflow: false
+        });
   };
 
   handleAddCancel = e => {
@@ -387,7 +389,7 @@ class MilestonesTable extends React.Component {
                 <div>
                   {/* <p> */}
                   {/* {console.log(record)} */}
-                  {record.workflows &&
+                  {record.workflows[0] ? (
                     record.workflows.map(({ ...workflow }) => (
                       <div key={workflow.workflowID}>
                         <span style={{ width: 200 }}>
@@ -411,7 +413,10 @@ class MilestonesTable extends React.Component {
                         />
                         <p></p>
                       </div>
-                    ))}
+                    ))
+                  ) : (
+                    <p>There are no active workflows for this milestone</p>
+                  )}
                   {/* <b>Workflow 1</b>
                     </p>
                     <Progress percent={50} size="small" />

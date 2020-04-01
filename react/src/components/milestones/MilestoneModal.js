@@ -4,7 +4,7 @@ import { Form as AntForm, Modal } from 'antd';
 import React, { useState } from 'react';
 import { required } from '../../utils/validators';
 import { DateRange } from '../../utils/DateRange';
-import { DATE_FORMAT } from '../../constants';
+import { SEND_DATE_FORMAT } from '../../constants';
 
 const { Option } = Select;
 
@@ -12,8 +12,8 @@ const defaults = {
   name: '',
   description: '',
   companyID: undefined,
-  startDate: '',
-  deliveryDate: ''
+  startDate: null,
+  deliveryDate: null
 };
 
 const MilestoneModalForm = ({
@@ -41,8 +41,8 @@ const MilestoneModalForm = ({
           if (!!startDate && !!endDate) {
             onSubmit({
               ...values,
-              startDate: startDate.format(DATE_FORMAT),
-              deliveryDate: endDate.format(DATE_FORMAT)
+              startDate: startDate.format(SEND_DATE_FORMAT),
+              deliveryDate: endDate.format(SEND_DATE_FORMAT)
             }); // onSubmit passed from props
           }
           setSubmitting(false);

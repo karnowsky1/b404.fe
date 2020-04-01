@@ -16,4 +16,6 @@ export const ASSIGN_DEFAULT_TREE = {
   deliveryDate: ''
 };
 
-export const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+export const SEND_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+
+export const RECEIVE_DATE_FORMAT = 'MMM, D YYYY HH:mm:ss';
