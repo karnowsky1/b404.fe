@@ -11,13 +11,19 @@ import { Button, Input, Select, message, Switch } from 'antd';
 import 'react-sortable-tree/style.css';
 //import qs from 'qs';
 import axios from 'axios';
-import { TOKEN_KEY, DEFAULT_TREE, ASSIGN_DEFAULT_TREE } from '../../constants';
+import {
+  TOKEN_KEY,
+  DEFAULT_TREE,
+  ASSIGN_DEFAULT_TREE,
+  DATE_FORMAT
+} from '../../constants';
 import {
   getVerbs,
   getFileByMilestone,
   getPeopleByCompany,
   getMilestone
 } from '../../utils/api';
+import moment from 'moment';
 
 const { Option } = Select;
 
@@ -43,8 +49,9 @@ export default class WorkflowBuilder extends Component {
       wfDescription: '',
       visible: false,
       loading: false,
-      startDate: '',
-      deliveryDate: '',
+      startDate: undefined,
+      deliveryDate: undefined,
+      defaultRange: undefined,
       verbs: [],
       people: [],
       files: [],
@@ -141,7 +148,13 @@ export default class WorkflowBuilder extends Component {
       workflowID: this.props.workflow.workflowID,
       wfName: this.props.workflow.name,
       wfDescription: this.props.workflow.description,
-      treeData: this.props.workflow.steps
+      treeData: this.props.workflow.steps,
+      startDate: this.props.workflow.startDate,
+      deliveryDate: this.props.workflow.startDate,
+      defaultRange: [
+        moment('Jan 1, 2019', DATE_FORMAT),
+        moment('Feb 1, 2019', DATE_FORMAT)
+      ]
     });
   }
 
@@ -159,12 +172,7 @@ export default class WorkflowBuilder extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.workflow !== prevProps.workflow) {
       if (this.props.workflow !== null) {
-        this.setState({
-          workflowID: this.props.workflow.workflowID,
-          treeData: this.props.workflow.steps,
-          wfName: this.props.workflow.name,
-          wfDescription: this.props.workflow.description
-        });
+        this.setWorkflowData();
       }
     }
   }
@@ -383,6 +391,8 @@ export default class WorkflowBuilder extends Component {
               }}
             >
               <h6 className="wfInputText"> {'Start & End Date:'} </h6>
+              {console.log('this is the default range')}
+              {console.log(this.state.defaultRange)}
               <WorkflowDateRange
                 // startDate={startDate}
                 // endDate={endDate}
@@ -390,13 +400,9 @@ export default class WorkflowBuilder extends Component {
                 // setEndDate={setEndDate}
                 // failedSubmit={failedSubmit}
                 // setFailedSubmit={setFailedSubmit}
-                startDate=""
-                endDate=""
-                setStartDate=""
-                setEndDate=""
-                failedSubmit=""
-                setFailedSubmit=""
-                isMilestone={false}
+
+                defaultRange={this.state.defaultRange}
+                format={DATE_FORMAT}
               />
             </div>
           )}

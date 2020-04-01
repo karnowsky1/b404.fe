@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, DatePicker } from 'antd';
+import { DATE_FORMAT } from '../constants';
 
 export class DateRange extends React.Component {
   constructor(props) {
@@ -63,7 +64,7 @@ export class DateRange extends React.Component {
               name="startDate"
               disabledDate={this.disabledStartDate}
               showTime
-              format="YYYY-MM-DD HH:mm:ss"
+              format={DATE_FORMAT}
               value={startDate}
               placeholder="Start"
               onChange={date => {
@@ -92,7 +93,7 @@ export class DateRange extends React.Component {
               name="endDate"
               disabledDate={this.disabledEndDate}
               showTime
-              format="YYYY-MM-DD HH:mm:ss"
+              format={DATE_FORMAT}
               value={endDate}
               placeholder="End"
               onChange={date => {
