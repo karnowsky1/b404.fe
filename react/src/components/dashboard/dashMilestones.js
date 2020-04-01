@@ -74,10 +74,10 @@ class DashMilestones extends React.Component {
         <h3>Your Milestones</h3>
         {this.state.data.map(record => (
           <div
-            style={{ display: "inline-block", padding: "2em" }}
+            style={{ display: "inline-block", padding: "1.2em" }}
             key={record.id}
           >
-            <Card title={record.name} style={{ width: 300 }} key={record.id}>
+            <Card title={record.name} style={{ width: 265, height: 250 }} key={record.id}>
               <p>
                 <b>Company Name:</b>
               </p>
