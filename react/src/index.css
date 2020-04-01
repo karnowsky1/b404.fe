@@ -21,6 +21,12 @@ body {
   padding: 8px;
 }
 
+.viewAllBlockBtn {
+  width: 100%;
+  padding: 1em 2em 3em 1em;
+  max-width: 77em;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -30,6 +36,10 @@ code {
   width: 100%;
   height: 100%;
   border-radius: 0.5%;
+}
+
+.wfBuilderSpan {
+  font-size: 13px;
 }
 
 .img-container img {
@@ -167,4 +177,8 @@ code {
   font-size: 85%;
   display: block;
   height: 0.8rem;
+}
+
+.rst__rowLabel {
+  padding-right: 60px!important;
 }
