@@ -28,6 +28,7 @@ export class WorkflowDateRange extends React.Component {
           'This Month': [moment().startOf('month'), moment().endOf('month')]
         }}
         showTime
+        separator="→"
         format={this.props.format}
         onChange={this.props.onChange}
       />
