@@ -159,7 +159,8 @@ class MilestonesTable extends React.Component {
       ? this.setState({
           workflow: workflow,
           assignWorkflowToMilestoneID: workflow.milestoneID,
-          updateWorkflow: true
+          updateWorkflow: true,
+          workflowBuilderVisible: true
         })
       : this.setState({
           isNew: false,

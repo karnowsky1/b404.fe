@@ -152,11 +152,22 @@ export default class WorkflowBuilder extends Component {
       wfDescription: this.props.workflow.description,
       treeData: this.props.workflow.steps,
       startDate: this.props.workflow.startDate,
-      deliveryDate: this.props.workflow.startDate
-      // defaultRange: [
-      //   moment('Jan 1, 2019 00:00:00', RECEIVE_DATE_FORMAT),
-      //   moment('Feb 1, 2019 00:00:00', RECEIVE_DATE_FORMAT)
-      // ]
+      deliveryDate: this.props.workflow.startDate,
+      defaultRange: this.props.workflow.startDate
+        ? [
+            moment(
+              moment(this.props.workflow.startDate, RECEIVE_DATE_FORMAT).format(
+                SEND_DATE_FORMAT
+              ),
+              SEND_DATE_FORMAT
+            ),
+            moment(
+              moment(this.props.workflow.startDate, RECEIVE_DATE_FORMAT).format(
+                SEND_DATE_FORMAT
+              )
+            )
+          ]
+        : null
     });
   }
 
@@ -190,17 +201,26 @@ export default class WorkflowBuilder extends Component {
 
     console.log('this is the workflow ID');
     console.log(this.props.workflow);
-
-    const requestObject = {
-      workflowID: this.state.workflow.workflowID,
-      name: this.state.wfName,
-      description: this.state.wfDescription,
-      steps: this.state.treeData,
-      startDate: this.state.defaultRange[0].format(SEND_DATE_FORMAT),
-      deliveryDate: this.state.defaultRange[1].format(SEND_DATE_FORMAT),
-      milestoneID: this.state.milestoneID
-    };
-    console.log(requestObject);
+    const requestObject = this.props.isConcreteWorkflow
+      ? {
+          workflowID: this.state.workflow.workflowID,
+          name: this.state.wfName,
+          description: this.state.wfDescription,
+          steps: this.state.treeData,
+          startDate:
+            this.state.defaultRange &&
+            this.state.defaultRange[0].format(SEND_DATE_FORMAT),
+          deliveryDate:
+            this.state.defaultRange &&
+            this.state.defaultRange[1].format(SEND_DATE_FORMAT),
+          milestoneID: this.state.milestoneID
+        }
+      : {
+          workflowID: this.state.workflow.workflowID,
+          name: this.state.wfName,
+          description: this.state.wfDescription,
+          steps: this.state.treeData
+        };
     this.setState({ loading: true });
 
     if (this.props.isNew && !this.props.isConcreteWorkflow) {
@@ -217,7 +237,6 @@ export default class WorkflowBuilder extends Component {
           if (response.status === 200) {
             this.successfulResponseSubmission();
             console.log('workflow template');
-            console.log(requestObject);
           }
         })
         .catch(axiosError);

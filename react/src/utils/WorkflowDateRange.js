@@ -22,6 +22,7 @@ export class WorkflowDateRange extends React.Component {
       <RangePicker
         // defaultPickerValue={this.props.defaultRange}
         // defaultValue={this.props.defaultRange}
+        // value={this.props.defaultRange}
         ranges={{
           Today: [moment(), moment()],
           'This Month': [moment().startOf('month'), moment().endOf('month')]
