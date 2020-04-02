@@ -22,8 +22,8 @@ function uploadFile(base64, file) {
   console.log(base64);
 
   let requestObject = {
-    fileID: localStorage.getItem('fileId'),
-    stepID: localStorage.getItem('stepId'),
+    fileID: parseInt(localStorage.getItem('fileId')),
+    stepID: parseInt(localStorage.getItem('stepId')),
     name: file.name,
     confidential: 'True',
     file: base64.split(',').pop()
