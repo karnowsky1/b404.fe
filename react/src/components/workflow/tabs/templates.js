@@ -6,6 +6,8 @@ import { AssignPeople } from '../assignModal';
 import WorkflowBuilder from '../../wf-builder/workflowBuilder';
 import { TOKEN_KEY, DEFAULT_TREE } from '../../../constants';
 
+let currentComponent;
+
 const { confirm } = Modal;
 
 const defaultWorkflow = {
@@ -81,7 +83,7 @@ class Templates extends React.Component {
         }
       })
       .catch(function(error) {
-        this.setState({
+        currentComponent.setState({
           loading: false
         });
         message.destroy();
@@ -99,6 +101,8 @@ class Templates extends React.Component {
   }
 
   componentDidMount() {
+    currentComponent = this;
+
     this.setState({
       loading: true
     });

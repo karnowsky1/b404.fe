@@ -205,6 +205,7 @@ class Companies extends React.Component {
     return (
       <div>
         <Card>
+<<<<<<< HEAD
           <h3 className="headers">Companies</h3>
           <Table
             columns={this.columns}
@@ -226,6 +227,13 @@ class Companies extends React.Component {
               onCancel={this.handleAddCancel}
               // roles={optionsR}
               title="Add Company"
+=======
+            <h3 className="headers">Companies</h3>
+            <Table
+              columns={this.columns}
+              rowKey={record => record.id}
+              dataSource={this.state.data}
+>>>>>>> dev
             />
           )}
           {this.state.editvisible && (
