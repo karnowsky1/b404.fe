@@ -288,7 +288,7 @@ class DocumentsTable extends React.Component {
   fetch = (params = {}) => {
     axios({
       method: "get",
-      url: "http://demo1986594.mockable.io",
+      url: "https://demo1986594.mockable.io",
       response: {
         results: 4,
         params
