@@ -459,38 +459,38 @@ export default class WorkflowBuilder extends Component {
             </Form.Item>
           </div>
           {this.props.isConcreteWorkflow && (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              marginRight: 35,
-              marginBottom: 30
-            }}
-          >
-            <h6 className="wfInputText"> {'Start & End Date:'} </h6>
-            <Form.Item
-              validateStatus={dateRangeValidation ? 'error' : 'success'}
-              help={dateRangeValidation}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                marginRight: 35,
+                marginBottom: 30
+              }}
             >
-              <WorkflowDateRange
-                onChange={dates => {
-                  this.setState({
-                    defaultRange: dates
-                  });
-                }}
-                defaultRange={this.state.defaultRange}
-                format={SEND_DATE_FORMAT}
-                onBlur={() =>
-                  this.setState({
-                    defaultRangeEdited: true
-                  })
-                }
-              />
-            </Form.Item>
-          </div>
-        )}
+              <h6 className="wfInputText"> {'Start & End Date:'} </h6>
+              <Form.Item
+                validateStatus={dateRangeValidation ? 'error' : 'success'}
+                help={dateRangeValidation}
+              >
+                <WorkflowDateRange
+                  onChange={dates => {
+                    this.setState({
+                      defaultRange: dates
+                    });
+                  }}
+                  defaultRange={this.state.defaultRange}
+                  format={SEND_DATE_FORMAT}
+                  onBlur={() =>
+                    this.setState({
+                      defaultRangeEdited: true
+                    })
+                  }
+                />
+              </Form.Item>
+            </div>
+          )}
         </div>
-        
+
         <SortableTree
           style={{
             width: '100%',
@@ -701,9 +701,12 @@ export default class WorkflowBuilder extends Component {
             label="submit"
             onClick={this.handleSubmit}
             disabled={
-              required(this.state.wfName) ||
-              required(this.state.wfDescription) ||
-              required(this.state.defaultRange)
+              this.props.isConcreteWorkflow
+                ? required(this.state.wfName) ||
+                  required(this.state.wfDescription) ||
+                  required(this.state.defaultRange)
+                : required(this.state.wfName) ||
+                  required(this.state.wfDescription)
             }
           >
             Submit
