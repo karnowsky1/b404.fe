@@ -418,7 +418,6 @@ export default class WorkflowBuilder extends Component {
             }}
           >
             <h6 className="wfInputText">Name: </h6>
-<<<<<<< HEAD
             <Form.Item
               validateStatus={nameValidation ? 'error' : 'success'}
               help={nameValidation}
@@ -488,21 +487,6 @@ export default class WorkflowBuilder extends Component {
                 }
               />
             </Form.Item>
-=======
-            <Input
-              value={this.state.wfName}
-              onChange={this.handleNameChange}
-              placeholder="Enter workflow name..."
-            ></Input>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <h6 className="wfInputText">Description: </h6>
-            <Input
-              value={this.state.wfDescription}
-              onChange={this.handleDescriptionChange}
-              placeholder="Enter description..."
-            ></Input>
->>>>>>> dev
           </div>
         )}
         </div>
