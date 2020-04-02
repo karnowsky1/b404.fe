@@ -217,8 +217,7 @@ class Companies extends React.Component {
             size="default"
             onClick={this.showAddModal}
           >
-            + Creat
-
+            + Create
           </Button>
           {this.state.addvisible && (
             <CompanyModal
