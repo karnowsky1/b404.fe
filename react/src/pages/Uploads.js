@@ -23,20 +23,13 @@ function uploadFile(base64, file) {
 
   let requestObject = {
     fileID: localStorage.getItem('fileId'),
+    stepID: localStorage.getItem('stepId'),
     name: file.name,
     confidential: 'True',
     file: base64.replace(/^data:image.+;base64,/, '')
   };
 
-  const fileID = localStorage.getItem('fileId');
-  const stepID = localStorage.getItem('stepId');
-
-  const url =
-    window.__env__.API_URL +
-    '/blink/api/file?fileID=' +
-    fileID +
-    '&stepID=' +
-    stepID;
+  const url = window.__env__.API_URL + '/blink/api/file';
   axios
     .put(url, requestObject, {
       headers: {

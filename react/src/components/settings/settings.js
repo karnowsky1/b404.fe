@@ -6,6 +6,8 @@ import { TOKEN_KEY, UUID_KEY } from '../../constants/auth';
 import { hash } from './../../utils/hash';
 import SignatureCanvas from 'react-signature-canvas';
 
+import { passwordRegex } from '../../utils/validators'
+
 let currentComponent;
 
 class SettingsForm extends React.Component {
@@ -237,7 +239,8 @@ class SettingsForm extends React.Component {
                       rules: [
                         {
                           type: "regexp",
-                          pattern: new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
+                          // pattern: new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
+                          pattern: new RegExp(passwordRegex),
                           message: "Wrong format!"
                         }
                       ]
