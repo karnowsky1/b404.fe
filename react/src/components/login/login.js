@@ -10,6 +10,7 @@ import { Card } from 'antd';
 import { Typography } from 'antd';
 import { TOKEN_KEY, UUID_KEY } from '../../constants/auth';
 import { hash } from './../../utils/hash';
+import { axiosError } from '../../utils/axiosError';
 
 class LoginForm extends React.Component {
   constructor(props) {
@@ -56,19 +57,7 @@ class LoginForm extends React.Component {
           setIsLoggedIn(true);
         }
       })
-      .catch(function(error) {
-        message.destroy();
-        if (error.response) {
-          // Request made and server responded
-          message.error(error.response.data.error);
-        } else if (error.request) {
-          // The request was made but no response was received
-          message.error('Server not responding');
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          message.error('Error setting up request');
-        }
-      });
+      .catch(axiosError);
   };
 
   handleChange = e => {
