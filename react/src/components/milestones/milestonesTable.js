@@ -416,7 +416,13 @@ class MilestonesTable extends React.Component {
                       </div>
                     ))
                   ) : (
-                    <p>There are no active workflows for this milestone</p>
+                    <React.Fragment>
+                      <p>There are no active workflows for this milestone</p>
+                      <p>
+                        Click the Add Workflow button to add an active workflow
+                        to this milestone
+                      </p>
+                    </React.Fragment>
                   )}
                   {/* <b>Workflow 1</b>
                     </p>
