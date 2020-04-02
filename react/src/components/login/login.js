@@ -9,8 +9,7 @@ import Logo from '../../img/VC2.png';
 import { Card } from 'antd';
 import { Typography } from 'antd';
 import { TOKEN_KEY, UUID_KEY } from '../../constants/auth';
-import { hash } from './../../utils/hash'
-
+import { hash } from './../../utils/hash';
 
 class LoginForm extends React.Component {
   constructor(props) {
@@ -34,8 +33,7 @@ class LoginForm extends React.Component {
     e.preventDefault();
     const { username, password } = this.state;
     const url = window.__env__.API_URL + '/blink/api/login';
-    
-    console.log(hash(password))
+
     // console.log(JSON.parse(sjcl.encrypt("password",password)).ct)
     await axios
       .post(

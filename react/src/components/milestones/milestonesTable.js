@@ -3,11 +3,17 @@ import axios from 'axios';
 import qs from 'qs';
 import { Table, Progress, Row, Col, Button, Modal, Divider } from 'antd';
 import { MilestoneModal } from './MilestoneModal';
-import { getAllCompanies, getMilestone, getWorkflowTemplates } from '../../utils/api';
+import {
+  getAllCompanies,
+  getMilestone,
+  getWorkflowTemplates,
+  getWorkflow
+} from '../../utils/api';
 import { axiosError } from '../../utils/axiosError';
 import { AssignTemplateModal } from '../workflow/AssignTemplateModal';
 import moment from 'moment';
-
+import WorkflowBuilder from '../wf-builder/workflowBuilder';
+import { RECEIVE_DATE_FORMAT } from '../../constants';
 
 const { confirm } = Modal;
 
@@ -19,14 +25,16 @@ class MilestonesTable extends React.Component {
     addvisible: false,
     editvisible: false,
     assignvisible: false,
+    workflowBuilderVisible: false,
+    workflow: [],
+    updateWorkflow: false,
     editingMilestone: undefined,
     editingMilestoneID: undefined,
     assignWorkflowTemplates: undefined,
     assignWorkflowToMilestoneID: undefined,
     companyOptions: [],
-    content: "",
+    content: '',
     pagination: {}
-    
   };
   constructor(props) {
     super(props);
@@ -37,38 +45,43 @@ class MilestonesTable extends React.Component {
         title: 'Actions',
         dataIndex: '',
         key: 'x',
-        render: record => this.props.content === "active" ? (
-          <React.Fragment>
-            <Button
-              type="link"
-              size="small"
-              onClick={e => this.showAssignModal()}
-            >
-              Add Workflow
-            </Button>
-            <Divider type="vertical" />
-            <Button
-              type="link"
-              size="small"
-              onClick={e => this.showEditModal(record)}
-            >
-              Edit
-            </Button>
-            <Divider type="vertical" />
-            <Button
-              type="link"
-              size="small"
-              onClick={e => this.showArchiveConfirm(e, record.id, "archive", "archived")}
-            >
-              Archive
-            </Button>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <Button
+        render: record =>
+          this.props.content === 'active' ? (
+            <React.Fragment>
+              <Button
                 type="link"
                 size="small"
-                onClick={e => this.showArchiveConfirm(e, record.id, "unarchive", "active")}
+                onClick={e => this.showAssignModal(record)}
+              >
+                Add Workflow
+              </Button>
+              <Divider type="vertical" />
+              <Button
+                type="link"
+                size="small"
+                onClick={e => this.showEditModal(record)}
+              >
+                Edit
+              </Button>
+              <Divider type="vertical" />
+              <Button
+                type="link"
+                size="small"
+                onClick={e =>
+                  this.showArchiveConfirm(e, record.id, 'archive', 'archived')
+                }
+              >
+                Archive
+              </Button>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <Button
+                type="link"
+                size="small"
+                onClick={e =>
+                  this.showArchiveConfirm(e, record.id, 'unarchive', 'active')
+                }
               >
                 Unarchive
               </Button>
@@ -80,15 +93,15 @@ class MilestonesTable extends React.Component {
               >
                 Delete
               </Button>
-          </React.Fragment>
-        )
+            </React.Fragment>
+          )
       }
     ];
   }
 
-  componentDidMount() {
+  componentDidMount = async e => {
     this.fetch();
-    getAllCompanies()
+    await getAllCompanies()
       .then(response => {
         this.setState({
           companyOptions: response.data.map(company => ({
@@ -99,7 +112,7 @@ class MilestonesTable extends React.Component {
         });
       })
       .catch(axiosError);
-  }
+  };
 
   showAddModal = () => {
     this.setState({
@@ -107,7 +120,7 @@ class MilestonesTable extends React.Component {
     });
   };
 
-  showAssignModal = async e => {
+  showAssignModal = async record => {
     await getWorkflowTemplates()
       .then(response => {
         this.setState({
@@ -116,49 +129,67 @@ class MilestonesTable extends React.Component {
             key: template.workflowID,
             label: template.name
           })),
-          assignvisible: true
-        })
+          assignvisible: true,
+          assignWorkflowToMilestoneID: record.id
+        });
       })
       .catch(axiosError);
   };
 
   showEditModal = async record => {
     // console.log(record)
-    await getMilestone(record.id)
-      .then(response =>{
-        // console.log(response.data)
-        this.setState({
-          editingMilestone: {
-            name: response.data.name,
-            description: response.data.description,
-            companyID: response.data.company.companyID, // or companyName
-            startDate: moment(response.data.startDate,'MMM, D YYYY'), // update this to include hours mintues and seconds once the backend gets to it
-            deliveryDate: moment(response.data.deliveryDate,'MMM, D YYYY')
-          },
-          editingMilestoneID: record.id,
-          editvisible: true
+    await getMilestone(record.id).then(response => {
+      // console.log(response.data)
+      this.setState({
+        editingMilestone: {
+          name: response.data.name,
+          description: response.data.description,
+          companyID: response.data.company.companyID, // or companyName
+          startDate: moment(response.data.startDate, RECEIVE_DATE_FORMAT), // update this to include hours mintues and seconds once the backend gets to it
+          deliveryDate: moment(response.data.deliveryDate, RECEIVE_DATE_FORMAT)
+        },
+        editingMilestoneID: record.id,
+        editvisible: true
+      });
+    });
+  };
+
+  showWorkflowModal = workflow => {
+    workflow
+      ? this.setState({
+          workflow: workflow,
+          assignWorkflowToMilestoneID: workflow.milestoneID,
+          updateWorkflow: true,
+          workflowBuilderVisible: true
         })
-      })
-  }
+      : this.setState({
+          isNew: false,
+          workflowBuilderVisible: true,
+          updateWorkflow: false
+        });
+  };
 
   handleAddCancel = e => {
-    // console.log(e);
     this.setState({
       addvisible: false
     });
   };
 
   handleEditCancel = e => {
-    // console.log(e);
     this.setState({
       editvisible: false
     });
   };
 
   handleAssignCancel = e => {
-    // console.log(e);
     this.setState({
       assignvisible: false
+    });
+  };
+
+  handleWorkflowCancel = e => {
+    this.setState({
+      workflowBuilderVisible: false
     });
   };
 
@@ -178,17 +209,15 @@ class MilestonesTable extends React.Component {
         this.fetch();
       })
       .catch(axiosError);
-      this.setState({
-        addvisible: false
-      });
+    this.handleAddCancel();
   };
 
   onEditSubmit = async values => {
     // if (!this.state.previousJobIsEmpty && values.title === '') {
     //   values.title = ' ';
     // }
-    // may have to do this again 
-    console.log(values)
+    // may have to do this again
+    console.log(values);
     await axios({
       method: 'put',
       url: window.__env__.API_URL + '/blink/api/milestone',
@@ -202,22 +231,34 @@ class MilestonesTable extends React.Component {
         description: values.description,
         companyID: values.companyID,
         startDate: values.startDate,
-        deliveryDate: values.deliveryDate,
+        deliveryDate: values.deliveryDate
       }),
       type: 'json'
-    }).then(() => {
-      this.fetch();
     })
-    .catch(axiosError);
-    this.setState({
-      editvisible: false
-    });
+      .then(() => {
+        this.fetch();
+      })
+      .catch(axiosError);
+    this.handleEditCancel();
     this.fetch();
-  }
+  };
+
+  onAssignSubmit = async values => {
+    console.log(values);
+    await getWorkflow(values.templateID)
+      .then(response => {
+        this.setState({
+          workflow: response.data
+        });
+      })
+      .catch(axiosError);
+    this.handleAssignCancel();
+    this.showWorkflowModal();
+  };
 
   fetch = async e => {
-    const { content } = this.props
-     await axios({
+    const { content } = this.props;
+    await axios({
       method: 'get',
       url: window.__env__.API_URL + `/blink/api/milestone/${content}`,
       headers: { Authorization: localStorage.getItem('token') },
@@ -226,7 +267,7 @@ class MilestonesTable extends React.Component {
       },
       type: 'json'
     })
-      .then( async response => {
+      .then(async response => {
         let conf = [];
         for (let entry of response.data) {
           conf.push({
@@ -237,24 +278,24 @@ class MilestonesTable extends React.Component {
             startDate: entry.startDate,
             completedDate: entry.completedDate,
             deliveryDate: entry.deliveryDate
-            // workflows: 
+            // workflows:
           });
           conf.forEach(async item => {
-             await axios({
+            await axios({
               method: 'get',
-              url: window.__env__.API_URL + `/blink/api/workflow/milestone/${item.id}`,
+              url:
+                window.__env__.API_URL +
+                `/blink/api/workflow/milestone/${item.id}`,
               headers: { Authorization: localStorage.getItem('token') },
               response: {
                 results: 4
               },
               type: 'json'
-            })
-            .then(response => {
-              item.workflows = response.data
-            })
+            }).then(response => {
+              item.workflows = response.data;
+            });
           });
         }
-        // console.log(conf)
         const pagination = { ...this.state.pagination };
         pagination.pageSize = 4;
         this.setState({
@@ -285,10 +326,11 @@ class MilestonesTable extends React.Component {
             id: id
           }),
           type: 'json'
-        }).then(() => {
-          window.location.reload(false);
         })
-        .catch(axiosError);
+          .then(() => {
+            window.location.reload(false);
+          })
+          .catch(axiosError);
       },
       onCancel() {
         // console.log('Cancel');
@@ -297,7 +339,7 @@ class MilestonesTable extends React.Component {
   };
 
   showDeleteConfirm = (e, id) => {
-    const { fetch } = this; 
+    const { fetch } = this;
     confirm({
       title: `Are you sure you want to delete this Milestone?`,
       content: `If you delete this Milestone, all associated worklflows will be romoved from the system!`,
@@ -305,15 +347,16 @@ class MilestonesTable extends React.Component {
       okType: 'danger',
       cancelText: 'No',
       async onOk() {
-        await  axios
-        .delete(window.__env__.API_URL + '/blink/api/milestone/' + id, {
-          headers: {
-            Authorization: localStorage.getItem('token')
-          }
-        }).then(() => {
-          fetch(); //having an issue with need to refresh both tables 
-        })
-        .catch(axiosError);
+        await axios
+          .delete(window.__env__.API_URL + '/blink/api/milestone/' + id, {
+            headers: {
+              Authorization: localStorage.getItem('token')
+            }
+          })
+          .then(() => {
+            fetch(); //having an issue with need to refresh both tables
+          })
+          .catch(axiosError);
       },
       onCancel() {
         // console.log('Cancel');
@@ -324,99 +367,140 @@ class MilestonesTable extends React.Component {
   render() {
     return (
       <React.Fragment>
-          <Table
-            columns={this.columns}
-            rowKey={record => record.id}
-            expandedRowRender={record => (
-              <Row key={record.key}>
-                <Col span={12}>
-                  <p>
-                    <b>Start Date: {record.startDate}</b>
-                  </p>
-                  <p>
-                    <b>Delivery Date: {record.deliveryDate}</b>
-                  </p>
-                  <p>
-                    <b>Completed Date: {record.completedDate ? record.completedDate : 'N/A'}</b>
-                  </p>
-                </Col>
-                <Col span={12}>
-                  <div >
-                    {/* <p> */}
-                    {/* {console.log(record)} */}
-                      {
-                      record.workflows && record.workflows.map(({name, percentComplete, workflowID}) => ( 
-                        <div key={workflowID}>
-                          <span style={{ width: 200 }}>
-                            <b>{name}</b>
-                          </span>
-                          <Divider type="vertical" />
+        <Table
+          columns={this.columns}
+          rowKey={record => record.id}
+          expandedRowRender={record => (
+            <Row key={record.key}>
+              <Col span={12}>
+                <p>
+                  <b>Start Date: {record.startDate}</b>
+                </p>
+                <p>
+                  <b>Delivery Date: {record.deliveryDate}</b>
+                </p>
+                <p>
+                  <b>
+                    Completed Date:{' '}
+                    {record.completedDate ? record.completedDate : 'N/A'}
+                  </b>
+                </p>
+              </Col>
+              <Col span={12}>
+                <div>
+                  {/* <p> */}
+                  {/* {console.log(record)} */}
+                  {record.workflows[0] ? (
+                    record.workflows.map(({ ...workflow }) => (
+                      <div key={workflow.workflowID}>
+                        <span style={{ width: 200 }}>
+                          <b>{workflow.name}</b>
+                        </span>
+                        <Divider type="vertical" />
+                        {this.props.content === 'active' && (
                           <Button
                             type="link"
                             size="small"
-                            onClick={e => this.showEditModal(record)}
+                            onClick={e => this.showWorkflowModal(workflow)}
                           >
                             Update Workflow
                           </Button>
-                          <p></p>
-                          <Progress style={{ width: 310 }} percent={percentComplete} size="small" />
-                          <p></p>
-                        </div>
-                      ))
-                      }
-                    {                      
-                    /* <b>Workflow 1</b>
+                        )}
+                        <p></p>
+                        <Progress
+                          style={{ width: 310 }}
+                          percent={workflow.percentComplete * 100}
+                          size="small"
+                        />
+                        <p></p>
+                      </div>
+                    ))
+                  ) : (
+                    <React.Fragment>
+                      <p>There are no active workflows for this milestone</p>
+                      <p>
+                        Click the Add Workflow button to add an active workflow
+                        to this milestone
+                      </p>
+                    </React.Fragment>
+                  )}
+                  {/* <b>Workflow 1</b>
                     </p>
                     <Progress percent={50} size="small" />
                     <p>
                       <b>Workflow 2</b>
                     </p>
                     <Progress percent={50} size="small" /> */}
-                  </div>
-                </Col>
-              </Row>
-            )}
-            dataSource={this.state.data}
+                </div>
+              </Col>
+            </Row>
+          )}
+          dataSource={this.state.data}
+        />
+        {this.props.active && (
+          <Button type="primary" onClick={this.showAddModal}>
+            + Create
+          </Button>
+        )}
+
+        {this.state.addvisible && (
+          <MilestoneModal
+            onSubmit={this.onAddSubmit}
+            companies={this.state.companyOptions}
+            onCancel={this.handleAddCancel}
+            title="Add Milestone"
+            isAddModal={true}
           />
-          {this.props.active && (
-            <Button type="primary" onClick={this.showAddModal}>
-              + Create
-            </Button>
-            ) 
-          }
-          
-          {this.state.addvisible && (
-            <MilestoneModal
-              onSubmit={this.onAddSubmit}
-              companies={this.state.companyOptions}
-              onCancel={this.handleAddCancel}
-              title="Add Milestone"
-              isAddModal={true}
-            />
-          )}
+        )}
 
-          {this.state.editvisible && (
-            <MilestoneModal
-              initialValues={this.state.editingMilestone}
-              onSubmit={this.onEditSubmit}
-              companies={this.state.companyOptions}
-              onCancel={this.handleEditCancel}
-              title="Edit Milestone"
-              isAddModal={false}
-            />
-          )}
+        {this.state.editvisible && (
+          <MilestoneModal
+            initialValues={this.state.editingMilestone}
+            onSubmit={this.onEditSubmit}
+            companies={this.state.companyOptions}
+            onCancel={this.handleEditCancel}
+            title="Edit Milestone"
+            isAddModal={false}
+          />
+        )}
 
-          {this.state.assignvisible && (
-            <AssignTemplateModal
-              initialValues={this.state.assignWorkflowTemplates}
-              onSubmit={this.onAssignSubmit}
-              templates={this.state.assignWorkflowTemplates}
-              onCancel={this.handleAssignCancel}
-              title="Assign a Workflow Template to this Milestone"
-              isAddModal={false}
+        {this.state.assignvisible && (
+          <AssignTemplateModal
+            initialValues={this.state.assignWorkflowTemplates}
+            onSubmit={this.onAssignSubmit}
+            templates={this.state.assignWorkflowTemplates}
+            onCancel={this.handleAssignCancel}
+            title="Assign a Workflow Template to this Milestone"
+            isAddModal={false}
+          />
+        )}
+        {this.state.workflowBuilderVisible && (
+          <Modal
+            bodyStyle={{ height: '81vh' }}
+            title={
+              this.state.isNew ? (
+                <h1>Create a new workflow template</h1>
+              ) : (
+                <h1>Create a concrete workflow</h1>
+              )
+            }
+            width="75vw"
+            footer={null}
+            onOk={this.handleOk}
+            onCancel={this.handleWorkflowCancel}
+            visible={true}
+          >
+            <WorkflowBuilder
+              isNew={false}
+              isConcreteWorkflow={true}
+              workflow={this.state.workflow}
+              milestoneID={this.state.assignWorkflowToMilestoneID}
+              updateWorkflow={this.state.updateWorkflow}
+              onCancel={this.handleWorkflowCancel}
             />
-          )}
-        </React.Fragment>
+          </Modal>
+        )}
+      </React.Fragment>
     );
   }
 }

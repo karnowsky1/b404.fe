@@ -7,7 +7,7 @@ import { required } from '../../utils/validators';
 const { Option } = Select;
 
 const defaults = {
-  templates: ''
+  templateID: ''
 };
 
 const AssignTemplateModalForm = ({
@@ -36,11 +36,11 @@ const AssignTemplateModalForm = ({
           >
             <p></p>
             <p>Template Name</p>
-            <Form.Item name="templates" validate={required}>
+            <Form.Item name="templateID" validate={required}>
               <Select
+                name="templateID"
                 style={{ width: '100%' }}
                 placeholder="Select Workflow Template"
-                name="template"
               >
                 {templates.map(({ value, label }) => (
                   <Option value={value} key={value}>
@@ -58,6 +58,6 @@ const AssignTemplateModalForm = ({
   );
 };
 
-export const AssignTemplateModal = AntForm.create({ name: 'people_modal' })(
-  AssignTemplateModalForm
-);
+export const AssignTemplateModal = AntForm.create({
+  name: 'assign_template_modal'
+})(AssignTemplateModalForm);

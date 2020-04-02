@@ -315,6 +315,8 @@ class Templates extends React.Component {
           <WorkflowBuilder
             isNew={this.state.isNew}
             workflow={this.state.workflow}
+            isConcreteWorkflow={false}
+            onCancel={this.handleCancel}
           />
         </Modal>
       </React.Fragment>
