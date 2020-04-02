@@ -6,7 +6,7 @@ export default class Dashboard extends Component {
   render() {
     return (
       <React.Fragment>
-        <Link to="/workflow">click me!</Link>
+        {/* <Link to="/workflow">click me!</Link> */}
         <Dash />
       </React.Fragment>
     );
