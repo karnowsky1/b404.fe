@@ -362,6 +362,7 @@ class SettingsForm extends React.Component {
               </Spin>
             </div>
           </Card>
+            <p id="API_URL">API URL: {window.__env__.API_URL}</p>
       </div>
     );
   }
