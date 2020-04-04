@@ -62,9 +62,9 @@ class Templates extends React.Component {
     ];
   }
 
-  getWorkflows() {
+  getWorkflows = async e => {
     const url = window.__env__.API_URL + '/blink/api/workflow/templates';
-    axios
+    await axios
       .get(url, {
         headers: {
           'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ class Templates extends React.Component {
           message.error('Error setting up request');
         }
       });
-  }
+  };
 
   componentDidMount() {
     currentComponent = this;
@@ -154,8 +154,8 @@ class Templates extends React.Component {
     });
   };
 
-  getAllCompanies() {
-    axios
+  getAllCompanies = async e => {
+    await axios
       .get(window.__env__.API_URL + '/blink/api/company', {
         headers: {
           Authorization: localStorage.getItem('token')
@@ -174,10 +174,10 @@ class Templates extends React.Component {
       .catch(function(error) {
         console.log(error);
       });
-  }
+  };
 
-  getAllPeople() {
-    axios
+  getAllPeople = async e => {
+    await axios
       .get(window.__env__.API_URL + '/blink/api/person', {
         headers: {
           Authorization: localStorage.getItem('token')
@@ -196,17 +196,17 @@ class Templates extends React.Component {
       .catch(function(error) {
         console.log(error);
       });
-  }
+  };
 
-  showDeleteConfirm = (e, id) => {
+  showDeleteConfirm = async (e, id) => {
     confirm({
       title: 'Are you sure you want to delete this workflow?',
       content: 'If you delete this workflow it will become unusable!',
       okText: 'Yes',
       okType: 'danger',
       cancelText: 'No',
-      onOk() {
-        axios
+      async onOk() {
+        await axios
           .delete(window.__env__.API_URL + '/blink/api/workflow/' + id, {
             headers: {
               Authorization: localStorage.getItem('token')
@@ -300,11 +300,9 @@ class Templates extends React.Component {
         <Modal
           bodyStyle={{ height: '81vh' }}
           title={
-            this.state.isNew ? (
-              "Create a new workflow template"
-            ) : (
-              "Edit workflow template"
-            )
+            this.state.isNew
+              ? 'Create a new workflow template'
+              : 'Edit workflow template'
           }
           width="75vw"
           footer={null}

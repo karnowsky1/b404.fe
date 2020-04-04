@@ -40,7 +40,7 @@ class NavLayout extends React.Component {
               </div>
             </div>
           )}
-
+          {console.log(` These are the paths:  ${this.props.path}`)}
           <Menu theme="dark" mode="inline" selectedKeys={[this.props.path]}>
             {MAIN_ROUTES.map(({ name, path, icon }) => (
               <Menu.Item key={path}>
@@ -52,7 +52,7 @@ class NavLayout extends React.Component {
             ))}
             <Menu.Divider style={{ backgroundColor: '#313C4E' }} />
             {/* <div style={{ padding: '10px', fontSize: '.8em' }}>Settings</div> */}
-            <Menu.Item key="5">
+            <Menu.Item key="/main-settings">
               <NavLink to="/main-settings">
                 <Icon type="setting" />
                 <span>Main Settings</span>
@@ -68,10 +68,10 @@ class NavLayout extends React.Component {
                   </span>
                 }
               >
-                <Menu.Item key="6">
+                <Menu.Item key="/company">
                   <NavLink to="/company">Companies</NavLink>
                 </Menu.Item>
-                <Menu.Item key="7">
+                <Menu.Item key="/people">
                   <NavLink to="/people">Users</NavLink>
                 </Menu.Item>
               </SubMenu>

@@ -1,8 +1,8 @@
-import React from "react";
-import axios from "axios";
-import { Button, Card } from "antd";
-import { TOKEN_KEY /*, UUID_KEY*/ } from "../../constants/auth";
-import { Link } from "react-router-dom";
+import React from 'react';
+import axios from 'axios';
+import { Button, Card } from 'antd';
+import { TOKEN_KEY /*, UUID_KEY*/ } from '../../constants/auth';
+import { Link } from 'react-router-dom';
 
 class DashMilestones extends React.Component {
   constructor(props) {
@@ -22,19 +22,19 @@ class DashMilestones extends React.Component {
     this.fetch();
   }
 
-  fetch = (params = {}) => {
-    axios({
-      method: "get",
-      url: window.__env__.API_URL + "/blink/api/milestone/active",
+  fetch = async (params = {}) => {
+    await axios({
+      method: 'get',
+      url: window.__env__.API_URL + '/blink/api/milestone/active',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: localStorage.getItem(TOKEN_KEY)
       },
       response: {
         results: 4,
         params
       },
-      type: "json"
+      type: 'json'
     })
       .then(response => {
         let conf = [];
@@ -74,10 +74,14 @@ class DashMilestones extends React.Component {
         <h3>Your Milestones</h3>
         {this.state.data.map(record => (
           <div
-            style={{ display: "inline-block", padding: "1.2em" }}
+            style={{ display: 'inline-block', padding: '1.2em' }}
             key={record.id}
           >
-            <Card title={record.name} style={{ width: 265, height: 250 }} key={record.id}>
+            <Card
+              title={record.name}
+              style={{ width: 265, height: 250 }}
+              key={record.id}
+            >
               <p>
                 <b>Company Name:</b>
               </p>
