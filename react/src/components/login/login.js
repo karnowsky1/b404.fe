@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Icon, Input, Button, Checkbox, message } from 'antd';
+import { Form, Icon, Input, Button, message } from 'antd';
 import { connect } from 'react-redux';
 import { setUser, setIsLoggedIn } from '../../actions/user';
 import axios from 'axios';
@@ -130,10 +130,6 @@ class LoginForm extends React.Component {
               )}
             </Form.Item>
             <Form.Item>
-              {getFieldDecorator('remember', {
-                valuePropName: 'checked',
-                initialValue: true
-              })(<Checkbox>Remember me</Checkbox>)}
               <Button
                 type="primary"
                 htmlType="submit"
@@ -142,7 +138,6 @@ class LoginForm extends React.Component {
                 Log in
               </Button>
             </Form.Item>
-            <p id="API_URL">API URL: {window.__env__.API_URL}</p>
           </Form>
 
           {/* <h1>{this.state.username}</h1> */}
