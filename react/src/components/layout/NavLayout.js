@@ -93,8 +93,13 @@ class NavLayout extends React.Component {
               type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
               onClick={this.toggle}
             />
-            <div className="logout">
-              <Logout />
+            <div style={{ display: 'flex', height: 'inherit' }}>
+              <div className="username">
+                <p>{this.props.user_name}</p>
+              </div>
+              <div className="logout">
+                <Logout />
+              </div>
             </div>
           </Header>
           <Content
@@ -113,5 +118,6 @@ class NavLayout extends React.Component {
 }
 
 export default connect((state = {}) => ({
-  isAdmin: state.user && state.user.accessLevelID <= 1
+  isAdmin: state.user && state.user.accessLevelID <= 1,
+  user_name: state.user.fName + ' ' + state.user.lName
 }))(NavLayout);
