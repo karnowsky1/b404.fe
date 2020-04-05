@@ -3,6 +3,11 @@ import axios from 'axios';
 import { Button, Card } from 'antd';
 import { TOKEN_KEY /*, UUID_KEY*/ } from '../../constants/auth';
 import { Link } from 'react-router-dom';
+import { NoContent } from '../../utils/NoContent';
+import {
+  noMilestoneUserMessageOne,
+  noMilestoneUserMessageTwo
+} from '../../constants/messages';
 
 class DashMilestones extends React.Component {
   constructor(props) {
@@ -72,27 +77,38 @@ class DashMilestones extends React.Component {
     return (
       <React.Fragment>
         <h3>Your Milestones</h3>
-        {this.state.data.map(record => (
-          <div
-            style={{ display: 'inline-block', padding: '1.2em' }}
-            key={record.id}
-          >
-            <Card
-              title={record.name}
-              style={{ width: 265, height: 250 }}
+        {this.state.data[0] ? (
+          this.state.data.map(record => (
+            <div
+              style={{ display: 'inline-block', padding: '1.2em' }}
               key={record.id}
             >
-              <p>
-                <b>Company Name:</b>
-              </p>
-              <p>{record.company}</p>
-              <p>
-                <b>Date Started:</b>
-              </p>
-              <p>{record.date}</p>
-            </Card>
+              <Card
+                title={record.name}
+                style={{ width: 265, height: 250 }}
+                key={record.id}
+              >
+                <p>
+                  <b>Company Name:</b>
+                </p>
+                <p>{record.company}</p>
+                <p>
+                  <b>Date Started:</b>
+                </p>
+                <p>{record.date}</p>
+              </Card>
+            </div>
+          ))
+        ) : (
+          <div className="dashboard_no_content">
+            <NoContent
+              iconType="diff"
+              twoTonecolor="#001529"
+              firstMessage={noMilestoneUserMessageOne}
+              secondMessage={noMilestoneUserMessageTwo}
+            />
           </div>
-        ))}
+        )}
         <br />
         <div className="viewAllBlockBtn">
           <Button type="default" block>

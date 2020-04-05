@@ -14,7 +14,11 @@ import { AssignTemplateModal } from '../workflow/AssignTemplateModal';
 import moment from 'moment';
 import WorkflowBuilder from '../wf-builder/workflowBuilder';
 import { RECEIVE_DATE_FORMAT } from '../../constants';
-import { FileExcelTwoTone } from '@ant-design/icons';
+import { NoContent } from '../../utils/NoContent';
+import {
+  noMilestonesMessageOne,
+  noMilestonesMessageTwo
+} from '../../constants/messages';
 
 const { confirm } = Modal;
 
@@ -417,31 +421,13 @@ class MilestonesTable extends React.Component {
                       </div>
                     ))
                   ) : (
-                    <React.Fragment >
-                      <div style={{ padding: 11,
-                      backgroundColor: "#eee",
-                      border: "#eee solid",
-                      borderRadius: 5 }}>
-                      <FileExcelTwoTone twoToneColor="#001529" 
-                        style={{ 
-                          fontSize: "4.5em",
-                          width: "100%",
-                          marginBottom: 12,
-                          opacity: 0.7 }}
-                      />
-                      <p style={{textAlign: "center", fontSize: 14, marginBottom: 6, fontWeight: "bold"}}>There are no active workflows for this milestone</p>
-                      <p style={{fontSize: 12, textAlign: "center"}}>
-                        Click Add Workflow to add an active workflow</p>
-                        </div>
-                    </React.Fragment>
+                    <NoContent
+                      iconType="file-excel"
+                      twoTonecolor="#001529"
+                      firstMessage={noMilestonesMessageOne}
+                      secondMessage={noMilestonesMessageTwo}
+                    />
                   )}
-                  {/* <b>Workflow 1</b>
-                    </p>
-                    <Progress percent={50} size="small" />
-                    <p>
-                      <b>Workflow 2</b>
-                    </p>
-                    <Progress percent={50} size="small" /> */}
                 </div>
               </Col>
             </Row>

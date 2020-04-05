@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Card, Button } from 'antd';
 import { TOKEN_KEY /*, UUID_KEY*/ } from '../../constants/auth';
 import { Link } from 'react-router-dom';
+import { NoContent } from '../../utils/NoContent';
+import { noTasksMessageOne, noTasksMessageTwo } from '../../constants/messages';
 
 class Pending extends React.Component {
   constructor(props) {
@@ -74,67 +76,69 @@ class Pending extends React.Component {
     let action;
     //console.log(id);
     this.state.data.forEach(element => {
-      if(element.id === id) {
-        localStorage.setItem("stepId", element.id);
-        if(element.fileID !== 0) {
-          localStorage.setItem("fileId", element.fileID);
-        } else localStorage.setItem("fileId", 0);
-        switch(element.title) {
+      if (element.id === id) {
+        localStorage.setItem('stepId', element.id);
+        if (element.fileID !== 0) {
+          localStorage.setItem('fileId', element.fileID);
+        } else localStorage.setItem('fileId', 0);
+        switch (element.title) {
           case 1:
-            action = '/approve'
-            break
+            action = '/approve';
+            break;
           case 2:
-            action = '/upload'
-            break
+            action = '/upload';
+            break;
           case 3:
-            action = '/complete'
-            break
+            action = '/complete';
+            break;
           case 4:
-            action = '/submission'
-            break  
+            action = '/submission';
+            break;
           default:
-            action = '/'
-            break
+            action = '/';
+            break;
         }
       }
     });
-    return action
+    return action;
   }
 
   render() {
     return (
       <React.Fragment>
         <h3>Pending Tasks</h3>
-        {this.state.data ? 
+        {this.state.data[0] ? (
           this.state.data.map(record => (
-          <div
-            style={{ display: 'inline-block', padding: '2em' }}
-            key={record.id}
-          >
-            <Card style={{ width: 300, height: 70, display: 'inline-block' }}>
-              <p>
-                <b>{record.name}</b>
-                <Button
-                  type='primary'
-                  shape='round'
-                  size='small'
-                  style={{ float: 'right' }}
-                  onClick={e => this.navigate(record.id)}
-                >
-                <Link to={this.navigate(record.id)}>View</Link>
-                </Button>
-              </p>
-            </Card>
-          </div>
-        )): 
-          <div
+            <div
               style={{ display: 'inline-block', padding: '2em' }}
-          >
-            <Card style={{ width: 300, height: 70, display: 'inline-block', textAlign: 'center' }}>
-              <p>No Current Tasks</p>
-            </Card>
+              key={record.id}
+            >
+              <Card style={{ width: 300, height: 70, display: 'inline-block' }}>
+                <p>
+                  <b>{record.name}</b>
+                  <Button
+                    type="primary"
+                    shape="round"
+                    size="small"
+                    style={{ float: 'right' }}
+                    onClick={e => this.navigate(record.id)}
+                  >
+                    <Link to={this.navigate(record.id)}>View</Link>
+                  </Button>
+                </p>
+              </Card>
+            </div>
+          ))
+        ) : (
+          <div className="dashboard_no_content">
+            <NoContent
+              iconType="bell"
+              twoTonecolor="#001529"
+              firstMessage={noTasksMessageOne}
+              secondMessage={noTasksMessageTwo}
+            />
           </div>
-        }
+        )}
         <br />
       </React.Fragment>
     );
