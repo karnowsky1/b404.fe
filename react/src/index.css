@@ -18,7 +18,7 @@ body {
 }
 
 .rst__node {
-  height: 70px!important;
+  height: 70px !important;
 }
 
 .wfInputText {
@@ -165,6 +165,11 @@ code {
 .logout {
   cursor: pointer;
   margin-right: 30px;
+}
+
+.username {
+  height: inherit;
+  margin-right: 1.1em;
 }
 
 .flex_column {
