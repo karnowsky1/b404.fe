@@ -414,7 +414,7 @@ class MilestonesTable extends React.Component {
                         <p></p>
                         <Progress
                           style={{ width: 310 }}
-                          percent={workflow.percentComplete * 100}
+                          percent={Math.floor(workflow.percentComplete * 100)}
                           size="small"
                         />
                         <p></p>

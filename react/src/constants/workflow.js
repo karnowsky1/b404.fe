@@ -10,8 +10,8 @@ export const ASSIGN_DEFAULT_TREE = {
   subtitle: '',
   asynchronous: false,
   expanded: false,
-  file: 0,
-  uuid: 0,
+  file: '',
+  uuid: '',
   startDate: '',
   deliveryDate: ''
 };

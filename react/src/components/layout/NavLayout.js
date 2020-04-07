@@ -5,6 +5,7 @@ import { MAIN_ROUTES } from '../../constants/routes';
 import { connect } from 'react-redux';
 import Logout from './Logout';
 import mainLogo from '../../img/something.jpg';
+import { AUTH } from '../../constants';
 
 const { Header, Sider, Content } = Layout;
 
@@ -118,6 +119,6 @@ class NavLayout extends React.Component {
 }
 
 export default connect((state = {}) => ({
-  isAdmin: state.user && state.user.accessLevelID <= 1,
+  isAdmin: state.user && state.user.accessLevelID <= AUTH.ADMIN,
   user_name: state.user.fName + ' ' + state.user.lName
 }))(NavLayout);
