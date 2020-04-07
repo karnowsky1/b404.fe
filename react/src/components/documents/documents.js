@@ -1,116 +1,111 @@
-import React from 'react';
-import {
-  Table,
-  Button,
-  Input,
-  Divider,
-  Tag,
-  Modal,
-  Select,
-  message
-} from 'antd';
-import axios from 'axios';
-import { DocumentsModal } from './DocumentsModal';
+import React from "react";
+import { Button, Modal, Select, Tabs, message } from "antd";
+import axios from "axios";
+import { TOKEN_KEY /*, UUID_KEY*/ } from "../../constants/auth";
+import { DocumentsModal } from "./DocumentsModal";
+import TemplateTable from "./templateDoc";
+import AssignTable from "./assignedDoc";
 
-import { FormBuilder } from 'cb-react-forms';
+import { FormBuilder } from "cb-react-forms";
 //import { FormGenerator } from 'cb-react-forms';
-import ReactToPrint from 'react-to-print';
+import ReactToPrint from "react-to-print";
 
-const { Search } = Input;
 const { Option } = Select;
+
+const { TabPane } = Tabs;
 
 const items = [
   {
-    key: 'Header',
-    name: 'Header Text',
-    icon: 'fa fa-header'
+    key: "Header",
+    name: "Header Text",
+    icon: "fa fa-header",
   },
   {
-    key: 'Label',
-    name: 'Label',
-    icon: 'fa fa-font'
+    key: "Label",
+    name: "Label",
+    icon: "fa fa-font",
   },
   {
-    key: 'Paragraph',
-    name: 'Paragraph',
-    icon: 'fa fa-paragraph'
+    key: "Paragraph",
+    name: "Paragraph",
+    icon: "fa fa-paragraph",
   },
   {
-    key: 'LineBreak',
-    name: 'Line Break',
-    icon: 'fa fa-arrows-h'
+    key: "LineBreak",
+    name: "Line Break",
+    icon: "fa fa-arrows-h",
   },
   {
-    key: 'Dropdown',
-    name: 'Dropdown',
-    icon: 'fa fa-caret-square-o-down'
+    key: "Dropdown",
+    name: "Dropdown",
+    icon: "fa fa-caret-square-o-down",
   },
   {
-    key: 'Tags',
-    name: 'Tags',
-    icon: 'fa fa-tags'
+    key: "Tags",
+    name: "Tags",
+    icon: "fa fa-tags",
   },
   {
-    key: 'Checkboxes',
-    name: 'Checkboxes',
-    icon: 'fa fa-check-square-o'
+    key: "Checkboxes",
+    name: "Checkboxes",
+    icon: "fa fa-check-square-o",
   },
   {
-    key: 'RadioButtons',
-    name: 'Multiple Choice',
-    icon: 'fa fa-dot-circle-o'
+    key: "RadioButtons",
+    name: "Multiple Choice",
+    icon: "fa fa-dot-circle-o",
   },
   {
-    key: 'TextInput',
-    name: 'Text Input',
-    icon: 'fa fa-font'
+    key: "TextInput",
+    name: "Text Input",
+    icon: "fa fa-font",
   },
   {
-    key: 'NumberInput',
-    name: 'Number Input',
-    icon: 'fa fa-plus'
+    key: "NumberInput",
+    name: "Number Input",
+    icon: "fa fa-plus",
   },
   {
-    key: 'TextArea',
-    name: 'Multi-line Input',
-    icon: 'fa fa-text-height'
+    key: "TextArea",
+    name: "Multi-line Input",
+    icon: "fa fa-text-height",
   },
   {
-    key: 'Rating',
-    name: 'Rating',
-    icon: 'fa fa-star'
+    key: "Rating",
+    name: "Rating",
+    icon: "fa fa-star",
   },
   {
-    key: 'HyperLink',
-    name: 'Web site',
-    icon: 'fa fa-link'
+    key: "HyperLink",
+    name: "Web site",
+    icon: "fa fa-link",
   },
   {
-    key: 'Range',
-    name: 'Range',
-    icon: 'fa fa-sliders'
+    key: "Range",
+    name: "Range",
+    icon: "fa fa-sliders",
   },
   {
-    key: 'Email',
-    name: 'Email',
-    icon: 'fa fa-at'
+    key: "Email",
+    name: "Email",
+    icon: "fa fa-at",
   },
   {
-    key: 'Date',
-    name: 'Date',
-    icon: 'fa fa-calendar'
+    key: "Date",
+    name: "Date",
+    icon: "fa fa-calendar",
   },
   {
-    key: 'Signature',
-    name: 'Signature',
-    icon: 'fa fa-edit'
-  }
+    key: "Signature",
+    name: "Signature",
+    icon: "fa fa-edit",
+  },
 ];
 
-const onSubmit = formData => console.log(formData);
+const onSubmit = (formData) => console.log(formData);
 
 message.config({
-  maxCount: 1
+  maxCount: 1,
 });
 
 class DocumentsTable extends React.Component {
@@ -121,92 +116,8 @@ class DocumentsTable extends React.Component {
     visible: false,
     documentVisible: false,
     uploadVisible: false,
-    select: ''
+    select: "",
   };
-
-  constructor(props) {
-    super(props);
-    this.columns = [
-      {
-        title: 'Document Name',
-        dataIndex: 'title',
-        key: 'title'
-      },
-      {
-        title: 'Last Modified By',
-        dataIndex: 'name',
-        key: 'name'
-      },
-      {
-        title: 'File Type',
-        dataIndex: 'fileType',
-        key: 'fileType',
-        render: fileType => <Tag color={this.color(fileType)}>{fileType}</Tag>
-      },
-      {
-        title: 'Last Modified',
-        dataIndex: 'mod',
-        key: 'mod',
-        render: mod => (
-          <React.Fragment>
-            <span>{mod.modified}</span>
-            <Divider type="vertical" />
-            <span style={{ color: 'gainsboro' }}>{mod.time}</span>
-          </React.Fragment>
-        )
-      },
-      {
-        title: 'Confidential',
-        dataIndex: 'confidental',
-        key: 'confidental',
-        render: confidental => {
-          return confidental ? 'Yes' : 'No';
-        }
-      },
-      {
-        title: 'Actions',
-        dataIndex: 'actions',
-        render: more => (
-          <React.Fragment>
-            <Button type="link" size="small">
-              Update
-            </Button>
-            <Divider type="vertical" />
-            <Button type="link" size="small">
-              Delete
-            </Button>
-          </React.Fragment>
-        )
-      }
-    ];
-  }
-
-  color(dataC) {
-    let color = '';
-    switch (dataC) {
-      case 'file':
-        color = 'geekblue';
-        break;
-      case 'document':
-        color = 'green';
-        break;
-      case 'image':
-        color = 'purple';
-        break;
-      case 'video':
-        color = 'sandybrown';
-        break;
-      case 'executable':
-        color = 'springgreen';
-        break;
-      case 'archive':
-        color = 'aquamarine';
-        break;
-      default:
-        return;
-    }
-    return color;
-  }
 
   componentDidMount() {
     this.fetch();
@@ -215,102 +126,101 @@ class DocumentsTable extends React.Component {
   showPluginModal = () => {
     this.setState({
       documentVisible: false,
-      visible: true
+      visible: true,
     });
   };
 
-  handlePluginOk = e => {
+  handlePluginOk = (e) => {
     console.log(e);
     this.setState({
-      visible: false
+      visible: false,
     });
     this.fetch();
   };
 
-  handlePluginCancel = e => {
+  handlePluginCancel = (e) => {
     console.log(e);
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
   showModal = () => {
     this.setState({
-      documentVisible: true
+      documentVisible: true,
     });
   };
 
   showUploadModal = () => {
     this.setState({
-      uploadVisible: true
+      uploadVisible: true,
     });
   };
 
-  handleOk = e => {
+  handleOk = (e) => {
     console.log(e);
     let value = this.state.select;
-    if (value === '') {
-      console.log('Please enter value');
-    } else if (value === 'upload') {
+    if (value === "") {
+      console.log("Please enter value");
+    } else if (value === "upload") {
       this.setState({
-        documentVisible: false
+        documentVisible: false,
       });
       this.showUploadModal();
-    } else if (value === 'create') {
+    } else if (value === "create") {
       this.setState({
-        visible: false
+        visible: false,
       });
-      console.log('This works');
+      console.log("This works");
       this.showPluginModal();
       //Mislav add this pls
       //this.showCreateModal();
     }
   };
 
-  handleUploadOk = e => {
+  handleUploadOk = (e) => {
     console.log(e);
     this.setState({
-      uploadVisible: false
+      uploadVisible: false,
     });
   };
 
-  onCancel = e => {
+  onCancel = (e) => {
     console.log(e);
     this.setState({
-      documentVisible: false
+      documentVisible: false,
     });
   };
 
-  onUploadCancel = e => {
+  onUploadCancel = (e) => {
     console.log(e);
     this.setState({
-      uploadVisible: false
+      uploadVisible: false,
     });
   };
 
   fetch = async (params = {}) => {
     await axios({
-      method: 'get',
-      url: 'https://demo1986594.mockable.io',
+      method: "get",
+      url: window.__env__.API_URL + "/blink/api/file/concrete",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem(TOKEN_KEY),
+      },
       response: {
         results: 4,
-        params
+        params,
       },
-      type: 'json'
+      type: "json",
     })
-      .then(response => {
+      .then((response) => {
         let conf = [];
         for (let entry of response.data) {
           conf.push({
-            id: entry.key,
-            title: entry.title,
+            id: entry.fileId,
             name: entry.name,
-            updated: entry.updated,
-            modified: entry.modified,
-            time: entry.time,
+            //file: entry.file,
             confidental: entry.confidental,
-            fileType: entry.fileType,
-            mod: { modified: entry.modified, time: entry.time }
           });
         }
         const pagination = { ...this.state.pagination };
@@ -318,10 +228,10 @@ class DocumentsTable extends React.Component {
         this.setState({
           loading: false,
           data: conf,
-          pagination
+          pagination,
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   };
@@ -330,21 +240,15 @@ class DocumentsTable extends React.Component {
     return (
       <React.Fragment>
         <div>
-          <Search
-            placeholder="Search..."
-            onSearch={value => console.log(value)}
-            enterButton="Search"
-          />
-        </div>
-        <br></br>
-        <div>
           <h1>Documents</h1>
-          <Table
-            columns={this.columns}
-            dataSource={this.state.data}
-            loading={this.state.loading}
-            rowKey={record => record.id}
-          />
+          <Tabs defaultActiveKey="1">
+            <TabPane tab="Documents" key="1">
+              <AssignTable />
+            </TabPane>
+            <TabPane tab="Template Documents" key="2">
+              <TemplateTable />
+            </TabPane>
+          </Tabs>
           <Button type="primary" onClick={this.showModal}>
             + Create
           </Button>
@@ -358,9 +262,9 @@ class DocumentsTable extends React.Component {
           <p>Document Type</p>
           <Select
             placeholder="Please select action..."
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             id="select_document"
-            onChange={value => {
+            onChange={(value) => {
               this.setState({ select: value });
             }}
           >
@@ -369,7 +273,7 @@ class DocumentsTable extends React.Component {
           </Select>
         </Modal>
         <Modal
-          ref={el => (this.componentRef = el)}
+          ref={(el) => (this.componentRef = el)}
           title="Create your document"
           width="80vw"
           visible={this.state.visible}

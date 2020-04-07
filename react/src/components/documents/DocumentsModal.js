@@ -18,7 +18,7 @@ const props = {
     } else if (status === "error") {
       message.error(`${info.file.name} file upload failed.`);
     }
-  }
+  },
 };
 
 function onChange(e) {
