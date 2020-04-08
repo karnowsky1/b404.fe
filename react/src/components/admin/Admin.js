@@ -26,11 +26,11 @@ const optionsR = [
   },
   {
     value: 2,
-    label: 'Coach'
+    label: 'Director'
   },
   {
     value: 3,
-    label: 'External'
+    label: 'Coach'
   },
   {
     value: 4,
@@ -217,7 +217,8 @@ class AdminTable extends React.Component {
           Authorization: localStorage.getItem('token'),
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        data: qs.stringify({...values, 
+        data: qs.stringify({
+          ...values,
           // password: JSON.parse(sjcl.encrypt("password",values.password)).ct
           password: hash(values.password)
         }),
@@ -371,7 +372,7 @@ class AdminTable extends React.Component {
               this.fetch();
             })
             .catch(axiosError);
-        } 
+        }
       } else {
         this.fetch();
         // console.log(response);

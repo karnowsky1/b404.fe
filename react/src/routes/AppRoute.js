@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import NavLayout from '../components/layout/NavLayout';
-import { TOKEN_KEY, UUID_KEY } from '../constants/auth';
+import { TOKEN_KEY, UUID_KEY, AUTH } from '../constants/auth';
 import axios from 'axios';
 import { setIsLoggedIn, setUser } from '../actions/user';
 import { Spin } from 'antd';
+import { axiosError } from '../utils/axiosError';
 
 const AppRoute = ({
   component: Component,
@@ -15,6 +16,8 @@ const AppRoute = ({
   setIsLoggedIn,
   setUser,
   requireAdmin,
+  requireInternal,
+  requireExternal,
   isPrivate = false,
   ...rest
 }) => {
@@ -39,9 +42,7 @@ const AppRoute = ({
             setUser(response.data);
           }
         })
-        .catch(e => {
-          console.error(e);
-        })
+        .catch(axiosError)
         .finally(() => {
           setLoading(false);
         });
@@ -70,10 +71,19 @@ const AppRoute = ({
           <Redirect to={process.env.PUBLIC_URL + '/login'} />
         ) : // ) : (!isPrivate && authed) ? (
         (!isPrivate && authed) ||
-          (user && user.accessLevelID > 1 && requireAdmin && authed) ? (
-          //evaluated every render
+          (user &&
+            user.accessLevelID > AUTH.ADMIN &&
+            requireAdmin &&
+            authed) ? (
+          // evaluated every render
           // undefined for the first few renders, then it renders with the actual user object
           // trying to incorporate authorization rendering
+          <Redirect to={process.env.PUBLIC_URL + '/dashboard'} />
+        ) : (!isPrivate && authed) ||
+          (user &&
+            user.accessLevelID > AUTH.COACH &&
+            requireInternal &&
+            authed) ? (
           <Redirect to={process.env.PUBLIC_URL + '/dashboard'} />
         ) : isPrivate ? (
           <NavLayout path={process.env.PUBLIC_URL + location.pathname}>
