@@ -48,14 +48,14 @@ class NavLayout extends React.Component {
               return (
                 auth(this.props.authorization_level) && (
                   <Menu.Item key={path}>
-                    {console.log(
+                    {/* {console.log(
                       `this is the auth value ${auth(
                         this.props.authorization_level
                       )}`
-                    )}
-                    {console.log(
+                    )} */}
+                    {/* {console.log(
                       `this is the authorization level ${this.props.authorization_level}`
-                    )}
+                    )} */}
                     <NavLink to={path}>
                       <Icon type={icon} />
                       <span>{name}</span>

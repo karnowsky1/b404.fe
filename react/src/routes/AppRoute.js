@@ -85,6 +85,12 @@ const AppRoute = ({
             requireInternal &&
             authed) ? (
           <Redirect to={process.env.PUBLIC_URL + '/dashboard'} />
+        ) : (!isPrivate && authed) ||
+          (user &&
+            user.accessLevelID > AUTH.CUSTOMER &&
+            requireExternal &&
+            authed) ? (
+          <Redirect to={process.env.PUBLIC_URL + '/dashboard'} />
         ) : isPrivate ? (
           <NavLayout path={process.env.PUBLIC_URL + location.pathname}>
             <Component {...props} />
