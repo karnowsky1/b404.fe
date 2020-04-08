@@ -5,7 +5,6 @@ import { TOKEN_KEY /*, UUID_KEY*/ } from "../../constants/auth";
 import { DocumentsModal } from "./DocumentsModal";
 import TemplateTable from "./templateDoc";
 import AssignTable from "./assignedDoc";
-
 import { FormBuilder } from "cb-react-forms";
 //import { FormGenerator } from 'cb-react-forms';
 import ReactToPrint from "react-to-print";
@@ -117,7 +116,42 @@ class DocumentsTable extends React.Component {
     documentVisible: false,
     uploadVisible: false,
     select: "",
+    buttonVisible: true,
   };
+
+  getUser() {
+    axios
+      .get(
+        window.__env__.API_URL +
+          "blink/person/id/" +
+          localStorage.getItem("uuid"),
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          switch (response.data.accessLevelID) {
+            case 1:
+              return true;
+            case 2:
+              return true;
+            case 3:
+              return true;
+            case 4:
+              return true;
+            case 5:
+              return false;
+            default:
+              return false;
+          }
+        } else {
+          return true;
+        }
+      });
+  }
 
   componentDidMount() {
     this.fetch();
@@ -249,9 +283,11 @@ class DocumentsTable extends React.Component {
               <TemplateTable />
             </TabPane>
           </Tabs>
-          <Button type="primary" onClick={this.showModal}>
-            + Create
-          </Button>
+          {this.state.buttonVisible && (
+            <Button type="primary" onClick={this.showModal}>
+              + Create
+            </Button>
+          )}
         </div>
         <Modal
           title="Add Document"

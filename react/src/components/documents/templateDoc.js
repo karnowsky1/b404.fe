@@ -1,7 +1,9 @@
 import React from "react";
-import { Table, Button, Divider, Tag, message } from "antd";
+import { Table, Button, Divider, Tag, message, Modal } from "antd";
 import axios from "axios";
 import { TOKEN_KEY /*, UUID_KEY*/ } from "../../constants/auth";
+
+const { confirm } = Modal;
 
 message.config({
   maxCount: 1,
@@ -12,6 +14,7 @@ class TemplateTable extends React.Component {
     data: [],
     pagination: {},
     loading: true,
+    download: [],
   };
 
   constructor(props) {
@@ -38,10 +41,15 @@ class TemplateTable extends React.Component {
       },
       {
         title: "Actions",
-        dataIndex: "actions",
-        render: (more) => (
+        dataIndex: this.state.data,
+        key: "x",
+        render: (file) => (
           <React.Fragment>
-            <Button type="link" size="small">
+            <Button
+              type="link"
+              size="small"
+              onClick={(e) => this.downloadDocument(e, file.id)}
+            >
               Download
             </Button>
             <Divider type="vertical" />
@@ -49,7 +57,11 @@ class TemplateTable extends React.Component {
               Update
             </Button>
             <Divider type="vertical" />
-            <Button type="link" size="small">
+            <Button
+              type="link"
+              size="small"
+              onClick={(e) => this.showDeleteConfirm(e, file.id)}
+            >
               Delete
             </Button>
           </React.Fragment>
@@ -80,7 +92,7 @@ class TemplateTable extends React.Component {
         color = "aquamarine";
         break;
       default:
-        return;
+        color = "geekblue";
     }
     return color;
   }
@@ -88,6 +100,51 @@ class TemplateTable extends React.Component {
   componentDidMount() {
     this.fetch();
   }
+
+  downloadDocument = (e, id) => {
+    axios
+      .get(window.__env__.API_URL + "/blink/api/file/" + id, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log(response.data.name);
+        } else {
+          // console.log(response);
+        }
+      });
+  };
+
+  showDeleteConfirm = (e, id) => {
+    confirm({
+      title: "Are you sure delete this document?",
+      content: "If you delete this document it will become unusable!",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        axios
+          .delete(window.__env__.API_URL + "/blink/api/file/" + id, {
+            headers: {
+              Authorization: localStorage.getItem("token"),
+            },
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              // console.log('works');
+              window.location.reload(false);
+            } else {
+              // console.log(response);
+            }
+          });
+      },
+      onCancel() {
+        // console.log('Cancel');
+      },
+    });
+  };
 
   fetch = async (params = {}) => {
     await axios({
@@ -107,7 +164,7 @@ class TemplateTable extends React.Component {
         let conf = [];
         for (let entry of response.data) {
           conf.push({
-            id: entry.fileId,
+            id: entry.fileID,
             name: entry.name,
             fileC: entry.file,
             confidental: entry.confidental,
@@ -134,7 +191,7 @@ class TemplateTable extends React.Component {
             columns={this.columns}
             dataSource={this.state.data}
             loading={this.state.loading}
-            rowKey={(record) => record.fileId}
+            rowKey={(record) => record.id}
           />
         </div>
       </React.Fragment>

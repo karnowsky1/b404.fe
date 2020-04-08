@@ -3,8 +3,6 @@ import { Table, Button, Divider, Tag, message } from "antd";
 import axios from "axios";
 import { TOKEN_KEY /*, UUID_KEY*/ } from "../../constants/auth";
 
-const onSubmit = (formData) => console.log(formData);
-
 message.config({
   maxCount: 1,
 });
@@ -109,7 +107,7 @@ class AssignTable extends React.Component {
         let conf = [];
         for (let entry of response.data) {
           conf.push({
-            id: entry.fileId,
+            id: entry.fileID,
             name: entry.name,
             //file: entry.file,
             confidental: entry.confidental,
@@ -133,10 +131,10 @@ class AssignTable extends React.Component {
       <React.Fragment>
         <div>
           <Table
+            rowKey={(record) => record.id}
             columns={this.columns}
             dataSource={this.state.data}
             loading={this.state.loading}
-            rowKey={(record) => record.id}
           />
         </div>
       </React.Fragment>
