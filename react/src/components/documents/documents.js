@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import {
   Table,
   Button,
@@ -15,6 +16,7 @@ import { DocumentsModal } from './DocumentsModal';
 import { FormBuilder } from 'cb-react-forms';
 //import { FormGenerator } from 'cb-react-forms';
 import ReactToPrint from 'react-to-print';
+import { IS_INTERNAL } from '../../constants';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -345,7 +347,14 @@ class DocumentsTable extends React.Component {
             loading={this.state.loading}
             rowKey={record => record.id}
           />
-          <Button type="primary" onClick={this.showModal}>
+          <Button
+            type="primary"
+            onClick={
+              IS_INTERNAL(this.props.authorization_level)
+                ? this.showModal
+                : this.showUploadModal
+            }
+          >
             + Create
           </Button>
         </div>
@@ -395,4 +404,6 @@ class DocumentsTable extends React.Component {
   }
 }
 
-export default DocumentsTable;
+export default connect((state = {}) => ({
+  authorization_level: state.user && state.user.accessLevelID
+}))(DocumentsTable);

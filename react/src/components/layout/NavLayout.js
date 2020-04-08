@@ -5,6 +5,7 @@ import { MAIN_ROUTES } from '../../constants/routes';
 import { connect } from 'react-redux';
 import Logout from './Logout';
 import mainLogo from '../../img/something.jpg';
+import { AUTH } from '../../constants';
 
 const { Header, Sider, Content } = Layout;
 
@@ -41,15 +42,28 @@ class NavLayout extends React.Component {
             </div>
           )}
           {console.log(` These are the paths:  ${this.props.path}`)}
+
           <Menu theme="dark" mode="inline" selectedKeys={[this.props.path]}>
-            {MAIN_ROUTES.map(({ name, path, icon }) => (
-              <Menu.Item key={path}>
-                <NavLink to={path}>
-                  <Icon type={icon} />
-                  <span>{name}</span>
-                </NavLink>
-              </Menu.Item>
-            ))}
+            {MAIN_ROUTES.map(({ name, path, icon, auth }) => {
+              return (
+                auth(this.props.authorization_level) && (
+                  <Menu.Item key={path}>
+                    {/* {console.log(
+                      `this is the auth value ${auth(
+                        this.props.authorization_level
+                      )}`
+                    )} */}
+                    {/* {console.log(
+                      `this is the authorization level ${this.props.authorization_level}`
+                    )} */}
+                    <NavLink to={path}>
+                      <Icon type={icon} />
+                      <span>{name}</span>
+                    </NavLink>
+                  </Menu.Item>
+                )
+              );
+            })}
             <Menu.Divider style={{ backgroundColor: '#313C4E' }} />
             {/* <div style={{ padding: '10px', fontSize: '.8em' }}>Settings</div> */}
             <Menu.Item key="/main-settings">
@@ -118,6 +132,7 @@ class NavLayout extends React.Component {
 }
 
 export default connect((state = {}) => ({
-  isAdmin: state.user && state.user.accessLevelID <= 1,
+  authorization_level: state.user && state.user.accessLevelID,
+  isAdmin: state.user && state.user.accessLevelID <= AUTH.ADMIN,
   user_name: state.user.fName + ' ' + state.user.lName
 }))(NavLayout);
