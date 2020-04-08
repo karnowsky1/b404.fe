@@ -14,7 +14,7 @@ import { axiosError } from '../../utils/axiosError';
 import { AssignTemplateModal } from '../workflow/AssignTemplateModal';
 import moment from 'moment';
 import WorkflowBuilder from '../wf-builder/workflowBuilder';
-import { RECEIVE_DATE_FORMAT, AUTH, IS_INTERNAL } from '../../constants';
+import { RECEIVE_DATE_FORMAT, IS_INTERNAL } from '../../constants';
 import { NoContent } from '../../utils/NoContent';
 import {
   noMilestonesMessageOne,
