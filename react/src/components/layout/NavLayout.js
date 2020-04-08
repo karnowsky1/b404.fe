@@ -5,7 +5,7 @@ import { MAIN_ROUTES } from '../../constants/routes';
 import { connect } from 'react-redux';
 import Logout from './Logout';
 import mainLogo from '../../img/something.jpg';
-import { AUTH, IS_INTERNAL } from '../../constants';
+import { AUTH } from '../../constants';
 
 const { Header, Sider, Content } = Layout;
 
@@ -134,6 +134,5 @@ class NavLayout extends React.Component {
 export default connect((state = {}) => ({
   authorization_level: state.user && state.user.accessLevelID,
   isAdmin: state.user && state.user.accessLevelID <= AUTH.ADMIN,
-  isInternal: state.user && IS_INTERNAL(state.user.accessLevelID),
   user_name: state.user.fName + ' ' + state.user.lName
 }))(NavLayout);

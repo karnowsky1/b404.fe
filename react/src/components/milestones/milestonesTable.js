@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import axios from 'axios';
 import qs from 'qs';
 import { Table, Progress, Row, Col, Button, Modal, Divider } from 'antd';
@@ -13,7 +14,7 @@ import { axiosError } from '../../utils/axiosError';
 import { AssignTemplateModal } from '../workflow/AssignTemplateModal';
 import moment from 'moment';
 import WorkflowBuilder from '../wf-builder/workflowBuilder';
-import { RECEIVE_DATE_FORMAT } from '../../constants';
+import { RECEIVE_DATE_FORMAT, AUTH, IS_INTERNAL } from '../../constants';
 import { NoContent } from '../../utils/NoContent';
 import {
   noMilestonesMessageOne,
@@ -45,63 +46,64 @@ class MilestonesTable extends React.Component {
     super(props);
     this.columns = [
       { title: 'Name', dataIndex: 'name', key: 'name' },
-      { title: 'Company', dataIndex: 'company', key: 'company' },
-      {
-        title: 'Actions',
-        dataIndex: '',
-        key: 'x',
-        render: record =>
-          this.props.content === 'active' ? (
-            <React.Fragment>
-              <Button
-                type="link"
-                size="small"
-                onClick={e => this.showAssignModal(record)}
-              >
-                Add Workflow
-              </Button>
-              <Divider type="vertical" />
-              <Button
-                type="link"
-                size="small"
-                onClick={e => this.showEditModal(record)}
-              >
-                Edit
-              </Button>
-              <Divider type="vertical" />
-              <Button
-                type="link"
-                size="small"
-                onClick={e =>
-                  this.showArchiveConfirm(e, record.id, 'archive', 'archived')
-                }
-              >
-                Archive
-              </Button>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              <Button
-                type="link"
-                size="small"
-                onClick={e =>
-                  this.showArchiveConfirm(e, record.id, 'unarchive', 'active')
-                }
-              >
-                Unarchive
-              </Button>
-              <Divider type="vertical" />
-              <Button
-                type="link"
-                size="small"
-                onClick={e => this.showDeleteConfirm(e, record.id)}
-              >
-                Delete
-              </Button>
-            </React.Fragment>
-          )
-      }
+      { title: 'Company', dataIndex: 'company', key: 'company' }
     ];
+    const actions = {
+      title: 'Actions',
+      dataIndex: '',
+      key: 'x',
+      render: record =>
+        this.props.content === 'active' ? (
+          <React.Fragment>
+            <Button
+              type="link"
+              size="small"
+              onClick={e => this.showAssignModal(record)}
+            >
+              Add Workflow
+            </Button>
+            <Divider type="vertical" />
+            <Button
+              type="link"
+              size="small"
+              onClick={e => this.showEditModal(record)}
+            >
+              Edit
+            </Button>
+            <Divider type="vertical" />
+            <Button
+              type="link"
+              size="small"
+              onClick={e =>
+                this.showArchiveConfirm(e, record.id, 'archive', 'archived')
+              }
+            >
+              Archive
+            </Button>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <Button
+              type="link"
+              size="small"
+              onClick={e =>
+                this.showArchiveConfirm(e, record.id, 'unarchive', 'active')
+              }
+            >
+              Unarchive
+            </Button>
+            <Divider type="vertical" />
+            <Button
+              type="link"
+              size="small"
+              onClick={e => this.showDeleteConfirm(e, record.id)}
+            >
+              Delete
+            </Button>
+          </React.Fragment>
+        )
+    };
+    IS_INTERNAL(this.props.authorization_level) && this.columns.push(actions);
   }
 
   componentDidMount = async e => {
@@ -401,16 +403,19 @@ class MilestonesTable extends React.Component {
                         <span style={{ width: 200 }}>
                           <b>{workflow.name}</b>
                         </span>
-                        <Divider type="vertical" />
-                        {this.props.content === 'active' && (
-                          <Button
-                            type="link"
-                            size="small"
-                            onClick={e => this.showWorkflowModal(workflow)}
-                          >
-                            Update Workflow
-                          </Button>
+                        {IS_INTERNAL(this.props.authorization_level) && (
+                          <Divider type="vertical" />
                         )}
+                        {IS_INTERNAL(this.props.authorization_level) &&
+                          this.props.content === 'active' && (
+                            <Button
+                              type="link"
+                              size="small"
+                              onClick={e => this.showWorkflowModal(workflow)}
+                            >
+                              Update Workflow
+                            </Button>
+                          )}
                         <p></p>
                         <Progress
                           style={{ width: 310 }}
@@ -425,7 +430,11 @@ class MilestonesTable extends React.Component {
                       iconType="file-excel"
                       twoTonecolor="#001529"
                       firstMessage={noMilestonesMessageOne}
-                      secondMessage={noMilestonesMessageTwo}
+                      secondMessage={
+                        IS_INTERNAL(this.props.authorization_level)
+                          ? noMilestonesMessageTwo
+                          : ''
+                      }
                     />
                   )}
                 </div>
@@ -434,7 +443,7 @@ class MilestonesTable extends React.Component {
           )}
           dataSource={this.state.data}
         />
-        {this.props.active && (
+        {IS_INTERNAL(this.props.authorization_level) && this.props.active && (
           <Button type="primary" onClick={this.showAddModal}>
             + Create
           </Button>
@@ -502,4 +511,6 @@ class MilestonesTable extends React.Component {
   }
 }
 
-export default MilestonesTable;
+export default connect((state = {}) => ({
+  authorization_level: state.user && state.user.accessLevelID
+}))(MilestonesTable);
