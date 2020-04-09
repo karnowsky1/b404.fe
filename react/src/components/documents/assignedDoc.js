@@ -24,9 +24,11 @@ class AssignTable extends React.Component {
       },
       {
         title: "File Type",
-        dataIndex: "file",
-        key: "file",
-        render: (name) => <Tag color={this.color(name)}>{name}</Tag>,
+        dataIndex: "fileType",
+        key: "fileType",
+        render: (name) => (
+          <Tag color={this.color(name)}>{name === null ? "N/A" : name}</Tag>
+        ),
       },
       {
         title: "Confidential",
@@ -79,8 +81,11 @@ class AssignTable extends React.Component {
       case "archive":
         color = "aquamarine";
         break;
+      case "N/A":
+        color = "geekblue";
+        break;
       default:
-        return;
+        color = "geekblue";
     }
     return color;
   }
@@ -109,8 +114,9 @@ class AssignTable extends React.Component {
           conf.push({
             id: entry.fileID,
             name: entry.name,
-            //file: entry.file,
+            file: entry.file,
             confidental: entry.confidental,
+            fileType: entry.fileType,
           });
         }
         const pagination = { ...this.state.pagination };

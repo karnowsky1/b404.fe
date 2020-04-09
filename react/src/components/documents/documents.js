@@ -1,17 +1,71 @@
 import React from "react";
-import { Button, Modal, Select, Tabs, message } from "antd";
+import {
+  Button,
+  Modal,
+  Select,
+  Tabs,
+  message,
+  Card,
+  Input,
+  Checkbox,
+  Upload,
+} from "antd";
 import axios from "axios";
 import { TOKEN_KEY /*, UUID_KEY*/ } from "../../constants/auth";
-import { DocumentsModal } from "./DocumentsModal";
 import TemplateTable from "./templateDoc";
 import AssignTable from "./assignedDoc";
 import { FormBuilder } from "cb-react-forms";
 //import { FormGenerator } from 'cb-react-forms';
 import ReactToPrint from "react-to-print";
+import { getUser } from "../../utils/api";
+import { axiosError } from "../../utils/axiosError";
 
 const { Option } = Select;
 
 const { TabPane } = Tabs;
+
+const { Dragger } = Upload;
+
+var checked = false;
+
+var saveData;
+var saveFile;
+
+const props = {
+  name: "file",
+  multiple: true,
+  action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+  beforeUpload(file) {
+    getBase64(file).then((data) => {
+      if (document.getElementById("nameInput").value === "") {
+        alert("Please provide file name");
+      } else {
+        saveData = data;
+        saveFile = file;
+      }
+    });
+  },
+  onChange(info) {
+    const { status } = info.file;
+    if (status !== "uploading") {
+      console.log(info.file, info.fileList);
+    }
+    if (status === "done") {
+      message.success(`${info.file.name} file uploaded successfully.`);
+    } else if (status === "error") {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  },
+};
+
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
 
 const items = [
   {
@@ -108,53 +162,23 @@ message.config({
 });
 
 class DocumentsTable extends React.Component {
-  state = {
-    data: [],
-    pagination: {},
-    loading: true,
-    visible: false,
-    documentVisible: false,
-    uploadVisible: false,
-    select: "",
-    buttonVisible: true,
-  };
-
-  getUser() {
-    axios
-      .get(
-        window.__env__.API_URL +
-          "blink/person/id/" +
-          localStorage.getItem("uuid"),
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
-      .then((response) => {
-        if (response.status === 200) {
-          switch (response.data.accessLevelID) {
-            case 1:
-              return true;
-            case 2:
-              return true;
-            case 3:
-              return true;
-            case 4:
-              return true;
-            case 5:
-              return false;
-            default:
-              return false;
-          }
-        } else {
-          return true;
-        }
-      });
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [],
+      pagination: {},
+      loading: true,
+      visible: false,
+      documentVisible: false,
+      uploadVisible: false,
+      select: "",
+      buttonVisible: false,
+    };
   }
 
   componentDidMount() {
     this.fetch();
+    getUser().then((result) => this.setState({ buttonVisible: result }));
   }
 
   showPluginModal = () => {
@@ -214,6 +238,7 @@ class DocumentsTable extends React.Component {
 
   handleUploadOk = (e) => {
     console.log(e);
+    this.uploadFile(saveData, saveFile);
     this.setState({
       uploadVisible: false,
     });
@@ -270,6 +295,35 @@ class DocumentsTable extends React.Component {
       });
   };
 
+  uploadFile(base64, file) {
+    let requestObject = {
+      name: document.getElementById("nameInput").value,
+      file: base64,
+      confidential: checked,
+    };
+
+    console.log(requestObject);
+
+    const url = window.__env__.API_URL + "/blink/api/file";
+    axios
+      .post(url, requestObject, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem(TOKEN_KEY),
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          message.success("Data saved successfully");
+        }
+      })
+      .catch(axiosError);
+  }
+
+  onChange(e) {
+    console.log(`checked = ${(checked = true)}`);
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -323,12 +377,25 @@ class DocumentsTable extends React.Component {
           />
         </Modal>
         {this.state.uploadVisible && (
-          <DocumentsModal
+          <Modal
             onOk={this.handleUploadOk}
             onCancel={this.onUploadCancel}
             visible={this.state.uploadVisible}
             title="Upload Document"
-          />
+          >
+            <Card>
+              <Input id="nameInput" placeholder="Document name..." />
+              <p></p>
+              <Checkbox onChange={this.onChange}>Confidential</Checkbox>
+              <p></p>
+              <Dragger {...props}>
+                <p className="ant-upload-drag-icon"></p>
+                <p className="ant-upload-text">
+                  Click here or drag a file to this area to upload.
+                </p>
+              </Dragger>
+            </Card>
+          </Modal>
         )}
       </React.Fragment>
     );
