@@ -26,7 +26,7 @@ function uploadFile(base64, file) {
     stepID: parseInt(localStorage.getItem('stepId')),
     name: file.name,
     confidential: 'True',
-    file: base64.split(',').pop()
+    file: base64
   };
 
   const url = window.__env__.API_URL + '/blink/api/file';

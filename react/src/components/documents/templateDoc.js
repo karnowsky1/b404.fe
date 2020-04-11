@@ -108,9 +108,9 @@ class TemplateTable extends React.Component {
           <React.Fragment>
             <a
               href={
-                file.fileC /*URL.createObjectURL(this.dataURItoBlob(file.fileC))*/
+                URL.createObjectURL(this.dataURItoBlob(file.fileC))
               }
-              download
+              download={file.name}
             >
               Download
             </a>
@@ -138,7 +138,14 @@ class TemplateTable extends React.Component {
     ];
   }
 
-  /*dataURItoBlob(dataURI) {
+  blobToFile(theBlob, fileName){
+    //A Blob() is almost a File() - it's just missing the two properties below which we will add
+    theBlob.lastModifiedDate = new Date();
+    theBlob.name = fileName;
+    return theBlob;
+  }
+
+  dataURItoBlob(dataURI) {
     var mime = dataURI.split(",")[0].split(":")[1].split(";")[0];
     var binary = atob(dataURI.split(",")[1]);
     var array = [];
@@ -146,7 +153,7 @@ class TemplateTable extends React.Component {
       array.push(binary.charCodeAt(i));
     }
     return new Blob([new Uint8Array(array)], { type: mime });
-  }*/
+  }
 
   color(dataC) {
     let color = "";

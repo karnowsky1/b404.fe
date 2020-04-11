@@ -24,7 +24,7 @@ function uploadFile(base64, file) {
 
   let requestObject = {
     name: document.getElementById("nameInput").value,
-    file: base64.split(",").pop(),
+    file: base64,
     confidential: checked,
   };
 
