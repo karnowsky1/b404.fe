@@ -198,3 +198,12 @@ code {
   padding: '2em';
   width: 35%;
 }
+
+.nameExtension {
+  display: flex;
+  flex-direction: row;
+}
+
+#extensionInput {
+  width: 75px
+}

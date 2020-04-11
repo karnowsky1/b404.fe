@@ -19,7 +19,6 @@ const { confirm } = Modal;
 
 const { Dragger } = Upload;
 
-var saveData;
 var saveFile;
 
 function getBase64(file) {
@@ -49,9 +48,12 @@ class AssignTable extends React.Component {
       fileId: "",
       fileBase64: "",
       fileList: [],
+      changed: false,
+      extension: ""
     };
-    this.onChange = this.onChange.bind(this);
+    this.onCheckboxChange = this.onCheckboxChange.bind(this);
     this.returnUploadProps = this.returnUploadProps.bind(this);
+    this.showDeleteConfirm = this.showDeleteConfirm.bind(this);
     this.columns = [
       {
         title: "Document Name",
@@ -87,7 +89,7 @@ class AssignTable extends React.Component {
             <a
               style={{ color: "#f06f32" }}
               href={URL.createObjectURL(this.dataURItoBlob(file.fileC))}
-              download={file.name.split(".")}
+              download={file.name.includes('.') ? file.name : file.name + '.' + file.extension}
             >
               Download
             </a>
@@ -112,7 +114,7 @@ class AssignTable extends React.Component {
                 <Button
                   type="link"
                   size="small"
-                  onClick={(e) => this.showDeleteConfirm(e, file.id)}
+                  onClick={(e) => this.showDeleteConfirm(e, file.id, this)}
                 >
                   Delete
                 </Button>
@@ -192,7 +194,13 @@ class AssignTable extends React.Component {
     this.fetch();
   }
 
-  showDeleteConfirm = (e, id) => {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.changed !== prevState.changed) {
+      this.fetch();
+    }
+  }
+
+  showDeleteConfirm = (e, id, state) => {
     confirm({
       title: "Are you sure delete this document?",
       content: "If you delete this document it will become unusable!",
@@ -209,7 +217,9 @@ class AssignTable extends React.Component {
           .then((response) => {
             if (response.status === 200) {
               // console.log('works');
-              window.location.reload(false);
+              state.setState({
+                changed: true,
+              });
             } else {
               // console.log(response);
             }
@@ -222,6 +232,10 @@ class AssignTable extends React.Component {
   };
 
   fetch = async (params = {}) => {
+    this.setState({
+      loading: true,
+      changed: false
+    });
     await axios({
       method: "get",
       url: window.__env__.API_URL + "/blink/api/file/concrete",
@@ -245,6 +259,7 @@ class AssignTable extends React.Component {
             fileC: entry.file,
             confidental: entry.confidential,
             stepID: entry.stepID,
+            extension: entry.name.includes('.') ? entry.name.split('.').pop() : ""
           });
         }
         const pagination = { ...this.state.pagination };
@@ -254,6 +269,7 @@ class AssignTable extends React.Component {
           data: conf,
           pagination,
         });
+        console.log(this.state.data);
       })
       .catch(function (error) {
         console.log(error);
@@ -269,6 +285,7 @@ class AssignTable extends React.Component {
       : this.setState({ checked: false });
     this.setState({
       fileName: fileName,
+      extension: fileName.includes('.') ? fileName.split('.').pop() : "",
       fileId: id,
       fileBase64: base64String,
       fileList: [
@@ -282,18 +299,33 @@ class AssignTable extends React.Component {
   };
 
   handleChange = (e) => {
-    this.setState({
-      fileName: e.target.value,
-    });
+    if (!e.target.value.includes('.')) {
+      this.setState({
+        fileName: e.target.value,
+      });
+    } else {
+      message.error("Don't input extensions into the file name, the system does this automatically");
+    }
   };
 
   handleUploadOk = (e) => {
+    console.log(this.state.fileBase64);
+    console.log(saveFile);
     console.log(e);
-    this.uploadFile(saveData, saveFile);
+    var input = document.getElementById("nameInput").value;
+    if (input === "" || null || undefined) {
+      message.error("Please input the file name");
+      return;
+    }
+    if (this.state.fileBase64 === undefined || null || "") {
+      message.error("Please provide a file");
+      return;
+    }
+    this.uploadFile(this.state.fileBase64, saveFile);
     this.setState({
       uploadVisible: false,
+      changed: true,
     });
-    //window.location.reload();
   };
 
   onUploadCancel = (e) => {
@@ -304,9 +336,10 @@ class AssignTable extends React.Component {
   };
 
   uploadFile(base64, file) {
+    console.log(base64)
     let requestObject = {
       fileID: this.state.fileId,
-      name: document.getElementById("nameInput").value,
+      name: document.getElementById("nameInput").value.includes('.') ? document.getElementById("nameInput").value.replace(/ /gi, "") : document.getElementById("nameInput").value.replace(/ /gi, "") + (this.state.extension === '' ? '' : '.' + this.state.extension),
       file: base64 === undefined ? this.state.fileBase64 : base64,
       confidential: this.state.checked,
     };
@@ -328,17 +361,29 @@ class AssignTable extends React.Component {
       .catch(axiosError);
   }
 
-  returnUploadProps() {
+  returnUploadProps(state) {
     var propsUpload = {
       name: "file",
       multiple: false,
       action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
       beforeUpload(file) {
+        console.log(file);
+        state.setState({
+          fileName: file.name,
+          extension: file.name.includes('.') ? file.name.split('.').pop() : ""
+        })
+        console.log(state);
         getBase64(file).then((data) => {
           if (document.getElementById("nameInput").value === "") {
             message.error("Please provide file name");
+            state.setState({
+              fileBase64: data
+            })
+            saveFile = file;
           } else {
-            saveData = data;
+            state.setState({
+              fileBase64: data
+            })
             saveFile = file;
           }
         });
@@ -349,6 +394,7 @@ class AssignTable extends React.Component {
       },
       onChange: this.handleUploadChange,
     };
+    console.log(this.state);
     return propsUpload;
   }
 
@@ -359,7 +405,7 @@ class AssignTable extends React.Component {
     this.setState({ fileList: fileList });
   };
 
-  onChange(e) {
+  onCheckboxChange(e) {
     this.state.checked
       ? this.setState({ checked: false })
       : this.setState({ checked: true });
@@ -382,22 +428,30 @@ class AssignTable extends React.Component {
             title="Upload Document"
           >
             <Card>
+              <div className="nameExtension">
               <Input
                 id="nameInput"
                 placeholder="Document name..."
-                value={this.state.fileName}
+                value={this.state.fileName.split('.').shift()}
                 onChange={this.handleChange}
               />
+              <Input
+                id="extensionInput"
+                placeholder=""
+                value={this.state.extension}
+                disabled
+              />
+              </div>
               <p></p>
               <Checkbox
                 checked={this.state.checked}
-                onChange={this.onFileChange}
+                onChange={this.onCheckboxChange}
               >
                 Confidential
               </Checkbox>
               <p></p>
               <Dragger
-                {...this.returnUploadProps()}
+                {...this.returnUploadProps(this)}
                 fileList={this.state.fileList}
               >
                 <p className="ant-upload-drag-icon"></p>

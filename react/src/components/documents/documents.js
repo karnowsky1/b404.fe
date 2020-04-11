@@ -28,35 +28,7 @@ const { Dragger } = Upload;
 
 var checked = false;
 
-var saveData;
 var saveFile;
-
-const props = {
-  name: "file",
-  multiple: true,
-  action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
-  beforeUpload(file) {
-    getBase64(file).then((data) => {
-      if (document.getElementById("nameInput").value === "") {
-        alert("Please provide file name");
-      } else {
-        saveData = data;
-        saveFile = file;
-      }
-    });
-  },
-  onChange(info) {
-    const { status } = info.file;
-    if (status !== "uploading") {
-      console.log(info.file, info.fileList);
-    }
-    if (status === "done") {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-};
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -173,13 +145,65 @@ class DocumentsTable extends React.Component {
       uploadVisible: false,
       select: "",
       buttonVisible: false,
+      fileList: [],
+      fileBase64: "",
+      fileName: "",
+      extension: "",
+      changed: false,
     };
+    this.returnUploadProps = this.returnUploadProps.bind(this);
   }
 
   componentDidMount() {
-    this.fetch();
     getUser().then((result) => this.setState({ buttonVisible: result }));
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.changed !== prevState.changed) {
+
+    }
+  }
+
+  returnUploadProps(state) {
+    var propsUpload = {
+      name: "file",
+      multiple: false,
+      action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+      beforeUpload(file) {
+        state.setState({
+          fileName: file.name,
+          extension: file.name.includes('.') ? file.name.split('.').pop() : ""
+        })
+        getBase64(file).then((data) => {
+          if (document.getElementById("nameInput").value === "") {
+            message.error("Please provide file name");
+            state.setState({
+              fileBase64: data
+            })
+            saveFile = file;
+          } else {
+            state.setState({
+              fileBase64: data
+            })
+            saveFile = file;
+          }
+        });
+      },
+      showUploadList: {
+        showDownloadIcon: false,
+        showRemoveIcon: false,
+      },
+      onChange: this.handleUploadChange,
+    };
+    return propsUpload;
+  }
+
+  handleUploadChange = ({ fileList }) => {
+    if (fileList.length > 1) {
+      fileList.shift();
+    }
+    this.setState({ fileList: fileList });
+  };
 
   showPluginModal = () => {
     this.setState({
@@ -193,7 +217,6 @@ class DocumentsTable extends React.Component {
     this.setState({
       visible: false,
     });
-    this.fetch();
   };
 
   handlePluginCancel = (e) => {
@@ -212,6 +235,8 @@ class DocumentsTable extends React.Component {
   showUploadModal = () => {
     this.setState({
       uploadVisible: true,
+      fileList: [],
+      fileBase64: "",
     });
   };
 
@@ -243,12 +268,20 @@ class DocumentsTable extends React.Component {
       message.error("Please input the file name");
       return;
     }
-    if (saveData === undefined || null || "") {
+    if (input.includes('.')) {
+      message.error("Don't input extensions into the file name, the system does this automatically");
+      return;
+    }
+    if (this.state.fileBase64 === "" || null || undefined) {
       message.error("Please provide a file");
       return;
     }
-    this.uploadFile(saveData, saveFile);
+    this.uploadFile(this.state.fileBase64, saveFile);
     this.setState({
+      fileName: "",
+      fileBase64: "",
+      fileList: [],
+      changed: true,
       uploadVisible: false,
     });
   };
@@ -264,49 +297,15 @@ class DocumentsTable extends React.Component {
     console.log(e);
     this.setState({
       uploadVisible: false,
+      fileName: "",
+      fileBase64: "",
+      fileList: [],
     });
-  };
-
-  fetch = async (params = {}) => {
-    await axios({
-      method: "get",
-      url: window.__env__.API_URL + "/blink/api/file/concrete",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: localStorage.getItem(TOKEN_KEY),
-      },
-      response: {
-        results: 4,
-        params,
-      },
-      type: "json",
-    })
-      .then((response) => {
-        let conf = [];
-        for (let entry of response.data) {
-          conf.push({
-            id: entry.fileId,
-            name: entry.name,
-            file: entry.file,
-            confidental: entry.confidental,
-          });
-        }
-        const pagination = { ...this.state.pagination };
-        pagination.pageSize = 4;
-        this.setState({
-          loading: false,
-          data: conf,
-          pagination,
-        });
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
   };
 
   uploadFile(base64, file) {
     let requestObject = {
-      name: document.getElementById("nameInput").value,
+      name: this.state.extension === '' ? document.getElementById("nameInput").value.replace(/ /gi, "") : document.getElementById("nameInput").value.replace(/ /gi, "") + '.' + this.state.extension,
       file: base64,
       confidential: checked,
     };
@@ -324,6 +323,7 @@ class DocumentsTable extends React.Component {
       .then((response) => {
         if (response.status === 200) {
           message.success("Data saved successfully");
+          window.location.reload(false);
         }
       })
       .catch(axiosError);
@@ -333,6 +333,16 @@ class DocumentsTable extends React.Component {
     console.log(`checked = ${(checked = true)}`);
   }
 
+  handleChange = (e) => {
+    if (!e.target.value.includes('.')) {
+      this.setState({
+        fileName: e.target.value,
+      });
+    } else {
+      message.error("Don't input extensions into the file name, the system does this automatically");
+    }
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -340,7 +350,7 @@ class DocumentsTable extends React.Component {
           <h1>Documents</h1>
           <Tabs defaultActiveKey="1">
             <TabPane tab="Documents" key="1">
-              <AssignTable buttonVisible={this.state.buttonVisible} />
+              <AssignTable buttonVisible={this.state.buttonVisible}/>
             </TabPane>
             {this.state.buttonVisible && (
               <TabPane tab="Template Documents" key="2">
@@ -395,11 +405,14 @@ class DocumentsTable extends React.Component {
             title="Upload Document"
           >
             <Card>
-              <Input id="nameInput" placeholder="Document name..." />
+              <Input id="nameInput" value={this.state.fileName.split('.').shift()}
+                onChange={this.handleChange} placeholder="Document name..." />
               <p></p>
               <Checkbox onChange={this.onChange}>Confidential</Checkbox>
               <p></p>
-              <Dragger {...props}>
+              <Dragger {...this.returnUploadProps(this)}
+                      fileList={this.state.fileList}
+              >
                 <p className="ant-upload-drag-icon"></p>
                 <p className="ant-upload-text">
                   Click here or drag a file to this area to upload.
