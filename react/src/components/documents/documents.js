@@ -278,7 +278,7 @@ class DocumentsTable extends React.Component {
           conf.push({
             id: entry.fileId,
             name: entry.name,
-            //file: entry.file,
+            file: entry.file,
             confidental: entry.confidental,
           });
         }

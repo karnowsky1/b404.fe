@@ -40,12 +40,16 @@ class AssignTable extends React.Component {
       },
       {
         title: "Actions",
-        dataIndex: "actions",
-        render: (more) => (
+        dataIndex: this.state.data,
+        key: 'x',
+        render: (row) => (
           <React.Fragment>
-            <Button type="link" size="small">
+            <a
+              href={URL.createObjectURL(this.dataURItoBlob(row.file))}
+              download={row.name}
+            >
               Download
-            </Button>
+            </a>
             <Divider type="vertical" />
             <Button type="link" size="small">
               Update
@@ -109,6 +113,7 @@ class AssignTable extends React.Component {
       type: "json",
     })
       .then((response) => {
+        console.log(response.data);
         let conf = [];
         for (let entry of response.data) {
           conf.push({
@@ -131,6 +136,16 @@ class AssignTable extends React.Component {
         console.log(error);
       });
   };
+
+  dataURItoBlob(dataURI) {
+    var mime = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    var binary = atob(dataURI.split(",")[1]);
+    var array = [];
+    for (var i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], { type: mime });
+  }
 
   render() {
     return (
