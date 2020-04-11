@@ -253,7 +253,8 @@ class TemplateTable extends React.Component {
             name: entry.name,
             fileC: entry.file,
             confidental: entry.confidential,
-            fileType: entry.fileType,
+            stepID: entry.stepID,
+            //fileType: entry.fileType,
           });
         }
         const pagination = { ...this.state.pagination };
@@ -307,7 +308,7 @@ class TemplateTable extends React.Component {
     let requestObject = {
       fileID: this.state.fileId,
       name: document.getElementById("nameInput").value,
-      file: base64.split(",").pop(),
+      file: base64,
       confidential: checked,
     };
 

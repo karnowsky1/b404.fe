@@ -109,6 +109,7 @@ class AssignTable extends React.Component {
       type: "json",
     })
       .then((response) => {
+        console.log(response.data);
         let conf = [];
         for (let entry of response.data) {
           conf.push({
