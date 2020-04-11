@@ -238,6 +238,15 @@ class DocumentsTable extends React.Component {
 
   handleUploadOk = (e) => {
     console.log(e);
+    var input = document.getElementById("nameInput").value;
+    if (input === "" || null || undefined) {
+      message.error("Please input the file name");
+      return;
+    }
+    if (saveData === undefined || null || "") {
+      message.error("Please provide a file");
+      return;
+    }
     this.uploadFile(saveData, saveFile);
     this.setState({
       uploadVisible: false,
@@ -331,11 +340,13 @@ class DocumentsTable extends React.Component {
           <h1>Documents</h1>
           <Tabs defaultActiveKey="1">
             <TabPane tab="Documents" key="1">
-              <AssignTable />
+              <AssignTable buttonVisible={this.state.buttonVisible} />
             </TabPane>
-            <TabPane tab="Template Documents" key="2">
-              <TemplateTable />
-            </TabPane>
+            {this.state.buttonVisible && (
+              <TabPane tab="Template Documents" key="2">
+                <TemplateTable buttonVisible={this.state.buttonVisible} />
+              </TabPane>
+            )}
           </Tabs>
           {this.state.buttonVisible && (
             <Button type="primary" onClick={this.showModal}>

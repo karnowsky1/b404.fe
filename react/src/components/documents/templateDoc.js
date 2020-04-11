@@ -19,37 +19,8 @@ const { confirm } = Modal;
 
 const { Dragger } = Upload;
 
-var checked = false;
-
 var saveData;
 var saveFile;
-
-const props = {
-  name: "file",
-  multiple: true,
-  action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
-  beforeUpload(file) {
-    getBase64(file).then((data) => {
-      if (document.getElementById("nameInput").value === "") {
-        alert("Please provide file name");
-      } else {
-        saveData = data;
-        saveFile = file;
-      }
-    });
-  },
-  onChange(info) {
-    const { status } = info.file;
-    if (status !== "uploading") {
-      console.log(info.file, info.fileList);
-    }
-    if (status === "done") {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-};
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -65,19 +36,22 @@ message.config({
 });
 
 class TemplateTable extends React.Component {
-  state = {
-    data: [],
-    pagination: {},
-    loading: true,
-    download: [],
-    uploadVisible: false,
-    fileName: "",
-    checked: false,
-    fileId: "",
-  };
-
   constructor(props) {
     super(props);
+    this.state = {
+      data: [],
+      pagination: {},
+      loading: true,
+      download: [],
+      uploadVisible: false,
+      fileName: "",
+      checked: false,
+      fileId: "",
+      fileBase64: "",
+      fileList: [],
+    };
+    this.onChange = this.onChange.bind(this);
+    this.returnUploadProps = this.returnUploadProps.bind(this);
     this.columns = [
       {
         title: "Document Name",
@@ -86,10 +60,14 @@ class TemplateTable extends React.Component {
       },
       {
         title: "File Type",
-        dataIndex: "fileType",
-        key: "fileType",
-        render: (name) => (
-          <Tag color={this.color(name)}>{name === null ? "N/A" : name}</Tag>
+        dataIndex: this.state.data,
+        key: "y",
+        render: (file) => (
+          <Tag color={this.color(this.getMime(file.fileC).split("/").shift())}>
+            {this.getMime(file.fileC) === null
+              ? "N/A"
+              : this.getMime(file.fileC)}
+          </Tag>
         ),
       },
       {
@@ -107,42 +85,43 @@ class TemplateTable extends React.Component {
         render: (file) => (
           <React.Fragment>
             <a
-              href={
-                URL.createObjectURL(this.dataURItoBlob(file.fileC))
-              }
-              download={file.name}
+              style={{ color: "#f06f32" }}
+              href={URL.createObjectURL(this.dataURItoBlob(file.fileC))}
+              download={file.name.split(".")}
             >
               Download
             </a>
-            <Divider type="vertical" />
-            <Button
-              type="link"
-              size="small"
-              onClick={(e) =>
-                this.showModal(file.name, file.confidental, file.id)
-              }
-            >
-              Update
-            </Button>
-            <Divider type="vertical" />
-            <Button
-              type="link"
-              size="small"
-              onClick={(e) => this.showDeleteConfirm(e, file.id)}
-            >
-              Delete
-            </Button>
+            {this.props.buttonVisible && (
+              <React.Fragment>
+                <Divider type="vertical" />
+                <Button
+                  type="link"
+                  size="small"
+                  onClick={(e) => {
+                    this.showModal(
+                      file.name,
+                      file.confidental,
+                      file.id,
+                      file.fileC
+                    );
+                  }}
+                >
+                  Update
+                </Button>
+                <Divider type="vertical" />
+                <Button
+                  type="link"
+                  size="small"
+                  onClick={(e) => this.showDeleteConfirm(e, file.id)}
+                >
+                  Delete
+                </Button>
+              </React.Fragment>
+            )}
           </React.Fragment>
         ),
       },
     ];
-  }
-
-  blobToFile(theBlob, fileName){
-    //A Blob() is almost a File() - it's just missing the two properties below which we will add
-    theBlob.lastModifiedDate = new Date();
-    theBlob.name = fileName;
-    return theBlob;
   }
 
   dataURItoBlob(dataURI) {
@@ -153,6 +132,11 @@ class TemplateTable extends React.Component {
       array.push(binary.charCodeAt(i));
     }
     return new Blob([new Uint8Array(array)], { type: mime });
+  }
+
+  getMime(dataURI) {
+    var mime = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    return mime;
   }
 
   color(dataC) {
@@ -261,7 +245,6 @@ class TemplateTable extends React.Component {
             fileC: entry.file,
             confidental: entry.confidential,
             stepID: entry.stepID,
-            //fileType: entry.fileType,
           });
         }
         const pagination = { ...this.state.pagination };
@@ -277,7 +260,7 @@ class TemplateTable extends React.Component {
       });
   };
 
-  showModal = (fileName, isChecked, id) => {
+  showModal = (fileName, isChecked, id, base64String) => {
     this.setState({
       uploadVisible: true,
     });
@@ -287,6 +270,14 @@ class TemplateTable extends React.Component {
     this.setState({
       fileName: fileName,
       fileId: id,
+      fileBase64: base64String,
+      fileList: [
+        {
+          uid: "1",
+          name: fileName,
+          status: "done",
+        },
+      ],
     });
   };
 
@@ -302,6 +293,7 @@ class TemplateTable extends React.Component {
     this.setState({
       uploadVisible: false,
     });
+    //window.location.reload();
   };
 
   onUploadCancel = (e) => {
@@ -315,12 +307,11 @@ class TemplateTable extends React.Component {
     let requestObject = {
       fileID: this.state.fileId,
       name: document.getElementById("nameInput").value,
-      file: base64,
-      confidential: checked,
+      file: base64 === undefined ? this.state.fileBase64 : base64,
+      confidential: this.state.checked,
     };
 
     console.log(requestObject);
-    console.log(this.state.fileID);
     const url = window.__env__.API_URL + "/blink/api/file";
     axios
       .put(url, requestObject, {
@@ -337,8 +328,41 @@ class TemplateTable extends React.Component {
       .catch(axiosError);
   }
 
+  returnUploadProps() {
+    var propsUpload = {
+      name: "file",
+      multiple: false,
+      action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+      beforeUpload(file) {
+        getBase64(file).then((data) => {
+          if (document.getElementById("nameInput").value === "") {
+            message.error("Please provide file name");
+          } else {
+            saveData = data;
+            saveFile = file;
+          }
+        });
+      },
+      showUploadList: {
+        showDownloadIcon: false,
+        showRemoveIcon: false,
+      },
+      onChange: this.handleUploadChange,
+    };
+    return propsUpload;
+  }
+
+  handleUploadChange = ({ fileList }) => {
+    if (fileList.length > 1) {
+      fileList.shift();
+    }
+    this.setState({ fileList: fileList });
+  };
+
   onChange(e) {
-    console.log(`checked = ${(checked = true)}`);
+    this.state.checked
+      ? this.setState({ checked: false })
+      : this.setState({ checked: true });
   }
 
   render() {
@@ -365,11 +389,17 @@ class TemplateTable extends React.Component {
                 onChange={this.handleChange}
               />
               <p></p>
-              <Checkbox checked={this.state.checked} onChange={this.onChange}>
+              <Checkbox
+                checked={this.state.checked}
+                onChange={this.onFileChange}
+              >
                 Confidential
               </Checkbox>
               <p></p>
-              <Dragger {...props}>
+              <Dragger
+                {...this.returnUploadProps()}
+                fileList={this.state.fileList}
+              >
                 <p className="ant-upload-drag-icon"></p>
                 <p className="ant-upload-text">
                   Click here or drag a file to this area to upload.

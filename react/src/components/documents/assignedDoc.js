@@ -1,21 +1,57 @@
 import React from "react";
-import { Table, Button, Divider, Tag, message } from "antd";
+import {
+  Table,
+  Button,
+  Divider,
+  Tag,
+  message,
+  Modal,
+  Upload,
+  Card,
+  Input,
+  Checkbox,
+} from "antd";
 import axios from "axios";
 import { TOKEN_KEY /*, UUID_KEY*/ } from "../../constants/auth";
+import { axiosError } from "../../utils/axiosError";
+
+const { confirm } = Modal;
+
+const { Dragger } = Upload;
+
+var saveData;
+var saveFile;
+
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
 
 message.config({
   maxCount: 1,
 });
 
 class AssignTable extends React.Component {
-  state = {
-    data: [],
-    pagination: {},
-    loading: true,
-  };
-
   constructor(props) {
     super(props);
+    this.state = {
+      data: [],
+      pagination: {},
+      loading: true,
+      download: [],
+      uploadVisible: false,
+      fileName: "",
+      checked: false,
+      fileId: "",
+      fileBase64: "",
+      fileList: [],
+    };
+    this.onChange = this.onChange.bind(this);
+    this.returnUploadProps = this.returnUploadProps.bind(this);
     this.columns = [
       {
         title: "Document Name",
@@ -24,10 +60,14 @@ class AssignTable extends React.Component {
       },
       {
         title: "File Type",
-        dataIndex: "fileType",
-        key: "fileType",
-        render: (name) => (
-          <Tag color={this.color(name)}>{name === null ? "N/A" : name}</Tag>
+        dataIndex: this.state.data,
+        key: "y",
+        render: (file) => (
+          <Tag color={this.color(this.getMime(file.fileC).split("/").shift())}>
+            {this.getMime(file.fileC) === null
+              ? "N/A"
+              : this.getMime(file.fileC)}
+          </Tag>
         ),
       },
       {
@@ -41,27 +81,62 @@ class AssignTable extends React.Component {
       {
         title: "Actions",
         dataIndex: this.state.data,
-        key: 'x',
-        render: (row) => (
+        key: "x",
+        render: (file) => (
           <React.Fragment>
             <a
-              href={URL.createObjectURL(this.dataURItoBlob(row.file))}
-              download={row.name}
+              style={{ color: "#f06f32" }}
+              href={URL.createObjectURL(this.dataURItoBlob(file.fileC))}
+              download={file.name.split(".")}
             >
               Download
             </a>
-            <Divider type="vertical" />
-            <Button type="link" size="small">
-              Update
-            </Button>
-            <Divider type="vertical" />
-            <Button type="link" size="small">
-              Delete
-            </Button>
+            {this.props.buttonVisible && (
+              <React.Fragment>
+                <Divider type="vertical" />
+                <Button
+                  type="link"
+                  size="small"
+                  onClick={(e) => {
+                    this.showModal(
+                      file.name,
+                      file.confidental,
+                      file.id,
+                      file.fileC
+                    );
+                  }}
+                >
+                  Update
+                </Button>
+                <Divider type="vertical" />
+                <Button
+                  type="link"
+                  size="small"
+                  onClick={(e) => this.showDeleteConfirm(e, file.id)}
+                >
+                  Delete
+                </Button>
+              </React.Fragment>
+            )}
           </React.Fragment>
         ),
       },
     ];
+  }
+
+  dataURItoBlob(dataURI) {
+    var mime = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    var binary = atob(dataURI.split(",")[1]);
+    var array = [];
+    for (var i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], { type: mime });
+  }
+
+  getMime(dataURI) {
+    var mime = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    return mime;
   }
 
   color(dataC) {
@@ -94,9 +169,57 @@ class AssignTable extends React.Component {
     return color;
   }
 
+  base64ToBlob(file) {
+    var pos = file.indexOf(";base64,");
+    var type = file.substring(5, pos);
+    var b64 = file.substr(pos + 8);
+
+    var content = atob(b64);
+
+    var buffer = new ArrayBuffer(content.length);
+    var view = new Uint8Array(buffer);
+
+    for (var n = 0; n < content.length; n++) {
+      view[n] = content.charCodeAt(n);
+    }
+
+    var blob = new Blob([buffer], { type: type });
+
+    return blob;
+  }
+
   componentDidMount() {
     this.fetch();
   }
+
+  showDeleteConfirm = (e, id) => {
+    confirm({
+      title: "Are you sure delete this document?",
+      content: "If you delete this document it will become unusable!",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        axios
+          .delete(window.__env__.API_URL + "/blink/api/file/" + id, {
+            headers: {
+              Authorization: localStorage.getItem("token"),
+            },
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              // console.log('works');
+              window.location.reload(false);
+            } else {
+              // console.log(response);
+            }
+          });
+      },
+      onCancel() {
+        // console.log('Cancel');
+      },
+    });
+  };
 
   fetch = async (params = {}) => {
     await axios({
@@ -119,9 +242,9 @@ class AssignTable extends React.Component {
           conf.push({
             id: entry.fileID,
             name: entry.name,
-            file: entry.file,
-            confidental: entry.confidental,
-            fileType: entry.fileType,
+            fileC: entry.file,
+            confidental: entry.confidential,
+            stepID: entry.stepID,
           });
         }
         const pagination = { ...this.state.pagination };
@@ -137,14 +260,109 @@ class AssignTable extends React.Component {
       });
   };
 
-  dataURItoBlob(dataURI) {
-    var mime = dataURI.split(",")[0].split(":")[1].split(";")[0];
-    var binary = atob(dataURI.split(",")[1]);
-    var array = [];
-    for (var i = 0; i < binary.length; i++) {
-      array.push(binary.charCodeAt(i));
+  showModal = (fileName, isChecked, id, base64String) => {
+    this.setState({
+      uploadVisible: true,
+    });
+    isChecked === true
+      ? this.setState({ checked: true })
+      : this.setState({ checked: false });
+    this.setState({
+      fileName: fileName,
+      fileId: id,
+      fileBase64: base64String,
+      fileList: [
+        {
+          uid: "1",
+          name: fileName,
+          status: "done",
+        },
+      ],
+    });
+  };
+
+  handleChange = (e) => {
+    this.setState({
+      fileName: e.target.value,
+    });
+  };
+
+  handleUploadOk = (e) => {
+    console.log(e);
+    this.uploadFile(saveData, saveFile);
+    this.setState({
+      uploadVisible: false,
+    });
+    //window.location.reload();
+  };
+
+  onUploadCancel = (e) => {
+    console.log(e);
+    this.setState({
+      uploadVisible: false,
+    });
+  };
+
+  uploadFile(base64, file) {
+    let requestObject = {
+      fileID: this.state.fileId,
+      name: document.getElementById("nameInput").value,
+      file: base64 === undefined ? this.state.fileBase64 : base64,
+      confidential: this.state.checked,
+    };
+
+    console.log(requestObject);
+    const url = window.__env__.API_URL + "/blink/api/file";
+    axios
+      .put(url, requestObject, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem(TOKEN_KEY),
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          message.success("Data saved successfully");
+        }
+      })
+      .catch(axiosError);
+  }
+
+  returnUploadProps() {
+    var propsUpload = {
+      name: "file",
+      multiple: false,
+      action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+      beforeUpload(file) {
+        getBase64(file).then((data) => {
+          if (document.getElementById("nameInput").value === "") {
+            message.error("Please provide file name");
+          } else {
+            saveData = data;
+            saveFile = file;
+          }
+        });
+      },
+      showUploadList: {
+        showDownloadIcon: false,
+        showRemoveIcon: false,
+      },
+      onChange: this.handleUploadChange,
+    };
+    return propsUpload;
+  }
+
+  handleUploadChange = ({ fileList }) => {
+    if (fileList.length > 1) {
+      fileList.shift();
     }
-    return new Blob([new Uint8Array(array)], { type: mime });
+    this.setState({ fileList: fileList });
+  };
+
+  onChange(e) {
+    this.state.checked
+      ? this.setState({ checked: false })
+      : this.setState({ checked: true });
   }
 
   render() {
@@ -152,11 +370,43 @@ class AssignTable extends React.Component {
       <React.Fragment>
         <div>
           <Table
-            rowKey={(record) => record.id}
             columns={this.columns}
             dataSource={this.state.data}
             loading={this.state.loading}
+            rowKey={(record) => record.id}
           />
+          <Modal
+            onOk={this.handleUploadOk}
+            onCancel={this.onUploadCancel}
+            visible={this.state.uploadVisible}
+            title="Upload Document"
+          >
+            <Card>
+              <Input
+                id="nameInput"
+                placeholder="Document name..."
+                value={this.state.fileName}
+                onChange={this.handleChange}
+              />
+              <p></p>
+              <Checkbox
+                checked={this.state.checked}
+                onChange={this.onFileChange}
+              >
+                Confidential
+              </Checkbox>
+              <p></p>
+              <Dragger
+                {...this.returnUploadProps()}
+                fileList={this.state.fileList}
+              >
+                <p className="ant-upload-drag-icon"></p>
+                <p className="ant-upload-text">
+                  Click here or drag a file to this area to upload.
+                </p>
+              </Dragger>
+            </Card>
+          </Modal>
         </div>
       </React.Fragment>
     );
