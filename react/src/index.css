@@ -198,3 +198,19 @@ code {
   padding: '2em';
   width: 35%;
 }
+
+.signatureContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.signatureDiv {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.updateButton {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}

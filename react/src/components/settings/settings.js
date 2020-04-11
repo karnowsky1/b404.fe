@@ -47,6 +47,7 @@ class SettingsForm extends React.Component {
             loading: false,
             user: response.data
           });
+          this.sigCanvas.fromDataURL(this.state.user.signature);
         }
       })
       .catch(function(error) {
@@ -80,8 +81,10 @@ class SettingsForm extends React.Component {
           lName,
           email,
           title,
-          accessLevelID
+          accessLevelID,
+          signature
         } = this.state.user;
+        //console.log(signature);
         const id = uuid;
         const url = window.__env__.API_URL + '/blink/api/person';
         axios
@@ -95,7 +98,8 @@ class SettingsForm extends React.Component {
               lName,
               email,
               title,
-              accessLevelID
+              accessLevelID,
+              signature
             }),
             {
               headers: {
@@ -139,10 +143,28 @@ class SettingsForm extends React.Component {
   };
 
   handleChange = e => {
+    if(e.target.name === 'password') {
+      console.log(true);
+    }
     this.setState({
       user: { ...this.state.user, [e.target.name]: e.target.value }
     });
-    console.log(this.sigCanvas.toDataURL());
+    //console.log(this.sigCanvas.toDataURL());
+  };
+
+  clearSignature = e => {
+    this.sigCanvas.clear();
+    this.setState({
+      user: { ...this.state.user, 'signature': this.sigCanvas.toDataURL() }
+    });
+    //console.log(this.state.user.signature);
+  }
+
+  handleSignatureChange = e => {
+    this.setState({
+      user: { ...this.state.user, 'signature': this.sigCanvas.toDataURL() }
+    });
+    //console.log(this.state.user.signature);
   };
 
   render() {
@@ -151,23 +173,11 @@ class SettingsForm extends React.Component {
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 8 }
+        sm: { span: 4 }
       },
       wrapperCol: {
         xs: { span: 24 },
         sm: { span: 16 }
-      }
-    };
-    const tailFormItemLayout = {
-      wrapperCol: {
-        xs: {
-          span: 24,
-          offset: 0
-        },
-        sm: {
-          span: 16,
-          offset: 8
-        }
       }
     };
 
@@ -238,10 +248,8 @@ class SettingsForm extends React.Component {
                       valuePropName: 'password',
                       rules: [
                         {
-                          type: "regexp",
-                          // pattern: new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
                           pattern: new RegExp(passwordRegex),
-                          message: "Wrong format!"
+                          message: 'Password must contain at least eight characters, at least one number and both lower and uppercase letters and special characters'
                         }
                       ]
                     })(
@@ -348,16 +356,25 @@ class SettingsForm extends React.Component {
                       />
                     )}
                   </Form.Item>
+                  <div className="signatureContainer">
+                  <div className="signatureDiv">
                   <SignatureCanvas ref={(ref) => { this.sigCanvas = ref; }} 
                                        penColor='green'
                                        canvasProps={{width: 500, height: 200, className: 'sigCanvas'}}
-                                       onEnd={this.handleChange}
+                                       onEnd={this.handleSignatureChange}
                   />
-                  <Form.Item {...tailFormItemLayout}>
+                  <Button onClick={this.clearSignature} type="primary">
+                    Clear Signature
+                  </Button>
+                  </div>
+                  </div>
+                  <div className="updateButton">
+                  <Form.Item>
                     <Button type="primary" htmlType="submit">
-                      Update
+                      Update Settings
                     </Button>
                   </Form.Item>
+                  </div>
                 </Form>
               </Spin>
             </div>

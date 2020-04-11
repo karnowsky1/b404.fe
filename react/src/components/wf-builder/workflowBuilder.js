@@ -505,7 +505,7 @@ export default class WorkflowBuilder extends Component {
           generateNodeProps={rowInfo => ({
             title: (
               <div>
-                <span class="wfBuilderSpan">Verb: </span>
+                <span className="wfBuilderSpan">Verb: </span>
                 <Select
                   value={rowInfo.node.title.toString()}
                   size="small"
@@ -533,7 +533,7 @@ export default class WorkflowBuilder extends Component {
             ),
             subtitle: (
               <div>
-                <span class="wfBuilderSpan">Descr: </span>
+                <span className="wfBuilderSpan">Descr: </span>
                 <Input
                   style={{
                     marginTop: '20px'
@@ -569,7 +569,7 @@ export default class WorkflowBuilder extends Component {
                     }}
                   >
                     <div>
-                      <span class="wfBuilderSpan">Person: </span>
+                      <span className="wfBuilderSpan">Person: </span>
                       <Select
                         value={
                           rowInfo.node.uuid && rowInfo.node.uuid.toString()
@@ -609,7 +609,7 @@ export default class WorkflowBuilder extends Component {
                       </Select>
                     </div>
                     <div style={{ marginLeft: 25 }}>
-                      <span class="wfBuilderSpan">File: </span>
+                      <span className="wfBuilderSpan">File: </span>
                       <Select
                         value={
                           rowInfo.node.fileID && rowInfo.node.fileID.toString()
