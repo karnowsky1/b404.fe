@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Form, Input, Tooltip, Icon, Card, Button, Spin, message } from 'antd';
 import axios from 'axios';
 import qs from 'qs';
@@ -395,8 +396,10 @@ class SettingsForm extends React.Component {
 }
 
 const Settings = Form.create({ name: 'settings' })(SettingsForm);
-
-export default Settings;
+export default connect((state = {}) => ({
+  user: state.user,
+  user_name: state.user.fName + ' ' + state.user.lName,
+}))(Settings);
 
 // get actions as props when you connect them
 // you get redux state objects
