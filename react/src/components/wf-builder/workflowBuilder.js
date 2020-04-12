@@ -3,7 +3,7 @@ import SortableTree from 'react-sortable-tree';
 import {
   addNodeUnderParent,
   removeNodeAtPath,
-  changeNodeAtPath
+  changeNodeAtPath,
 } from 'react-sortable-tree';
 import { axiosError } from '../../utils/axiosError';
 import { WorkflowDateRange } from '../../utils/WorkflowDateRange';
@@ -16,13 +16,13 @@ import {
   DEFAULT_TREE,
   ASSIGN_DEFAULT_TREE,
   SEND_DATE_FORMAT,
-  RECEIVE_DATE_FORMAT
+  RECEIVE_DATE_FORMAT,
 } from '../../constants';
 import {
   getVerbs,
-  getFileByMilestone,
   getPeopleByCompany,
-  getMilestone
+  getMilestone,
+  getTemplateFiles,
 } from '../../utils/api';
 import { required } from '../../utils/validators';
 import moment from 'moment';
@@ -42,7 +42,7 @@ export default class WorkflowBuilder extends Component {
     this.setTreeData = this.setTreeData.bind(this);
     this.setWorkflowData = this.setWorkflowData.bind(this);
     message.config({
-      maxCount: 1
+      maxCount: 1,
     });
 
     this.state = {
@@ -66,7 +66,7 @@ export default class WorkflowBuilder extends Component {
         : [DEFAULT_TREE],
       treeData: this.props.isConcreteWorkflow
         ? [ASSIGN_DEFAULT_TREE]
-        : [DEFAULT_TREE]
+        : [DEFAULT_TREE],
     };
   }
 
@@ -89,10 +89,10 @@ export default class WorkflowBuilder extends Component {
     this.props.workflow &&
       this.setState({
         workflow: this.props.workflow,
-        milestoneID: milestoneID
+        milestoneID: milestoneID,
       });
     this.props.isConcreteWorkflow && this.getAllPeople(milestoneID);
-    this.props.isConcreteWorkflow && this.getAllFiles(milestoneID);
+    this.props.isConcreteWorkflow && this.getAllFiles();
 
     this.props.workflow && this.setWorkflowData();
     console.log('this is the concrete workflow');
@@ -113,24 +113,24 @@ export default class WorkflowBuilder extends Component {
 
   // hit the insertFile endpoint with the optional stepID to submit a new document like a dropbox
 
-  getAllVerbs = async e => {
+  getAllVerbs = async (e) => {
     await getVerbs()
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           this.setState({
-            verbs: response.data
+            verbs: response.data,
           });
         }
       })
       .catch(axiosError);
   };
 
-  getAllPeople = async milestoneID => {
+  getAllPeople = async (milestoneID) => {
     await getMilestone(milestoneID)
-      .then(async response => {
+      .then(async (response) => {
         response.status === 200 &&
           (await getPeopleByCompany(response.data.company.companyID)
-            .then(response => {
+            .then((response) => {
               response.status === 200 &&
                 this.setState({ people: response.data });
             })
@@ -139,12 +139,13 @@ export default class WorkflowBuilder extends Component {
       .catch(axiosError);
   };
 
-  getAllFiles = async milestoneID => {
-    await getFileByMilestone(milestoneID)
-      .then(response => {
-        this.setState({
-          files: response.data
-        });
+  getAllFiles = async (e) => {
+    await getTemplateFiles()
+      .then((response) => {
+        response.status === 200 &&
+          this.setState({
+            files: response.data,
+          });
       })
       .catch(axiosError);
   };
@@ -169,18 +170,18 @@ export default class WorkflowBuilder extends Component {
               moment(this.props.workflow.startDate, RECEIVE_DATE_FORMAT).format(
                 SEND_DATE_FORMAT
               )
-            )
+            ),
           ]
-        : null
+        : null,
     });
   }
 
   workflowConcreteStepConversion() {
     console.log(this.props.workflow.steps);
-    const concreteWorkflow = this.props.workflow.steps.map(obj => ({
+    const concreteWorkflow = this.props.workflow.steps.map((obj) => ({
       ...obj,
       person: '',
-      fileID: ''
+      fileID: '',
     }));
     console.log('this is the concrete workflow');
     console.log(concreteWorkflow);
@@ -194,7 +195,7 @@ export default class WorkflowBuilder extends Component {
     }
   }
 
-  handleSubmit = async e => {
+  handleSubmit = async (e) => {
     e.preventDefault();
     //const {wfName, username, password, fName, lName, email, title, accessLevelID} = this.state.user
     //const id = UUID
@@ -217,13 +218,13 @@ export default class WorkflowBuilder extends Component {
           deliveryDate:
             this.state.defaultRange.length &&
             this.state.defaultRange[1].format(SEND_DATE_FORMAT),
-          milestoneID: this.state.milestoneID
+          milestoneID: this.state.milestoneID,
         }
       : {
           workflowID: this.state.workflow.workflowID,
           name: this.state.wfName,
           description: this.state.wfDescription,
-          steps: this.state.treeData
+          steps: this.state.treeData,
         };
     this.setState({ loading: true });
 
@@ -233,10 +234,10 @@ export default class WorkflowBuilder extends Component {
         .post(url, requestObject, {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: localStorage.getItem(TOKEN_KEY)
-          }
+            Authorization: localStorage.getItem(TOKEN_KEY),
+          },
         })
-        .then(response => {
+        .then((response) => {
           //this.setState({ loading: true });
           if (response.status === 200) {
             this.successfulResponseSubmission();
@@ -251,10 +252,10 @@ export default class WorkflowBuilder extends Component {
         .put(url, requestObject, {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: localStorage.getItem(TOKEN_KEY)
-          }
+            Authorization: localStorage.getItem(TOKEN_KEY),
+          },
         })
-        .then(response => {
+        .then((response) => {
           if (response.status === 200) {
             this.successfulResponseSubmission();
           }
@@ -267,10 +268,10 @@ export default class WorkflowBuilder extends Component {
         .post(concreteWorkflowUrl, requestObject, {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: localStorage.getItem(TOKEN_KEY)
-          }
+            Authorization: localStorage.getItem(TOKEN_KEY),
+          },
         })
-        .then(response => {
+        .then((response) => {
           //this.setState({ loading: true });
           if (response.status === 200) {
             this.successfulResponseSubmission();
@@ -284,10 +285,10 @@ export default class WorkflowBuilder extends Component {
         .put(concreteWorkflowUrl, requestObject, {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: localStorage.getItem(TOKEN_KEY)
-          }
+            Authorization: localStorage.getItem(TOKEN_KEY),
+          },
         })
-        .then(response => {
+        .then((response) => {
           //this.setState({ loading: true });
           if (response.status === 200) {
             this.successfulResponseSubmission();
@@ -307,14 +308,14 @@ export default class WorkflowBuilder extends Component {
   addNewNode(rowInfo) {
     const NEW_NODE = {
       ...this.state.defaultTree,
-      title: this.state.verbs[0].verbID
+      title: this.state.verbs[0].verbID,
     };
     const newTree = addNodeUnderParent({
       treeData: this.state.treeData,
       newNode: NEW_NODE,
       expandParent: true,
       parentKey: rowInfo ? rowInfo.treeIndex : undefined,
-      getNodeKey: ({ treeIndex }) => treeIndex
+      getNodeKey: ({ treeIndex }) => treeIndex,
     });
     this.updateTreeData(newTree.treeData);
   }
@@ -325,7 +326,7 @@ export default class WorkflowBuilder extends Component {
     const newTree = removeNodeAtPath({
       treeData: this.state.treeData,
       path,
-      getNodeKey: ({ treeIndex }) => treeIndex
+      getNodeKey: ({ treeIndex }) => treeIndex,
     });
     if (newTree.length !== 0) {
       this.updateTreeData(newTree);
@@ -336,7 +337,7 @@ export default class WorkflowBuilder extends Component {
     return {
       ...tree,
       title: tree.children && tree.children.length ? 0 : tree.title,
-      children: tree.children ? tree.children.map(this.setTreeData) : []
+      children: tree.children ? tree.children.map(this.setTreeData) : [],
     };
   }
 
@@ -345,19 +346,19 @@ export default class WorkflowBuilder extends Component {
     this.setState({ treeData: newTrees });
   }
 
-  handleNameChange = e => {
+  handleNameChange = (e) => {
     this.setState({
-      wfName: e.target.value
+      wfName: e.target.value,
     });
   };
 
-  handleDescriptionChange = e => {
+  handleDescriptionChange = (e) => {
     this.setState({
-      wfDescription: e.target.value
+      wfDescription: e.target.value,
     });
   };
 
-  handleDateChange = e => {
+  handleDateChange = (e) => {
     // this.setState({
     //   defaultRange: e.target.value
     // });
@@ -373,15 +374,15 @@ export default class WorkflowBuilder extends Component {
     const children = [];
     const people = [];
     const files = [];
-    this.state.verbs.forEach(element => {
+    this.state.verbs.forEach((element) => {
       children.push(<Option key={element.verbID}>{element.name}</Option>);
     });
-    this.state.people.forEach(element => {
+    this.state.people.forEach((element) => {
       people.push(
         <Option key={element.uuid}>{element.fName + element.lName}</Option>
       );
     });
-    this.state.files.forEach(element => {
+    this.state.files.forEach((element) => {
       files.push(<Option key={element.fileID}>{element.name}</Option>);
     });
     const nameValidation = this.state.wfNameEdited
@@ -406,7 +407,7 @@ export default class WorkflowBuilder extends Component {
           width: '100%',
           height: '100%',
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
         }}
       >
         <div style={{ display: 'flex', marginBottom: 16 }}>
@@ -414,7 +415,7 @@ export default class WorkflowBuilder extends Component {
             style={{
               display: 'flex',
               flexDirection: 'row',
-              marginRight: '35px'
+              marginRight: '35px',
             }}
           >
             <h6 className="wfInputText">Name: </h6>
@@ -428,7 +429,7 @@ export default class WorkflowBuilder extends Component {
                 placeholder="Enter workflow name..."
                 onBlur={() =>
                   this.setState({
-                    wfNameEdited: true
+                    wfNameEdited: true,
                   })
                 }
               />
@@ -438,7 +439,7 @@ export default class WorkflowBuilder extends Component {
             style={{
               display: 'flex',
               flexDirection: 'row',
-              marginRight: '35px'
+              marginRight: '35px',
             }}
           >
             <h6 className="wfInputText">Description: </h6>
@@ -452,7 +453,7 @@ export default class WorkflowBuilder extends Component {
                 placeholder="Enter description..."
                 onBlur={() =>
                   this.setState({
-                    wfDescriptionEdited: true
+                    wfDescriptionEdited: true,
                   })
                 }
               />
@@ -464,7 +465,7 @@ export default class WorkflowBuilder extends Component {
                 display: 'flex',
                 flexDirection: 'row',
                 marginRight: 35,
-                marginBottom: 30
+                marginBottom: 30,
               }}
             >
               <h6 className="wfInputText"> {'Start & End Date:'} </h6>
@@ -473,16 +474,16 @@ export default class WorkflowBuilder extends Component {
                 help={dateRangeValidation}
               >
                 <WorkflowDateRange
-                  onChange={dates => {
+                  onChange={(dates) => {
                     this.setState({
-                      defaultRange: dates
+                      defaultRange: dates,
                     });
                   }}
                   defaultRange={this.state.defaultRange}
                   format={SEND_DATE_FORMAT}
                   onBlur={() =>
                     this.setState({
-                      defaultRangeEdited: true
+                      defaultRangeEdited: true,
                     })
                   }
                 />
@@ -497,12 +498,12 @@ export default class WorkflowBuilder extends Component {
             display: 'flex',
             flexDirection: 'column',
             position: 'relative',
-            paddingLeft: '5px'
+            paddingLeft: '5px',
           }}
           rowHeight={70}
           treeData={this.state.treeData}
           onChange={this.updateTreeData}
-          generateNodeProps={rowInfo => ({
+          generateNodeProps={(rowInfo) => ({
             title: (
               <div>
                 <span className="wfBuilderSpan">Verb: </span>
@@ -513,17 +514,17 @@ export default class WorkflowBuilder extends Component {
                     rowInfo.node.children && !!rowInfo.node.children.length
                   }
                   style={{ width: 120 }}
-                  onChange={event => {
+                  onChange={(event) => {
                     console.log(rowInfo);
                     const { path } = rowInfo;
                     const title = parseInt(event);
-                    this.setState(state => ({
+                    this.setState((state) => ({
                       treeData: changeNodeAtPath({
                         treeData: state.treeData,
                         path,
                         getNodeKey,
-                        newNode: { ...rowInfo.node, title }
-                      })
+                        newNode: { ...rowInfo.node, title },
+                      }),
                     }));
                   }}
                 >
@@ -536,23 +537,23 @@ export default class WorkflowBuilder extends Component {
                 <span className="wfBuilderSpan">Descr: </span>
                 <Input
                   style={{
-                    marginTop: '20px'
+                    marginTop: '20px',
                   }}
                   placeholder="Enter a description"
                   value={rowInfo.node.subtitle}
                   size="small"
-                  onChange={event => {
+                  onChange={(event) => {
                     console.log(rowInfo);
                     const { path } = rowInfo;
                     const subtitle = event.target.value;
 
-                    this.setState(state => ({
+                    this.setState((state) => ({
                       treeData: changeNodeAtPath({
                         treeData: state.treeData,
                         path,
                         getNodeKey,
-                        newNode: { ...rowInfo.node, subtitle }
-                      })
+                        newNode: { ...rowInfo.node, subtitle },
+                      }),
                     }));
                   }}
                 />
@@ -565,7 +566,7 @@ export default class WorkflowBuilder extends Component {
                     style={{
                       display: 'flex',
                       flexDirection: 'column',
-                      paddingRight: '1em'
+                      paddingRight: '1em',
                     }}
                   >
                     <div>
@@ -588,20 +589,20 @@ export default class WorkflowBuilder extends Component {
                           !!rowInfo.node.children.length
                         }
                         style={{ width: 160 }}
-                        onChange={event => {
+                        onChange={(event) => {
                           console.log(rowInfo);
                           const { path } = rowInfo;
                           const uuid = event;
                           console.log('what is this parse int');
                           console.log(uuid);
 
-                          this.setState(state => ({
+                          this.setState((state) => ({
                             treeData: changeNodeAtPath({
                               treeData: state.treeData,
                               path,
                               getNodeKey,
-                              newNode: { ...rowInfo.node, uuid }
-                            })
+                              newNode: { ...rowInfo.node, uuid },
+                            }),
                           }));
                         }}
                       >
@@ -622,17 +623,17 @@ export default class WorkflowBuilder extends Component {
                           !!rowInfo.node.children.length
                         }
                         style={{ width: 160, marginTop: 9 }}
-                        onChange={event => {
+                        onChange={(event) => {
                           console.log(rowInfo);
                           const { path } = rowInfo;
                           const fileID = parseInt(event);
-                          this.setState(state => ({
+                          this.setState((state) => ({
                             treeData: changeNodeAtPath({
                               treeData: state.treeData,
                               path,
                               getNodeKey,
-                              newNode: { ...rowInfo.node, fileID }
-                            })
+                              newNode: { ...rowInfo.node, fileID },
+                            }),
                           }));
                         }}
                       >
@@ -645,13 +646,13 @@ export default class WorkflowBuilder extends Component {
                 <Button
                   style={{ marginRight: 5, marginTop: 9 }}
                   label="Delete"
-                  onClick={event => this.removeNode(rowInfo)}
+                  onClick={(event) => this.removeNode(rowInfo)}
                 >
                   Remove
                 </Button>
                 <Button
                   label="Add"
-                  onClick={event => this.addNewNode(rowInfo)}
+                  onClick={(event) => this.addNewNode(rowInfo)}
                   style={{ marginRight: 10, marginTop: 9 }}
                 >
                   Add
@@ -663,36 +664,36 @@ export default class WorkflowBuilder extends Component {
                     disabled={
                       !(rowInfo.node.children && rowInfo.node.children.length)
                     }
-                    onClick={checked => {
+                    onClick={(checked) => {
                       console.log(rowInfo);
                       const { path } = rowInfo;
 
-                      this.setState(state => ({
+                      this.setState((state) => ({
                         treeData: changeNodeAtPath({
                           treeData: state.treeData,
                           path,
                           getNodeKey,
                           newNode: {
                             ...rowInfo.node,
-                            asynchronous: checked
-                          }
-                        })
+                            asynchronous: checked,
+                          },
+                        }),
                       }));
                     }}
                   />
                 </div>
-              </div>
+              </div>,
             ],
             style: {
-              height: '70px'
-            }
+              height: '70px',
+            },
           })}
         ></SortableTree>
         <div
           style={{
             display: 'flex',
             justifyContent: 'flex-end',
-            marginTop: '1rem'
+            marginTop: '1rem',
           }}
         >
           <Button

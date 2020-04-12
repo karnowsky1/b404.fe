@@ -211,6 +211,19 @@ code {
 
 .updateButton {
   margin-top: 24px;
+}
+
+.nameExtension {
+  display: flex;
+  flex-direction: row;
+}
+
+#extensionInput {
+  width: 75px;
+}
+
+.approveButton {
+  margin-top: 8px;
   display: flex;
   justify-content: center;
 }
