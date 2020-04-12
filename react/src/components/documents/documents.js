@@ -21,7 +21,6 @@ import { FormBuilder } from "cb-react-forms";
 import ReactToPrint from "react-to-print";
 import { getUser } from "../../utils/api";
 import { axiosError } from "../../utils/axiosError";
-import { IS_INTERNAL } from '../../constants';
 
 const { Option } = Select;
 
