@@ -5,24 +5,50 @@ import { TOKEN_KEY } from '../constants/auth';
 import axios from 'axios';
 import { axiosError } from '../utils/axiosError';
 
-var displayData = {};
+//var displayData = {};
 
 export default class Approve extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [{"stepID":167,"orderNumber":1,"subtitle":"Test description 2","parentStepID":166,"uuid":"a99063fd-4322-4514-a380-c4da46abc7ab","title":4,"fileID":68,"workflowID":12,"asynchronous":false,"completed":false,"expanded":false,"children":[]}, {"stepID":234,"orderNumber":1,"subtitle":"Test description 2","parentStepID":166,"uuid":"a99063fd-4322-4514-a380-c4da46abc7ab","title":4,"fileID":68,"workflowID":12,"asynchronous":false,"completed":false,"expanded":false,"children":[]}],
+      data: [],
       user: {},
       approveStep: {},
     }
   }
 
   componentDidMount() {
-    this.getApprovalDescription();
+    this.fetch();
     this.filterStep(this.state.data);
   }
 
+  fetch = (params = {}) => {
+    axios({
+      method: 'get',
+      url: window.__env__.API_URL + '/blink/api/workflow/pending',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: localStorage.getItem(TOKEN_KEY)
+      },
+      response: {
+        results: 4,
+        params
+      },
+      type: 'json'
+    })
+      .then(response => {
+        this.filterStep(response.data);
+        this.setState({
+          data: response.data
+        })
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  };
+
   getApprovalDescription() {
+    console.log(localStorage.getItem(TOKEN_KEY))
     const url = window.__env__.API_URL + '/blink/api/workflow/pending';
     axios
       .get(url, null, {
@@ -35,17 +61,17 @@ export default class Approve extends Component {
         if (response.status === 200) {
           console.log(response);
           this.setState({
-            data: [response.data]
+            data: response.data
           })
           this.filterStep(response.data);
-          console.log(this.state.file);
+          console.log(this.state.data);
         }
       })
       .catch(axiosError);
   }
 
   getUser() {
-    const url = window.__env__.API_URL + '/blink/api/person/id/' + displayData.uuid;
+    const url = window.__env__.API_URL + '/blink/api/person/id/' + this.state.approveStep.uuid;
     axios
       .get(url, null, {
         headers: {
@@ -72,7 +98,7 @@ export default class Approve extends Component {
         this.setState({
           approveStep: element
         })
-        displayData = element;
+        //displayData = element;
       }
     });
   }
@@ -100,9 +126,7 @@ export default class Approve extends Component {
     return (
       <React.Fragment>
       <Card title="Approve">
-        {Object.keys(displayData).map(key => 
-        <h4 key={key} value={key}>{key.toUpperCase() + ': ' + displayData[key]}</h4>
-        )}
+        <h4>{"DESCRIPTION: " + this.state.approveStep.subtitle}</h4>
       </Card>
       <div className="approveButton">
         <Button type="primary" onClick={this.markStepComplete}>

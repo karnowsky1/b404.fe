@@ -55,7 +55,7 @@ export default class Uploads extends Component {
   }
 
   componentDidMount() {
-    this.getStepFile();
+    this.fetch();
   }
 
   uploadFile(base64, file) {
@@ -88,12 +88,48 @@ export default class Uploads extends Component {
       .catch(axiosError);
   }
 
+  fetch = (params = {}) => {
+    axios({
+      method: 'get',
+      url: window.__env__.API_URL + '/blink/api/file/id/' + localStorage.getItem('fileId'),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: localStorage.getItem(TOKEN_KEY)
+      },
+      response: {
+        results: 4,
+        params
+      },
+      type: 'json'
+    })
+      .then(response => {
+        console.log(response);
+          this.setState({
+            file: response.data,
+            fileList: [
+              {
+                uid: "1",
+                name: response.data.name,
+              },
+            ],
+            downloadHidden: false,
+            fileName: response.data.name,
+            extension: response.data.name.includes('.') ? response.data.name.split('.').pop() : "",
+            fileBase64: response.data.file
+          })
+          console.log(this.state);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }; 
+
   getStepFile() {
     const url = window.__env__.API_URL + '/blink/api/file/id/' + localStorage.getItem('fileId');
     axios
       .get(url, null, {
         headers: {
-          'Content-Type': 'application/json',
+          //'Content-Type': 'application/json',
           Authorization: localStorage.getItem(TOKEN_KEY)
         }
       })
@@ -198,7 +234,7 @@ export default class Uploads extends Component {
               uploading company data or other band files
             </p>
           </Dragger>
-          {this.state.downloadHidden && (
+          {!this.state.downloadHidden && (
             <a
             style={{ color: "#f06f32" }}
             href={this.state.fileBase64 ? URL.createObjectURL(this.dataURItoBlob(this.state.fileBase64)) : '#'}

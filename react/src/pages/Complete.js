@@ -5,22 +5,47 @@ import { TOKEN_KEY } from '../constants/auth';
 import axios from 'axios';
 import { axiosError } from '../utils/axiosError';
 
-var displayData = {};
+//var displayData = {};
 
 export default class Complete extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [{"stepID":167,"orderNumber":1,"subtitle":"Test description 2","parentStepID":166,"uuid":"a99063fd-4322-4514-a380-c4da46abc7ab","title":4,"fileID":68,"workflowID":12,"asynchronous":false,"completed":false,"expanded":false,"children":[]}, {"stepID":234,"orderNumber":1,"subtitle":"Test description 2","parentStepID":166,"uuid":"a99063fd-4322-4514-a380-c4da46abc7ab","title":4,"fileID":68,"workflowID":12,"asynchronous":false,"completed":false,"expanded":false,"children":[]}],
+      data: [],
       user: {},
       completeStep: {},
     }
   }
 
   componentDidMount() {
-    this.getApprovalDescription();
-    this.filterStep(this.state.data);
+    this.fetch();
+    this.filterStep(this.state.data); 
   }
+
+  fetch = (params = {}) => {
+    axios({
+      method: 'get',
+      url: window.__env__.API_URL + '/blink/api/workflow/pending',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: localStorage.getItem(TOKEN_KEY)
+      },
+      response: {
+        results: 4,
+        params
+      },
+      type: 'json'
+    })
+      .then(response => {
+        this.setState({
+          data: response.data
+        })
+        this.filterStep(response.data);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }; 
 
   getApprovalDescription() {
     const url = window.__env__.API_URL + '/blink/api/workflow/pending';
@@ -35,7 +60,7 @@ export default class Complete extends Component {
         if (response.status === 200) {
           console.log(response);
           this.setState({
-            data: [response.data]
+            data: response.data
           })
           this.filterStep(response.data);
           console.log(this.state.file);
@@ -45,7 +70,7 @@ export default class Complete extends Component {
   }
 
   getUser() {
-    const url = window.__env__.API_URL + '/blink/api/person/id/' + displayData.uuid;
+    const url = window.__env__.API_URL + '/blink/api/person/id/' + this.state.completeStep.uuid;
     axios
       .get(url, null, {
         headers: {
@@ -72,7 +97,7 @@ export default class Complete extends Component {
         this.setState({
           completeStep: element
         })
-        displayData = element;
+        //displayData = element;
       }
     });
   }
@@ -100,7 +125,7 @@ export default class Complete extends Component {
     return (
       <React.Fragment>
       <Card title="Complete">
-        <h4>{"DESCRIPTION: " + displayData.subtitle}</h4>
+        <h4>{"DESCRIPTION: " + this.state.completeStep.subtitle}</h4>
       </Card>
       <div className="approveButton">
         <Button type="primary" onClick={this.markStepComplete}>

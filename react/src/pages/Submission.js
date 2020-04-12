@@ -1,10 +1,35 @@
 import React, { Component } from 'react'
 import { Card } from 'antd'
+import { TOKEN_KEY } from '../constants/auth';
+// import { InboxOutlined } from '@ant-design/icons';
+import axios from 'axios';
+import { axiosError } from '../utils/axiosError';
 
 import { FormGenerator } from 'cb-react-forms';
 
 const onSubmit = (formData) => {
-  window.print()
+  window.print();
+  markStepComplete();
+}
+
+function markStepComplete() {
+  console.log('COMPLETE')
+  const url =
+    window.__env__.API_URL +
+    '/blink/api/workflow/step/complete?id=' +
+    localStorage.getItem('stepId');
+  axios
+    .put(url, null, {
+      headers: {
+        Authorization: localStorage.getItem(TOKEN_KEY)
+      }
+    })
+    .then(response => {
+      if (response.status === 200) {
+        window.location.href = '/dashboard';
+      }
+    })
+    .catch(axiosError);
 }
 
 export default class Submission extends Component {
