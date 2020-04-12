@@ -207,3 +207,9 @@ code {
 #extensionInput {
   width: 75px
 }
+
+.approveButton {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+}
