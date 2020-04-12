@@ -6,8 +6,6 @@ import axios from 'axios';
 import { axiosError } from '../utils/axiosError';
 
 var displayData = {};
-var displayWorkflow = {};
-//var workflow = {};
 
 export default class Complete extends Component {
   constructor(props) {
@@ -15,90 +13,12 @@ export default class Complete extends Component {
     this.state = {
       data: [{"stepID":167,"orderNumber":1,"subtitle":"Test description 2","parentStepID":166,"uuid":"a99063fd-4322-4514-a380-c4da46abc7ab","title":4,"fileID":68,"workflowID":12,"asynchronous":false,"completed":false,"expanded":false,"children":[]}, {"stepID":234,"orderNumber":1,"subtitle":"Test description 2","parentStepID":166,"uuid":"a99063fd-4322-4514-a380-c4da46abc7ab","title":4,"fileID":68,"workflowID":12,"asynchronous":false,"completed":false,"expanded":false,"children":[]}],
       user: {},
-      workflow: {
-        "workflowID": 12,
-        "name": "B6",
-        "description": "Test",
-        "createdDate": "Apr 11, 2020 00:00:00",
-        "lastUpdatedDate": "Apr 12, 2020 00:00:00",
-        "startDate": "Jan 20, 2000 00:00:00",
-        "deliveryDate": "Jan 20, 2000 00:00:00",
-        "completedDate": null,
-        "archived": false,
-        "milestoneID": 1,
-        "company": {
-            "companyID": 2,
-            "companyName": "Rochester Institute of Technology"
-        },
-        "percentComplete": 0.0,
-        "steps": [
-            {
-                "stepID": 165,
-                "orderNumber": 1,
-                "subtitle": "Test description 0",
-                "parentStepID": 0,
-                "uuid": null,
-                "title": 3,
-                "fileID": 0,
-                "workflowID": 12,
-                "asynchronous": false,
-                "completed": false,
-                "expanded": true,
-                "children": [
-                    {
-                        "stepID": 166,
-                        "orderNumber": 1,
-                        "subtitle": "Test description 1",
-                        "parentStepID": 165,
-                        "uuid": null,
-                        "title": 3,
-                        "fileID": 0,
-                        "workflowID": 12,
-                        "asynchronous": false,
-                        "completed": false,
-                        "expanded": true,
-                        "children": [
-                            {
-                                "stepID": 167,
-                                "orderNumber": 1,
-                                "subtitle": "Test description 2",
-                                "parentStepID": 166,
-                                "uuid": "a99063fd-4322-4514-a380-c4da46abc7ab",
-                                "title": 4,
-                                "fileID": 68,
-                                "workflowID": 12,
-                                "asynchronous": false,
-                                "completed": false,
-                                "expanded": false,
-                                "children": []
-                            },
-                            {
-                                "stepID": 168,
-                                "orderNumber": 2,
-                                "subtitle": "Test description 3",
-                                "parentStepID": 166,
-                                "uuid": "a99063fd-4322-4514-a380-c4da46abc7ab",
-                                "title": 2,
-                                "fileID": 29,
-                                "workflowID": 12,
-                                "asynchronous": false,
-                                "completed": false,
-                                "expanded": false,
-                                "children": []
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    },
       completeStep: {},
     }
   }
 
   componentDidMount() {
     this.getApprovalDescription();
-    this.getWorkflow();
     this.filterStep(this.state.data);
   }
 
@@ -119,29 +39,6 @@ export default class Complete extends Component {
           })
           this.filterStep(response.data);
           console.log(this.state.file);
-        }
-      })
-      .catch(axiosError);
-  }
-
-  getWorkflow() {
-    displayWorkflow = this.state.workflow;
-    console.log(displayWorkflow);
-    const url = window.__env__.API_URL + '/blink/api/workflow/' + displayData.workflowID;
-    axios
-      .get(url, null, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: localStorage.getItem(TOKEN_KEY)
-        }
-      })
-      .then(response => {
-        if (response.status === 200) {
-          console.log(response);
-          this.setState({
-            workflow: response.data
-          })
-          this.filterStep(response.data);
         }
       })
       .catch(axiosError);
@@ -203,9 +100,7 @@ export default class Complete extends Component {
     return (
       <React.Fragment>
       <Card title="Complete">
-        {Object.keys(displayWorkflow).map(key => 
-        <h4 key={key} value={key}>{key.toUpperCase() + ': ' + displayWorkflow[key]}</h4>
-        )}
+        <h4>{"DESCRIPTION: " + displayData.subtitle}</h4>
       </Card>
       <div className="approveButton">
         <Button type="primary" onClick={this.markStepComplete}>
