@@ -71,9 +71,6 @@ const AppRoute = ({
         !authed && isPrivate ? (
           <Redirect to={process.env.PUBLIC_URL + '/login'} />
         ) : (!isPrivate && authed) ||
-          (user && user.signature && requireSignature && authed) ? (
-          <Redirect to={process.env.PUBLIC_URL + '/main-settings'} />
-        ) : (!isPrivate && authed) ||
           (user &&
             user.accessLevelID > AUTH.ADMIN &&
             requireAdmin &&
@@ -94,6 +91,9 @@ const AppRoute = ({
             requireExternal &&
             authed) ? (
           <Redirect to={process.env.PUBLIC_URL + '/dashboard'} />
+        ) : (!isPrivate && authed) ||
+          (user && !user.signature && requireSignature && authed) ? (
+          <Redirect to={process.env.PUBLIC_URL + '/main-settings'} />
         ) : isPrivate ? (
           <NavLayout path={process.env.PUBLIC_URL + location.pathname}>
             <Component {...props} />
