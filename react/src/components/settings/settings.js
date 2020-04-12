@@ -82,7 +82,6 @@ class SettingsForm extends React.Component {
           lName,
           email,
           title,
-          accessLevelID,
           signature,
         } = this.state.user;
         //console.log(signature);
@@ -99,7 +98,6 @@ class SettingsForm extends React.Component {
               lName,
               email,
               title,
-              accessLevelID,
               signature,
             }),
             {
@@ -397,7 +395,7 @@ class SettingsForm extends React.Component {
 
 const Settings = Form.create({ name: 'settings' })(SettingsForm);
 export default connect((state = {}) => ({
-  user: state.user,
+  logged_in_user: state.user,
   user_name: state.user.fName + ' ' + state.user.lName,
 }))(Settings);
 
