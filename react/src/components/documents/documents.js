@@ -1,4 +1,6 @@
-import React from "react";
+import React from 'react';
+import { connect } from 'react-redux';
+
 import {
   Button,
   Modal,
@@ -19,6 +21,7 @@ import { FormBuilder } from "cb-react-forms";
 import ReactToPrint from "react-to-print";
 import { getUser } from "../../utils/api";
 import { axiosError } from "../../utils/axiosError";
+import { IS_INTERNAL } from '../../constants';
 
 const { Option } = Select;
 
@@ -426,4 +429,6 @@ class DocumentsTable extends React.Component {
   }
 }
 
-export default DocumentsTable;
+export default connect((state = {}) => ({
+  authorization_level: state.user && state.user.accessLevelID
+}))(DocumentsTable);
