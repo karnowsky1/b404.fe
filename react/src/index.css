@@ -199,13 +199,27 @@ code {
   width: 35%;
 }
 
+.signatureContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.signatureDiv {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.updateButton {
+  margin-top: 24px;
+}
+
 .nameExtension {
   display: flex;
   flex-direction: row;
 }
 
 #extensionInput {
-  width: 75px
+  width: 75px;
 }
 
 .approveButton {

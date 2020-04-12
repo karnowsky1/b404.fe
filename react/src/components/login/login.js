@@ -18,16 +18,16 @@ class LoginForm extends React.Component {
     this.state = {
       username: '',
       password: '',
-      isLoading: false
+      isLoading: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     message.config({
-      maxCount: 1
+      maxCount: 1,
     });
   }
 
-  handleSubmit = async e => {
+  handleSubmit = async (e) => {
     const { setUser, setIsLoggedIn } = this.props; // set user is coming from props
     // imported setUser is being given to connect, then it's connecting via dispatch
     // the export default connect is what allows me to use it JS
@@ -41,15 +41,15 @@ class LoginForm extends React.Component {
         url,
         qs.stringify({
           username,
-          password: hash(password)
+          password: hash(password),
         }),
         {
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
         }
       )
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           setUser(response.data);
           localStorage.setItem(TOKEN_KEY, response.headers.authorization);
@@ -60,7 +60,7 @@ class LoginForm extends React.Component {
       .catch(axiosError);
   };
 
-  handleChange = e => {
+  handleChange = (e) => {
     const { name, value } = e.target;
     this.setState({ [name]: value });
   };
@@ -71,7 +71,7 @@ class LoginForm extends React.Component {
     const { isLoggedIn } = this.props;
     const gridStyle = {
       width: '50%',
-      height: '100%'
+      height: '100%',
     };
     const { Title } = Typography;
     return isLoggedIn ? (
@@ -96,8 +96,8 @@ class LoginForm extends React.Component {
               {getFieldDecorator('username', {
                 valuePropName: 'username',
                 rules: [
-                  { required: true, message: 'Please input your username!' }
-                ]
+                  { required: true, message: 'Please input your username!' },
+                ],
               })(
                 <Input
                   name="username"
@@ -114,8 +114,8 @@ class LoginForm extends React.Component {
               {getFieldDecorator('password', {
                 valuePropName: 'password',
                 rules: [
-                  { required: true, message: 'Please input your Password!' }
-                ]
+                  { required: true, message: 'Please input your Password!' },
+                ],
               })(
                 <Input
                   name="password"
