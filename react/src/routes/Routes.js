@@ -42,6 +42,7 @@ class Routes extends Component {
             path={process.env.PUBLIC_URL + '/dashboard'}
             component={Dashboard}
             isPrivate
+            requireSignature
           />
           <AppRoute
             exact
@@ -49,6 +50,7 @@ class Routes extends Component {
             component={Documents}
             isPrivate
             requireExternal
+            requireSignature
           />
           <AppRoute
             exact
@@ -56,30 +58,35 @@ class Routes extends Component {
             component={Workflow}
             isPrivate
             requireInternal
+            requireSignature
           />
           <AppRoute
             exact
             path={process.env.PUBLIC_URL + '/approve'}
             component={Approve}
             isPrivate
+            requireSignature
           />
           <AppRoute
             exact
             path={process.env.PUBLIC_URL + '/complete'}
             component={Complete}
             isPrivate
+            requireSignature
           />
           <AppRoute
             exact
             path={process.env.PUBLIC_URL + '/submission'}
             component={Submission}
             isPrivate
+            requireSignature
           />
           <AppRoute
             exact
             path={process.env.PUBLIC_URL + '/upload'}
             component={Uploads}
             isPrivate
+            requireSignature
           />
           <AppRoute
             exact
@@ -87,6 +94,7 @@ class Routes extends Component {
             component={Milestones}
             isPrivate
             requireExternal
+            requireSignature
           />
           <AppRoute
             exact
@@ -100,6 +108,7 @@ class Routes extends Component {
             component={Company}
             isPrivate
             requireAdmin
+            requireSignature
           />
           <AppRoute
             exact
@@ -107,6 +116,7 @@ class Routes extends Component {
             component={People}
             isPrivate
             requireAdmin
+            requireSignature
           />
           {/* <AppRoute exact path="/admin" component={Admin} isPrivate requireAdmin/> */}
           <Redirect to={process.env.PUBLIC_URL + '/dashboard'} />

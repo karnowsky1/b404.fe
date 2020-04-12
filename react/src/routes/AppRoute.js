@@ -18,6 +18,7 @@ const AppRoute = ({
   requireAdmin,
   requireInternal,
   requireExternal,
+  requireSignature,
   isPrivate = false,
   ...rest
 }) => {
@@ -33,10 +34,10 @@ const AppRoute = ({
       axios
         .get(window.__env__.API_URL + `/blink/api/person/id/${uuid}`, {
           headers: {
-            Authorization: token
-          }
+            Authorization: token,
+          },
         })
-        .then(response => {
+        .then((response) => {
           if (response.status === 200) {
             setIsLoggedIn(true);
             setUser(response.data);
@@ -58,7 +59,7 @@ const AppRoute = ({
         height: '100%',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
       }}
     >
       <Spin size="large" />
@@ -66,11 +67,13 @@ const AppRoute = ({
   ) : (
     <Route
       {...rest}
-      render={props =>
+      render={(props) =>
         !authed && isPrivate ? (
           <Redirect to={process.env.PUBLIC_URL + '/login'} />
-        ) : // ) : (!isPrivate && authed) ? (
-        (!isPrivate && authed) ||
+        ) : (!isPrivate && authed) ||
+          (user && user.signature && requireSignature && authed) ? (
+          <Redirect to={process.env.PUBLIC_URL + '/main-settings'} />
+        ) : (!isPrivate && authed) ||
           (user &&
             user.accessLevelID > AUTH.ADMIN &&
             requireAdmin &&

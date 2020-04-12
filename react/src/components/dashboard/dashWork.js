@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { NoContent } from '../../utils/NoContent';
 import {
   noWorkflowsMessageOne,
-  noWorkflowsMessageTwo
+  noWorkflowsMessageTwo,
 } from '../../constants/messages';
 
 class DashWorkflow extends React.Component {
@@ -16,13 +16,13 @@ class DashWorkflow extends React.Component {
       data: [],
       loading: true,
       visible: false,
-      pagination: {}
+      pagination: {},
     };
   }
 
   componentDidMount() {
     this.setState({
-      loading: true
+      loading: true,
     });
     this.fetch();
   }
@@ -33,15 +33,15 @@ class DashWorkflow extends React.Component {
       url: window.__env__.API_URL + '/blink/api/workflow/active',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: localStorage.getItem(TOKEN_KEY)
+        Authorization: localStorage.getItem(TOKEN_KEY),
       },
       response: {
         results: 4,
-        params
+        params,
       },
-      type: 'json'
+      type: 'json',
     })
-      .then(response => {
+      .then((response) => {
         let conf = [];
         for (let entry of response.data) {
           conf.push({
@@ -50,7 +50,7 @@ class DashWorkflow extends React.Component {
             description: entry.description,
             dateC: entry.createdDate,
             dateM: entry.lastUpdatedDate,
-            percentComplete: entry.percentComplete
+            percentComplete: entry.percentComplete,
           });
         }
 
@@ -67,10 +67,10 @@ class DashWorkflow extends React.Component {
         this.setState({
           loading: false,
           data: newConf,
-          pagination: false
+          pagination: false,
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   };
@@ -81,19 +81,19 @@ class DashWorkflow extends React.Component {
         <br />
         <h3>Your Workflows</h3>
         {this.state.data[0] ? (
-          this.state.data.map(record => (
+          this.state.data.map((record) => (
             <div
               style={{
                 display: 'inline-block',
                 padding: '1.2em',
-                textAlign: 'center'
+                textAlign: 'center',
               }}
               key={record.id}
             >
               <Card style={{ width: 265, maxHeight: 300 }}>
                 <Progress
                   type="circle"
-                  percent={record.percentComplete * 100}
+                  percent={Math.floor(record.percentComplete * 100)}
                 />
                 <p />
                 <p>
