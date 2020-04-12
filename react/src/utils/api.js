@@ -104,7 +104,7 @@ export const getUser = () =>
           case 3:
             return true;
           case 4:
-            return true;
+            return false;
           case 5:
             return false;
           default:

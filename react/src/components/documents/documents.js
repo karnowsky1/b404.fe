@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from "react";
+import { connect } from "react-redux";
 
 import {
   Button,
@@ -162,7 +162,6 @@ class DocumentsTable extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.changed !== prevState.changed) {
-
     }
   }
 
@@ -174,19 +173,19 @@ class DocumentsTable extends React.Component {
       beforeUpload(file) {
         state.setState({
           fileName: file.name,
-          extension: file.name.includes('.') ? file.name.split('.').pop() : ""
-        })
+          extension: file.name.includes(".") ? file.name.split(".").pop() : "",
+        });
         getBase64(file).then((data) => {
           if (document.getElementById("nameInput").value === "") {
             message.error("Please provide file name");
             state.setState({
-              fileBase64: data
-            })
+              fileBase64: data,
+            });
             saveFile = file;
           } else {
             state.setState({
-              fileBase64: data
-            })
+              fileBase64: data,
+            });
             saveFile = file;
           }
         });
@@ -270,8 +269,10 @@ class DocumentsTable extends React.Component {
       message.error("Please input the file name");
       return;
     }
-    if (input.includes('.')) {
-      message.error("Don't input extensions into the file name, the system does this automatically");
+    if (input.includes(".")) {
+      message.error(
+        "Don't input extensions into the file name, the system does this automatically"
+      );
       return;
     }
     if (this.state.fileBase64 === "" || null || undefined) {
@@ -307,7 +308,12 @@ class DocumentsTable extends React.Component {
 
   uploadFile(base64, file) {
     let requestObject = {
-      name: this.state.extension === '' ? document.getElementById("nameInput").value.replace(/ /gi, "") : document.getElementById("nameInput").value.replace(/ /gi, "") + '.' + this.state.extension,
+      name:
+        this.state.extension === ""
+          ? document.getElementById("nameInput").value.replace(/ /gi, "")
+          : document.getElementById("nameInput").value.replace(/ /gi, "") +
+            "." +
+            this.state.extension,
       file: base64,
       confidential: checked,
     };
@@ -336,12 +342,14 @@ class DocumentsTable extends React.Component {
   }
 
   handleChange = (e) => {
-    if (!e.target.value.includes('.')) {
+    if (!e.target.value.includes(".")) {
       this.setState({
         fileName: e.target.value,
       });
     } else {
-      message.error("Don't input extensions into the file name, the system does this automatically");
+      message.error(
+        "Don't input extensions into the file name, the system does this automatically"
+      );
     }
   };
 
@@ -352,7 +360,7 @@ class DocumentsTable extends React.Component {
           <h1>Documents</h1>
           <Tabs defaultActiveKey="1">
             <TabPane tab="Documents" key="1">
-              <AssignTable buttonVisible={this.state.buttonVisible}/>
+              <AssignTable buttonVisible={this.state.buttonVisible} />
             </TabPane>
             {this.state.buttonVisible && (
               <TabPane tab="Template Documents" key="2">
@@ -362,7 +370,7 @@ class DocumentsTable extends React.Component {
           </Tabs>
           {this.state.buttonVisible && (
             <Button type="primary" onClick={this.showModal}>
-              + Create
+              + Upload Template
             </Button>
           )}
         </div>
@@ -407,13 +415,18 @@ class DocumentsTable extends React.Component {
             title="Upload Document"
           >
             <Card>
-              <Input id="nameInput" value={this.state.fileName.split('.').shift()}
-                onChange={this.handleChange} placeholder="Document name..." />
+              <Input
+                id="nameInput"
+                value={this.state.fileName.split(".").shift()}
+                onChange={this.handleChange}
+                placeholder="Document name..."
+              />
               <p></p>
               <Checkbox onChange={this.onChange}>Confidential</Checkbox>
               <p></p>
-              <Dragger {...this.returnUploadProps(this)}
-                      fileList={this.state.fileList}
+              <Dragger
+                {...this.returnUploadProps(this)}
+                fileList={this.state.fileList}
               >
                 <p className="ant-upload-drag-icon"></p>
                 <p className="ant-upload-text">
@@ -429,5 +442,5 @@ class DocumentsTable extends React.Component {
 }
 
 export default connect((state = {}) => ({
-  authorization_level: state.user && state.user.accessLevelID
+  authorization_level: state.user && state.user.accessLevelID,
 }))(DocumentsTable);
