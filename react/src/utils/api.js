@@ -18,6 +18,13 @@ export const getPerson = (uuid) =>
     }
   );
 
+export const getSignature = (uuid) =>
+  axios.get(window.__env__.API_URL + `/blink/api/person/signature/id/${uuid}`, {
+    headers: {
+      Authorization: localStorage.getItem('token'),
+    },
+  });
+
 export const getPeopleByCompany = (uuid) =>
   axios.get(window.__env__.API_URL + `/blink/api/company/people/${uuid}`, {
     headers: {

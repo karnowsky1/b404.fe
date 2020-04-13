@@ -8,6 +8,9 @@ import { hash } from './../../utils/hash';
 import SignatureCanvas from 'react-signature-canvas';
 
 import { passwordRegex } from '../../utils/validators';
+import { getSignature } from '../../utils/api';
+import { axiosError } from '../../utils/axiosError';
+import { setUser } from '../../actions/user';
 
 let currentComponent;
 
@@ -107,10 +110,15 @@ class SettingsForm extends React.Component {
               },
             }
           )
-          .then((response) => {
+          .then(async (response) => {
             if (response.status === 200) {
               message.success('Data saved successfully');
               this.setState({ loading: false });
+              await getSignature(this.props.logged_in_user.uuid)
+                .then((response) => {
+                  response.status === 200 && this.props.setUser(response.data);
+                })
+                .catch(axiosError);
             }
           })
           .catch(function (error) {
@@ -394,11 +402,15 @@ class SettingsForm extends React.Component {
 }
 
 const Settings = Form.create({ name: 'settings' })(SettingsForm);
-export default connect((state = {}) => ({
-  logged_in_user: state.user,
-  user_name: state.user.fName + ' ' + state.user.lName,
-}))(Settings);
 
+export default connect(
+  (state = {}) => ({
+    logged_in_user: state.user,
+    isLoggedIn: state.isLoggedIn,
+    user_name: state.user.fName + ' ' + state.user.lName,
+  }),
+  { setUser }
+)(Settings);
 // get actions as props when you connect them
 // you get redux state objects
 // passing it into login as a prop
