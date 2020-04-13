@@ -32,12 +32,22 @@ export const getPeopleByCompany = (uuid) =>
     },
   });
 
-export const getMilestone = (uuid) =>
-  axios.get(window.__env__.API_URL + `/blink/api/milestone/${uuid}`, {
+export const getMilestone = (statusOrId) =>
+  axios.get(window.__env__.API_URL + `/blink/api/milestone/${statusOrId}`, {
     headers: {
       Authorization: localStorage.getItem('token'),
     },
   });
+
+export const getWorkflowByMilestoneId = (milestoneId) =>
+  axios.get(
+    window.__env__.API_URL + `/blink/api/workflow/milestone/${milestoneId}`,
+    {
+      headers: {
+        Authorization: localStorage.getItem('token'),
+      },
+    }
+  );
 
 export const getWorkflowTemplates = () =>
   axios.get(window.__env__.API_URL + `/blink/api/workflow/templates`, {

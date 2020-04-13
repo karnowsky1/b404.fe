@@ -13,13 +13,13 @@ class Pending extends React.Component {
       data: [],
       loading: true,
       visible: false,
-      pagination: {}
+      pagination: {},
     };
   }
 
   componentDidMount() {
     this.setState({
-      loading: true
+      loading: true,
     });
     this.fetch();
   }
@@ -30,15 +30,15 @@ class Pending extends React.Component {
       url: window.__env__.API_URL + '/blink/api/workflow/pending',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: localStorage.getItem(TOKEN_KEY)
+        Authorization: localStorage.getItem(TOKEN_KEY),
       },
       response: {
         results: 4,
-        params
+        params,
       },
-      type: 'json'
+      type: 'json',
     })
-      .then(response => {
+      .then((response) => {
         console.log(response);
         let conf = [];
         for (let entry of response.data) {
@@ -47,7 +47,7 @@ class Pending extends React.Component {
             name: entry.subtitle,
             title: entry.title,
             workflowID: entry.workflowID,
-            fileID: entry.fileID
+            fileID: entry.fileID,
           });
         }
 
@@ -64,10 +64,10 @@ class Pending extends React.Component {
         this.setState({
           loading: false,
           data: newConf,
-          pagination
+          pagination,
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   };
@@ -75,7 +75,7 @@ class Pending extends React.Component {
   navigate(id) {
     let action;
     //console.log(id);
-    this.state.data.forEach(element => {
+    this.state.data.forEach((element) => {
       if (element.id === id) {
         localStorage.setItem('stepId', element.id);
         if (element.fileID !== 0) {
@@ -108,7 +108,7 @@ class Pending extends React.Component {
       <React.Fragment>
         <h3>Pending Tasks</h3>
         {this.state.data[0] ? (
-          this.state.data.map(record => (
+          this.state.data.map((record) => (
             <div
               style={{ display: 'inline-block', padding: '2em' }}
               key={record.id}
@@ -121,7 +121,7 @@ class Pending extends React.Component {
                     shape="round"
                     size="small"
                     style={{ float: 'right' }}
-                    onClick={e => this.navigate(record.id)}
+                    onClick={(e) => this.navigate(record.id)}
                   >
                     <Link to={this.navigate(record.id)}>View</Link>
                   </Button>

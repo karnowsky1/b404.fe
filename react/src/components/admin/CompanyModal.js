@@ -5,31 +5,30 @@ import React from 'react';
 import { required } from '../../utils/validators';
 
 const defaults = {
-  name: ''
+  name: '',
 };
 
 export const CompanyModal = ({
   initialValues = defaults,
   onSubmit,
   onCancel,
-  title
+  title,
 }) => (
   <Modal title={title} visible footer={[]} onCancel={onCancel}>
     <Formik
       initialValues={initialValues}
       onSubmit={(values, { setSubmitting }) => {
-        onSubmit(values)
-          setSubmitting(false);
+        onSubmit(values);
+        setSubmitting(false);
       }}
     >
       {({ handleSubmit }) => (
         <Form
-          onSubmit={e => {
+          onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
           }}
         >
-          
           <p>Company Name *</p>
           <Form.Item name="name" validate={required}>
             <Input name="name" placeholder="Company Name" />

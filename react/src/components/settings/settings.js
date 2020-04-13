@@ -114,11 +114,7 @@ class SettingsForm extends React.Component {
             if (response.status === 200) {
               message.success('Data saved successfully');
               this.setState({ loading: false });
-              await getSignature(this.props.logged_in_user.uuid)
-                .then((response) => {
-                  response.status === 200 && this.props.setUser(response.data);
-                })
-                .catch(axiosError);
+              this.props.setUser(response.data);
             }
           })
           .catch(function (error) {

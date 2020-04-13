@@ -8,7 +8,7 @@ import {
   Tag,
   Divider,
   Modal,
-  message
+  message,
 } from 'antd';
 import axios from 'axios';
 import qs from 'qs';
@@ -22,24 +22,24 @@ const { confirm } = Modal;
 const optionsR = [
   {
     value: 1,
-    label: 'Admin'
+    label: 'Admin',
   },
   {
     value: 2,
-    label: 'Director'
+    label: 'Director',
   },
   {
     value: 3,
-    label: 'Coach'
+    label: 'Coach',
   },
   {
     value: 4,
-    label: 'Customer'
+    label: 'Customer',
   },
   {
     value: 5,
-    label: 'Provider'
-  }
+    label: 'Provider',
+  },
 ];
 
 class AdminTable extends React.Component {
@@ -52,7 +52,7 @@ class AdminTable extends React.Component {
     addvisible: false,
     editvisible: false,
     companyOptions: [],
-    pagination: {}
+    pagination: {},
   };
 
   constructor(props) {
@@ -63,30 +63,30 @@ class AdminTable extends React.Component {
         title: 'Company',
         dataIndex: 'companies',
         key: 'companies',
-        ellipsis: true
+        ellipsis: true,
       },
       {
         title: 'Role',
         dataIndex: 'accessLevelID',
         key: 'accessLevelID',
-        render: accessLevelID => (
+        render: (accessLevelID) => (
           <React.Fragment>
             <Tag color={this.color(accessLevelID)}>
               {this.name(accessLevelID)}
             </Tag>
           </React.Fragment>
-        )
+        ),
       },
       {
         title: 'Actions',
         dataIndex: '',
         key: 'x',
-        render: record => (
+        render: (record) => (
           <React.Fragment>
             <Button
               type="link"
               size="small"
-              onClick={e => this.showEditModal(record)}
+              onClick={(e) => this.showEditModal(record)}
             >
               Edit
             </Button>
@@ -94,13 +94,13 @@ class AdminTable extends React.Component {
             <Button
               type="link"
               size="small"
-              onClick={e => this.showDeleteConfirm(e, record.id)}
+              onClick={(e) => this.showDeleteConfirm(e, record.id)}
             >
               Delete
             </Button>
           </React.Fragment>
-        )
-      }
+        ),
+      },
     ];
   }
 
@@ -155,38 +155,38 @@ class AdminTable extends React.Component {
   componentDidMount() {
     this.fetch();
     getAllCompanies()
-      .then(response => {
+      .then((response) => {
         this.setState({
-          companyOptions: response.data.map(company => ({
+          companyOptions: response.data.map((company) => ({
             value: company.companyID,
             key: company.companyID,
-            label: company.companyName
-          }))
+            label: company.companyName,
+          })),
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   }
 
   showAddModal = () => {
     this.setState({
-      addvisible: true
+      addvisible: true,
     });
   };
 
-  showEditModal = async record => {
+  showEditModal = async (record) => {
     await getPerson(record.id)
-      .then(response => {
+      .then((response) => {
         // console.log(response.data)
         // console.log(response.data.companies)
         this.setState({
-          editingUserCompanies: response.data.companies.map(company => {
+          editingUserCompanies: response.data.companies.map((company) => {
             return company.companyID;
-          })
+          }),
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
     this.setState({
@@ -197,35 +197,35 @@ class AdminTable extends React.Component {
         email: record.email,
         title: record.title,
         companies: this.state.editingUserCompanies,
-        accessLevelID: record.accessLevelID
+        accessLevelID: record.accessLevelID,
       },
       editingUserID: record.id,
       previousJobIsEmpty: record.title === '',
-      editvisible: true
+      editvisible: true,
     });
     // console.log('this is the record')
     // console.log(record)
   };
 
-  onAddSubmit = async values => {
+  onAddSubmit = async (values) => {
     // console.log(values);
-    if (!this.state.data.some(user => user.username === values.username)) {
+    if (!this.state.data.some((user) => user.username === values.username)) {
       await axios({
         method: 'post',
         url: window.__env__.API_URL + '/blink/api/person',
         headers: {
           Authorization: localStorage.getItem('token'),
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         data: qs.stringify({
           ...values,
           // password: JSON.parse(sjcl.encrypt("password",values.password)).ct
-          password: hash(values.password)
+          password: hash(values.password),
         }),
         // this is already a big object coming from formik
-        type: 'json'
+        type: 'json',
       })
-        .then(response => {
+        .then((response) => {
           // console.log(values.company)
           this.fetch();
           if (response.status === 200 && values.companies) {
@@ -237,15 +237,15 @@ class AdminTable extends React.Component {
                 url: window.__env__.API_URL + '/blink/api/company/person/add',
                 headers: {
                   Authorization: localStorage.getItem('token'),
-                  'Content-Type': 'application/x-www-form-urlencoded'
+                  'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 data: qs.stringify({
                   companyID: company,
-                  personID: response.data.uuid
+                  personID: response.data.uuid,
                 }),
                 // making query string with key and value, that's why we're wrapping it in an object and using it this way
                 // object names need to match variables from API endpoint
-                type: 'json'
+                type: 'json',
               })
                 .then(() => {
                   this.fetch();
@@ -256,7 +256,7 @@ class AdminTable extends React.Component {
         })
         .catch(axiosError);
       this.setState({
-        addvisible: false
+        addvisible: false,
       });
     } else {
       message.destroy();
@@ -276,10 +276,10 @@ class AdminTable extends React.Component {
         axios
           .delete(window.__env__.API_URL + '/blink/api/person/id/' + id, {
             headers: {
-              Authorization: localStorage.getItem('token')
-            }
+              Authorization: localStorage.getItem('token'),
+            },
           })
-          .then(response => {
+          .then((response) => {
             if (response.status === 200) {
               // console.log('works');
               fetch();
@@ -290,25 +290,25 @@ class AdminTable extends React.Component {
       },
       onCancel() {
         // console.log('Cancel');
-      }
+      },
     });
   };
 
-  handleAddCancel = e => {
+  handleAddCancel = (e) => {
     // console.log(e);
     this.setState({
-      addvisible: false
+      addvisible: false,
     });
   };
 
-  handleEditCancel = e => {
+  handleEditCancel = (e) => {
     // console.log(e);
     this.setState({
-      editvisible: false
+      editvisible: false,
     });
   };
 
-  onEditSubmit = async values => {
+  onEditSubmit = async (values) => {
     // console.log("These are the values")
     // console.log(values)
     if (!this.state.previousJobIsEmpty && values.title === '') {
@@ -319,7 +319,7 @@ class AdminTable extends React.Component {
       url: window.__env__.API_URL + '/blink/api/person',
       headers: {
         Authorization: localStorage.getItem('token'),
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       data: qs.stringify({
         id: this.state.editingUserID,
@@ -329,23 +329,23 @@ class AdminTable extends React.Component {
         lName: values.lName,
         email: values.email,
         title: values.title,
-        accessLevelID: values.accessLevelID
+        accessLevelID: values.accessLevelID,
       }),
-      type: 'json'
-    }).then(async response => {
+      type: 'json',
+    }).then(async (response) => {
       for (let company of this.state.editingUserCompanies) {
         await axios({
           method: 'post',
           url: window.__env__.API_URL + '/blink/api/company/person/delete',
           headers: {
             Authorization: localStorage.getItem('token'),
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
           },
           data: qs.stringify({
             companyID: company,
-            personID: response.data.uuid
+            personID: response.data.uuid,
           }),
-          type: 'json'
+          type: 'json',
         })
           .then(() => {
             this.fetch();
@@ -360,13 +360,13 @@ class AdminTable extends React.Component {
             url: window.__env__.API_URL + '/blink/api/company/person/add',
             headers: {
               Authorization: localStorage.getItem('token'),
-              'Content-Type': 'application/x-www-form-urlencoded'
+              'Content-Type': 'application/x-www-form-urlencoded',
             },
             data: qs.stringify({
               companyID: company,
-              personID: response.data.uuid
+              personID: response.data.uuid,
             }),
-            type: 'json'
+            type: 'json',
           })
             .then(() => {
               this.fetch();
@@ -379,7 +379,7 @@ class AdminTable extends React.Component {
       }
     });
     this.setState({
-      editvisible: false
+      editvisible: false,
     });
     this.fetch();
   };
@@ -391,11 +391,11 @@ class AdminTable extends React.Component {
       headers: { Authorization: localStorage.getItem('token') },
       response: {
         results: 4,
-        params
+        params,
       },
-      type: 'json'
+      type: 'json',
     })
-      .then(response => {
+      .then((response) => {
         let conf = [];
         for (let entry of response.data) {
           conf.push({
@@ -408,10 +408,10 @@ class AdminTable extends React.Component {
             email: entry.email,
             title: entry.title,
             companies: entry.companies
-              .map(company => company.companyName)
+              .map((company) => company.companyName)
               .join(', '),
             // entry.companies.length > 0 ? entry.companies[0].companyName : '',
-            accessLevelID: entry.accessLevelID
+            accessLevelID: entry.accessLevelID,
           });
         }
         const pagination = { ...this.state.pagination };
@@ -419,10 +419,10 @@ class AdminTable extends React.Component {
         this.setState({
           loading: false,
           data: conf,
-          pagination
+          pagination,
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   };
@@ -435,8 +435,8 @@ class AdminTable extends React.Component {
             <h3 className="headers">Users</h3>
             <Table
               columns={this.columns}
-              rowKey={record => record.id}
-              expandedRowRender={record => (
+              rowKey={(record) => record.id}
+              expandedRowRender={(record) => (
                 <Row key={record.key}>
                   <Col span={6}>
                     <p>

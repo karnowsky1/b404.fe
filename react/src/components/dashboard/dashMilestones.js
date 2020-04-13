@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { NoContent } from '../../utils/NoContent';
 import {
   noMilestoneUserMessageOne,
-  noMilestoneUserMessageTwo
+  noMilestoneUserMessageTwo,
 } from '../../constants/messages';
 
 class DashMilestones extends React.Component {
@@ -16,13 +16,13 @@ class DashMilestones extends React.Component {
       data: [],
       loading: true,
       visible: false,
-      pagination: {}
+      pagination: {},
     };
   }
 
   componentDidMount() {
     this.setState({
-      loading: true
+      loading: true,
     });
     this.fetch();
   }
@@ -33,22 +33,22 @@ class DashMilestones extends React.Component {
       url: window.__env__.API_URL + '/blink/api/milestone/active',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: localStorage.getItem(TOKEN_KEY)
+        Authorization: localStorage.getItem(TOKEN_KEY),
       },
       response: {
         results: 4,
-        params
+        params,
       },
-      type: 'json'
+      type: 'json',
     })
-      .then(response => {
+      .then((response) => {
         let conf = [];
         for (let entry of response.data) {
           conf.push({
             id: entry.mileStoneID,
             name: entry.name,
             date: entry.createdDate,
-            company: entry.company.companyName
+            company: entry.company.companyName,
           });
         }
 
@@ -65,10 +65,10 @@ class DashMilestones extends React.Component {
         this.setState({
           loading: false,
           data: newConf,
-          pagination: false
+          pagination: false,
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   };
@@ -78,7 +78,7 @@ class DashMilestones extends React.Component {
       <React.Fragment>
         <h3>Your Milestones</h3>
         {this.state.data[0] ? (
-          this.state.data.map(record => (
+          this.state.data.map((record) => (
             <div
               style={{ display: 'inline-block', padding: '1.2em' }}
               key={record.id}

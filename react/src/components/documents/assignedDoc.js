@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Table,
   Button,
@@ -10,10 +10,10 @@ import {
   Card,
   Input,
   Checkbox,
-} from "antd";
-import axios from "axios";
-import { TOKEN_KEY /*, UUID_KEY*/ } from "../../constants/auth";
-import { axiosError } from "../../utils/axiosError";
+} from 'antd';
+import axios from 'axios';
+import { TOKEN_KEY /*, UUID_KEY*/ } from '../../constants/auth';
+import { axiosError } from '../../utils/axiosError';
 
 const { confirm } = Modal;
 
@@ -43,53 +43,57 @@ class AssignTable extends React.Component {
       loading: true,
       download: [],
       uploadVisible: false,
-      fileName: "",
+      fileName: '',
       checked: false,
-      fileId: "",
-      fileBase64: "",
+      fileId: '',
+      fileBase64: '',
       fileList: [],
       changed: false,
-      extension: ""
+      extension: '',
     };
     this.onCheckboxChange = this.onCheckboxChange.bind(this);
     this.returnUploadProps = this.returnUploadProps.bind(this);
     this.showDeleteConfirm = this.showDeleteConfirm.bind(this);
     this.columns = [
       {
-        title: "Document Name",
-        dataIndex: "name",
-        key: "name",
+        title: 'Document Name',
+        dataIndex: 'name',
+        key: 'name',
       },
       {
-        title: "File Type",
+        title: 'File Type',
         dataIndex: this.state.data,
-        key: "y",
+        key: 'y',
         render: (file) => (
-          <Tag color={this.color(this.getMime(file.fileC).split("/").shift())}>
+          <Tag color={this.color(this.getMime(file.fileC).split('/').shift())}>
             {this.getMime(file.fileC) === null
-              ? "N/A"
+              ? 'N/A'
               : this.getMime(file.fileC)}
           </Tag>
         ),
       },
       {
-        title: "Confidential",
-        dataIndex: "confidental",
-        key: "confidental",
+        title: 'Confidential',
+        dataIndex: 'confidental',
+        key: 'confidental',
         render: (confidental) => {
-          return confidental ? "Yes" : "No";
+          return confidental ? 'Yes' : 'No';
         },
       },
       {
-        title: "Actions",
+        title: 'Actions',
         dataIndex: this.state.data,
-        key: "x",
+        key: 'x',
         render: (file) => (
           <React.Fragment>
             <a
-              style={{ color: "#f06f32" }}
+              style={{ color: '#f06f32' }}
               href={URL.createObjectURL(this.dataURItoBlob(file.fileC))}
-              download={file.name.includes('.') ? file.name : file.name + '.' + file.extension}
+              download={
+                file.name.includes('.')
+                  ? file.name
+                  : file.name + '.' + file.extension
+              }
             >
               Download
             </a>
@@ -127,8 +131,8 @@ class AssignTable extends React.Component {
   }
 
   dataURItoBlob(dataURI) {
-    var mime = dataURI.split(",")[0].split(":")[1].split(";")[0];
-    var binary = atob(dataURI.split(",")[1]);
+    var mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    var binary = atob(dataURI.split(',')[1]);
     var array = [];
     for (var i = 0; i < binary.length; i++) {
       array.push(binary.charCodeAt(i));
@@ -137,42 +141,42 @@ class AssignTable extends React.Component {
   }
 
   getMime(dataURI) {
-    var mime = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    var mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
     return mime;
   }
 
   color(dataC) {
-    let color = "";
+    let color = '';
     switch (dataC) {
-      case "file":
-        color = "geekblue";
+      case 'file':
+        color = 'geekblue';
         break;
-      case "document":
-        color = "green";
+      case 'document':
+        color = 'green';
         break;
-      case "image":
-        color = "purple";
+      case 'image':
+        color = 'purple';
         break;
-      case "video":
-        color = "sandybrown";
+      case 'video':
+        color = 'sandybrown';
         break;
-      case "executable":
-        color = "springgreen";
+      case 'executable':
+        color = 'springgreen';
         break;
-      case "archive":
-        color = "aquamarine";
+      case 'archive':
+        color = 'aquamarine';
         break;
-      case "N/A":
-        color = "geekblue";
+      case 'N/A':
+        color = 'geekblue';
         break;
       default:
-        color = "geekblue";
+        color = 'geekblue';
     }
     return color;
   }
 
   base64ToBlob(file) {
-    var pos = file.indexOf(";base64,");
+    var pos = file.indexOf(';base64,');
     var type = file.substring(5, pos);
     var b64 = file.substr(pos + 8);
 
@@ -202,16 +206,16 @@ class AssignTable extends React.Component {
 
   showDeleteConfirm = (e, id, state) => {
     confirm({
-      title: "Are you sure delete this document?",
-      content: "If you delete this document it will become unusable!",
-      okText: "Yes",
-      okType: "danger",
-      cancelText: "No",
+      title: 'Are you sure delete this document?',
+      content: 'If you delete this document it will become unusable!',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
       onOk() {
         axios
-          .delete(window.__env__.API_URL + "/blink/api/file/" + id, {
+          .delete(window.__env__.API_URL + '/blink/api/file/' + id, {
             headers: {
-              Authorization: localStorage.getItem("token"),
+              Authorization: localStorage.getItem('token'),
             },
           })
           .then((response) => {
@@ -234,20 +238,20 @@ class AssignTable extends React.Component {
   fetch = async (params = {}) => {
     this.setState({
       loading: true,
-      changed: false
+      changed: false,
     });
     await axios({
-      method: "get",
-      url: window.__env__.API_URL + "/blink/api/file/concrete",
+      method: 'get',
+      url: window.__env__.API_URL + '/blink/api/file/concrete',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: localStorage.getItem(TOKEN_KEY),
       },
       response: {
         results: 4,
         params,
       },
-      type: "json",
+      type: 'json',
     })
       .then((response) => {
         console.log(response.data);
@@ -259,7 +263,9 @@ class AssignTable extends React.Component {
             fileC: entry.file,
             confidental: entry.confidential,
             stepID: entry.stepID,
-            extension: entry.name.includes('.') ? entry.name.split('.').pop() : ""
+            extension: entry.name.includes('.')
+              ? entry.name.split('.').pop()
+              : '',
           });
         }
         const pagination = { ...this.state.pagination };
@@ -285,14 +291,14 @@ class AssignTable extends React.Component {
       : this.setState({ checked: false });
     this.setState({
       fileName: fileName,
-      extension: fileName.includes('.') ? fileName.split('.').pop() : "",
+      extension: fileName.includes('.') ? fileName.split('.').pop() : '',
       fileId: id,
       fileBase64: base64String,
       fileList: [
         {
-          uid: "1",
+          uid: '1',
           name: fileName,
-          status: "done",
+          status: 'done',
         },
       ],
     });
@@ -304,7 +310,9 @@ class AssignTable extends React.Component {
         fileName: e.target.value,
       });
     } else {
-      message.error("Don't input extensions into the file name, the system does this automatically");
+      message.error(
+        "Don't input extensions into the file name, the system does this automatically"
+      );
     }
   };
 
@@ -312,13 +320,13 @@ class AssignTable extends React.Component {
     console.log(this.state.fileBase64);
     console.log(saveFile);
     console.log(e);
-    var input = document.getElementById("nameInput").value;
-    if (input === "" || null || undefined) {
-      message.error("Please input the file name");
+    var input = document.getElementById('nameInput').value;
+    if (input === '' || null || undefined) {
+      message.error('Please input the file name');
       return;
     }
-    if (this.state.fileBase64 === undefined || null || "") {
-      message.error("Please provide a file");
+    if (this.state.fileBase64 === undefined || null || '') {
+      message.error('Please provide a file');
       return;
     }
     this.uploadFile(this.state.fileBase64, saveFile);
@@ -336,26 +344,29 @@ class AssignTable extends React.Component {
   };
 
   uploadFile(base64, file) {
-    console.log(base64)
+    console.log(base64);
     let requestObject = {
       fileID: this.state.fileId,
-      name: document.getElementById("nameInput").value.includes('.') ? document.getElementById("nameInput").value.replace(/ /gi, "") : document.getElementById("nameInput").value.replace(/ /gi, "") + (this.state.extension === '' ? '' : '.' + this.state.extension),
+      name: document.getElementById('nameInput').value.includes('.')
+        ? document.getElementById('nameInput').value.replace(/ /gi, '')
+        : document.getElementById('nameInput').value.replace(/ /gi, '') +
+          (this.state.extension === '' ? '' : '.' + this.state.extension),
       file: base64 === undefined ? this.state.fileBase64 : base64,
       confidential: this.state.checked,
     };
 
     console.log(requestObject);
-    const url = window.__env__.API_URL + "/blink/api/file";
+    const url = window.__env__.API_URL + '/blink/api/file';
     axios
       .put(url, requestObject, {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: localStorage.getItem(TOKEN_KEY),
         },
       })
       .then((response) => {
         if (response.status === 200) {
-          message.success("Data saved successfully");
+          message.success('Data saved successfully');
         }
       })
       .catch(axiosError);
@@ -363,27 +374,27 @@ class AssignTable extends React.Component {
 
   returnUploadProps(state) {
     var propsUpload = {
-      name: "file",
+      name: 'file',
       multiple: false,
-      action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
       beforeUpload(file) {
         console.log(file);
         state.setState({
           fileName: file.name,
-          extension: file.name.includes('.') ? file.name.split('.').pop() : ""
-        })
+          extension: file.name.includes('.') ? file.name.split('.').pop() : '',
+        });
         console.log(state);
         getBase64(file).then((data) => {
-          if (document.getElementById("nameInput").value === "") {
-            message.error("Please provide file name");
+          if (document.getElementById('nameInput').value === '') {
+            message.error('Please provide file name');
             state.setState({
-              fileBase64: data
-            })
+              fileBase64: data,
+            });
             saveFile = file;
           } else {
             state.setState({
-              fileBase64: data
-            })
+              fileBase64: data,
+            });
             saveFile = file;
           }
         });
@@ -429,18 +440,18 @@ class AssignTable extends React.Component {
           >
             <Card>
               <div className="nameExtension">
-              <Input
-                id="nameInput"
-                placeholder="Document name..."
-                value={this.state.fileName.split('.').shift()}
-                onChange={this.handleChange}
-              />
-              <Input
-                id="extensionInput"
-                placeholder=""
-                value={this.state.extension}
-                disabled
-              />
+                <Input
+                  id="nameInput"
+                  placeholder="Document name..."
+                  value={this.state.fileName.split('.').shift()}
+                  onChange={this.handleChange}
+                />
+                <Input
+                  id="extensionInput"
+                  placeholder=""
+                  value={this.state.extension}
+                  disabled
+                />
               </div>
               <p></p>
               <Checkbox

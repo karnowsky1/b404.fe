@@ -13,7 +13,7 @@ const defaults = {
   description: '',
   companyID: undefined,
   startDate: null,
-  deliveryDate: null
+  deliveryDate: null,
 };
 
 const MilestoneModalForm = ({
@@ -23,13 +23,13 @@ const MilestoneModalForm = ({
   companies,
   title,
   isAddModal,
-  form
+  form,
 }) => {
   const [startDate, setStartDate] = useState(initialValues.startDate);
   const [endDate, setEndDate] = useState(initialValues.deliveryDate);
   const [failedSubmit, setFailedSubmit] = useState({
     startDate: false,
-    endDate: false
+    endDate: false,
   });
 
   return (
@@ -42,7 +42,7 @@ const MilestoneModalForm = ({
             onSubmit({
               ...values,
               startDate: startDate.format(SEND_DATE_FORMAT),
-              deliveryDate: endDate.format(SEND_DATE_FORMAT)
+              deliveryDate: endDate.format(SEND_DATE_FORMAT),
             }); // onSubmit passed from props
           }
           setSubmitting(false);
@@ -50,12 +50,12 @@ const MilestoneModalForm = ({
       >
         {({ handleSubmit }) => (
           <Form
-            onSubmit={e => {
+            onSubmit={(e) => {
               e.preventDefault();
               if (!startDate || !endDate) {
                 setFailedSubmit({
                   startDate: !startDate,
-                  endDate: !endDate
+                  endDate: !endDate,
                 });
               }
               handleSubmit();

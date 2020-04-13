@@ -6,11 +6,11 @@ export class DateRange extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      endOpen: false
+      endOpen: false,
     };
   }
 
-  disabledStartDate = startValue => {
+  disabledStartDate = (startValue) => {
     const { endDate } = this.props;
     if (!startValue || !endDate) {
       return false;
@@ -18,7 +18,7 @@ export class DateRange extends React.Component {
     return startValue.valueOf() > endDate.valueOf();
   };
 
-  disabledEndDate = endValue => {
+  disabledEndDate = (endValue) => {
     const { startDate } = this.props;
     if (!endValue || !startDate) {
       return false;
@@ -26,13 +26,13 @@ export class DateRange extends React.Component {
     return endValue.valueOf() <= startDate.valueOf();
   };
 
-  handleStartOpenChange = open => {
+  handleStartOpenChange = (open) => {
     if (!open) {
       this.setState({ endOpen: true });
     }
   };
 
-  handleEndOpenChange = open => {
+  handleEndOpenChange = (open) => {
     this.setState({ endOpen: open });
   };
 
@@ -44,7 +44,7 @@ export class DateRange extends React.Component {
       setStartDate,
       setEndDate,
       failedSubmit,
-      setFailedSubmit
+      setFailedSubmit,
     } = this.props;
 
     return (
@@ -67,10 +67,10 @@ export class DateRange extends React.Component {
               format={SEND_DATE_FORMAT}
               value={startDate}
               placeholder="Start"
-              onChange={date => {
+              onChange={(date) => {
                 setFailedSubmit({
                   ...failedSubmit,
-                  startDate: false
+                  startDate: false,
                 });
                 setStartDate(date);
               }}
@@ -96,10 +96,10 @@ export class DateRange extends React.Component {
               format={SEND_DATE_FORMAT}
               value={endDate}
               placeholder="End"
-              onChange={date => {
+              onChange={(date) => {
                 setFailedSubmit({
                   ...failedSubmit,
-                  endDate: false
+                  endDate: false,
                 });
                 setEndDate(date);
               }}

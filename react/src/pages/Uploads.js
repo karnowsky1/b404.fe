@@ -13,7 +13,7 @@ function getBase64(file) {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
+    reader.onerror = (error) => reject(error);
   });
 }
 
@@ -25,10 +25,10 @@ function markStepComplete() {
   axios
     .put(url, null, {
       headers: {
-        Authorization: localStorage.getItem(TOKEN_KEY)
-      }
+        Authorization: localStorage.getItem(TOKEN_KEY),
+      },
     })
-    .then(response => {
+    .then((response) => {
       if (response.status === 200) {
         window.location.href = '/dashboard';
       }
@@ -37,19 +37,18 @@ function markStepComplete() {
 }
 
 export default class Uploads extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
       stepId: localStorage.getItem('stepId'),
       fileId: localStorage.getItem('fileId'),
       file: {},
-      fileName: "",
-      fileBase64: "",
+      fileName: '',
+      fileBase64: '',
       fileList: [],
-      extension: "",
-      downloadHidden: false
-    }
+      extension: '',
+      downloadHidden: false,
+    };
 
     this.returnUploadProps = this.returnUploadProps.bind(this);
   }
@@ -61,25 +60,25 @@ export default class Uploads extends Component {
   uploadFile(base64, file) {
     console.log(file);
     console.log(base64);
-  
+
     let requestObject = {
       fileID: parseInt(localStorage.getItem('fileId')),
       stepID: parseInt(localStorage.getItem('stepId')),
       name: file.name,
-      file: base64
+      file: base64,
     };
 
-    console.log(requestObject)
-  
+    console.log(requestObject);
+
     const url = window.__env__.API_URL + '/blink/api/file';
     axios
       .put(url, requestObject, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: localStorage.getItem(TOKEN_KEY)
-        }
+          Authorization: localStorage.getItem(TOKEN_KEY),
+        },
       })
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           message.success('Data saved successfully');
           markStepComplete();
@@ -91,55 +90,63 @@ export default class Uploads extends Component {
   fetch = (params = {}) => {
     axios({
       method: 'get',
-      url: window.__env__.API_URL + '/blink/api/file/id/' + localStorage.getItem('fileId'),
+      url:
+        window.__env__.API_URL +
+        '/blink/api/file/id/' +
+        localStorage.getItem('fileId'),
       headers: {
         'Content-Type': 'application/json',
-        Authorization: localStorage.getItem(TOKEN_KEY)
+        Authorization: localStorage.getItem(TOKEN_KEY),
       },
       response: {
         results: 4,
-        params
+        params,
       },
-      type: 'json'
+      type: 'json',
     })
-      .then(response => {
+      .then((response) => {
         console.log(response);
-          this.setState({
-            file: response.data,
-            fileList: [
-              {
-                uid: "1",
-                name: response.data.name,
-              },
-            ],
-            downloadHidden: false,
-            fileName: response.data.name,
-            extension: response.data.name.includes('.') ? response.data.name.split('.').pop() : "",
-            fileBase64: response.data.file
-          })
-          console.log(this.state);
+        this.setState({
+          file: response.data,
+          fileList: [
+            {
+              uid: '1',
+              name: response.data.name,
+            },
+          ],
+          downloadHidden: false,
+          fileName: response.data.name,
+          extension: response.data.name.includes('.')
+            ? response.data.name.split('.').pop()
+            : '',
+          fileBase64: response.data.file,
+        });
+        console.log(this.state);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
-  }; 
+  };
 
   getStepFile() {
-    const url = window.__env__.API_URL + '/blink/api/file/id/' + localStorage.getItem('fileId');
+    const url =
+      window.__env__.API_URL +
+      '/blink/api/file/id/' +
+      localStorage.getItem('fileId');
     axios
       .get(url, null, {
         headers: {
           //'Content-Type': 'application/json',
-          Authorization: localStorage.getItem(TOKEN_KEY)
-        }
+          Authorization: localStorage.getItem(TOKEN_KEY),
+        },
       })
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           console.log(response);
           this.setState({
             file: response.data,
-            fileList: [response.data]
-          })
+            fileList: [response.data],
+          });
           console.log(this.state.file);
         }
       })
@@ -148,21 +155,21 @@ export default class Uploads extends Component {
 
   returnUploadProps(state) {
     var propsUpload = {
-      name: "file",
+      name: 'file',
       multiple: false,
-      action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
       beforeUpload(file) {
         console.log(file);
         state.setState({
           fileName: file.name,
-          extension: file.name.includes('.') ? file.name.split('.').pop() : ""
-        })
+          extension: file.name.includes('.') ? file.name.split('.').pop() : '',
+        });
         console.log(state);
         getBase64(file).then((data) => {
-            state.setState({
-              fileBase64: data
-            })
-            state.uploadFile(data, file)
+          state.setState({
+            fileBase64: data,
+          });
+          state.uploadFile(data, file);
         });
       },
       showUploadList: {
@@ -178,21 +185,21 @@ export default class Uploads extends Component {
     if (fileList.length > 1) {
       fileList.shift();
       this.setState({
-        downloadHidden: false
-      })
-      console.log(this.state.downloadHidden)
+        downloadHidden: false,
+      });
+      console.log(this.state.downloadHidden);
     } else {
       this.setState({
-        downloadHidden: true
-      })
-      console.log(this.state.downloadHidden)
+        downloadHidden: true,
+      });
+      console.log(this.state.downloadHidden);
     }
     this.setState({ fileList: fileList });
   };
 
   dataURItoBlob(dataURI) {
-    var mime = dataURI.split(",")[0].split(":")[1].split(";")[0];
-    var binary = atob(dataURI.split(",")[1]);
+    var mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    var binary = atob(dataURI.split(',')[1]);
     var array = [];
     for (var i = 0; i < binary.length; i++) {
       array.push(binary.charCodeAt(i));
@@ -210,7 +217,7 @@ export default class Uploads extends Component {
             height: '40vh',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center'
+            justifyContent: 'center',
           }}
         >
           <Dragger
@@ -220,7 +227,7 @@ export default class Uploads extends Component {
               margin: 'auto',
               padding: '0 0',
               width: '70%',
-              height: '50%'
+              height: '50%',
             }}
           >
             <p className="ant-upload-drag-icon">
@@ -236,11 +243,21 @@ export default class Uploads extends Component {
           </Dragger>
           {!this.state.downloadHidden && (
             <a
-            style={{ color: "#f06f32" }}
-            href={this.state.fileBase64 ? URL.createObjectURL(this.dataURItoBlob(this.state.fileBase64)) : '#'}
-            download={this.state.fileName.includes('.') ? this.state.fileName : this.state.fileName + '.' + this.state.extension}
+              style={{ color: '#f06f32' }}
+              href={
+                this.state.fileBase64
+                  ? URL.createObjectURL(
+                      this.dataURItoBlob(this.state.fileBase64)
+                    )
+                  : '#'
+              }
+              download={
+                this.state.fileName.includes('.')
+                  ? this.state.fileName
+                  : this.state.fileName + '.' + this.state.extension
+              }
             >
-            Download
+              Download
             </a>
           )}
         </Card>

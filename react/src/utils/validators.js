@@ -1,7 +1,7 @@
 const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 export const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-export const validateEmail = email => {
+export const validateEmail = (email) => {
   if (!email) {
     return;
   } else if (!emailRegex.test(email)) {
@@ -10,13 +10,13 @@ export const validateEmail = email => {
   }
 };
 
-export const required = input => {
+export const required = (input) => {
   if (!input || (typeof input.length === 'number' && input.length === 0)) {
     return 'Required';
   }
 };
 
-export const validatePassword = password => {
+export const validatePassword = (password) => {
   if (!password) {
     return;
   } else if (!passwordRegex.test(password)) {
@@ -24,7 +24,7 @@ export const validatePassword = password => {
   }
 };
 
-export const validateRequiredPassword = password => {
+export const validateRequiredPassword = (password) => {
   if (!password) {
     return 'Required';
   } else if (!passwordRegex.test(password)) {

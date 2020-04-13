@@ -1,9 +1,9 @@
-import { Modal, Card, Input, Checkbox } from "antd";
-import React from "react";
-import { Upload, message } from "antd";
-import axios from "axios";
-import { axiosError } from "../../utils/axiosError";
-import { TOKEN_KEY } from "../../constants/auth";
+import { Modal, Card, Input, Checkbox } from 'antd';
+import React from 'react';
+import { Upload, message } from 'antd';
+import axios from 'axios';
+import { axiosError } from '../../utils/axiosError';
+import { TOKEN_KEY } from '../../constants/auth';
 
 const { Dragger } = Upload;
 
@@ -23,35 +23,35 @@ function uploadFile(base64, file) {
   console.log(base64);
 
   let requestObject = {
-    name: document.getElementById("nameInput").value,
+    name: document.getElementById('nameInput').value,
     file: base64,
     confidential: checked,
   };
 
-  const url = window.__env__.API_URL + "/blink/api/file";
+  const url = window.__env__.API_URL + '/blink/api/file';
   axios
     .post(url, requestObject, {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: localStorage.getItem(TOKEN_KEY),
       },
     })
     .then((response) => {
       if (response.status === 200) {
-        message.success("Data saved successfully");
+        message.success('Data saved successfully');
       }
     })
     .catch(axiosError);
 }
 
 const props = {
-  name: "file",
+  name: 'file',
   multiple: true,
-  action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
   beforeUpload(file) {
     getBase64(file).then((data) => {
-      if (document.getElementById("nameInput").value === "") {
-        alert("Please provide file name");
+      if (document.getElementById('nameInput').value === '') {
+        alert('Please provide file name');
       } else {
         uploadFile(data, file);
       }
@@ -59,12 +59,12 @@ const props = {
   },
   onChange(info) {
     const { status } = info.file;
-    if (status !== "uploading") {
+    if (status !== 'uploading') {
       console.log(info.file, info.fileList);
     }
-    if (status === "done") {
+    if (status === 'done') {
       message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === "error") {
+    } else if (status === 'error') {
       message.error(`${info.file.name} file upload failed.`);
     }
   },

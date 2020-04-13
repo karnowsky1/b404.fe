@@ -32,11 +32,14 @@ const AppRoute = ({
     // checking the JWT token against the authorization header
     if (token && uuid) {
       axios
-        .get(window.__env__.API_URL + `/blink/api/person/id/${uuid}`, {
-          headers: {
-            Authorization: token,
-          },
-        })
+        .get(
+          window.__env__.API_URL + `/blink/api/person/signature/id/${uuid}`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        )
         .then((response) => {
           if (response.status === 200) {
             setIsLoggedIn(true);

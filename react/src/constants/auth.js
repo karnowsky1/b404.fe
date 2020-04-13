@@ -6,21 +6,21 @@ export const AUTH = {
   DIRECTOR: 2,
   COACH: 3,
   CUSTOMER: 4,
-  PROVIDER: 5
+  PROVIDER: 5,
 };
 
-export const IS_ADNMIN = authorization_level => {
+export const IS_ADMIN = (authorization_level) => {
   return authorization_level <= AUTH.ADMIN;
 };
 
-export const IS_INTERNAL = authorization_level => {
+export const IS_INTERNAL = (authorization_level) => {
   return authorization_level <= AUTH.COACH;
 };
 
-export const IS_EXTERNAL = authorization_level => {
+export const IS_EXTERNAL = (authorization_level) => {
   return authorization_level <= AUTH.CUSTOMER;
 };
 
-export const IS_Provider = authorization_level => {
+export const IS_Provider = (authorization_level) => {
   return authorization_level <= AUTH.PROVIDER;
 };
