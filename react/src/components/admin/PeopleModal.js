@@ -6,7 +6,7 @@ import {
   validateEmail,
   required,
   validatePassword,
-  validateRequiredPassword
+  validateRequiredPassword,
 } from '../../utils/validators';
 
 const { Option } = Select;
@@ -19,7 +19,7 @@ const defaults = {
   email: '',
   title: '',
   companies: [],
-  accessLevelID: ''
+  accessLevelID: '',
 };
 
 const PeopleModalForm = ({
@@ -30,10 +30,10 @@ const PeopleModalForm = ({
   roles,
   title,
   isAddModal,
-  form
+  form,
 }) => {
   const [filter, setFilter] = useState('');
-  const filteredCompanies = companies.filter(company =>
+  const filteredCompanies = companies.filter((company) =>
     company.label.toLowerCase().includes(filter)
   );
   return (
@@ -48,7 +48,7 @@ const PeopleModalForm = ({
       >
         {({ handleSubmit }) => (
           <Form
-            onSubmit={e => {
+            onSubmit={(e) => {
               e.preventDefault();
               handleSubmit();
             }}
@@ -86,7 +86,7 @@ const PeopleModalForm = ({
               style={{ width: '100%' }}
               placeholder="Select Company"
               defaultValue={initialValues.company}
-              onSearch={e => setFilter(e.toLowerCase())}
+              onSearch={(e) => setFilter(e.toLowerCase())}
               filterOption={false}
             >
               {filteredCompanies.map(({ value, label }) => (

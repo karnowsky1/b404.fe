@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { Card, Button } from 'antd'
+import React, { Component } from 'react';
+import { Card, Button } from 'antd';
 import { TOKEN_KEY } from '../constants/auth';
 // import { InboxOutlined } from '@ant-design/icons';
 import axios from 'axios';
@@ -14,12 +14,12 @@ export default class Complete extends Component {
       data: [],
       user: {},
       completeStep: {},
-    }
+    };
   }
 
   componentDidMount() {
     this.fetch();
-    this.filterStep(this.state.data); 
+    this.filterStep(this.state.data);
   }
 
   fetch = (params = {}) => {
@@ -28,24 +28,24 @@ export default class Complete extends Component {
       url: window.__env__.API_URL + '/blink/api/workflow/pending',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: localStorage.getItem(TOKEN_KEY)
+        Authorization: localStorage.getItem(TOKEN_KEY),
       },
       response: {
         results: 4,
-        params
+        params,
       },
-      type: 'json'
+      type: 'json',
     })
-      .then(response => {
+      .then((response) => {
         this.setState({
-          data: response.data
-        })
+          data: response.data,
+        });
         this.filterStep(response.data);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
-  }; 
+  };
 
   getApprovalDescription() {
     const url = window.__env__.API_URL + '/blink/api/workflow/pending';
@@ -53,15 +53,15 @@ export default class Complete extends Component {
       .get(url, null, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: localStorage.getItem(TOKEN_KEY)
-        }
+          Authorization: localStorage.getItem(TOKEN_KEY),
+        },
       })
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           console.log(response);
           this.setState({
-            data: response.data
-          })
+            data: response.data,
+          });
           this.filterStep(response.data);
           console.log(this.state.file);
         }
@@ -70,20 +70,23 @@ export default class Complete extends Component {
   }
 
   getUser() {
-    const url = window.__env__.API_URL + '/blink/api/person/id/' + this.state.completeStep.uuid;
+    const url =
+      window.__env__.API_URL +
+      '/blink/api/person/id/' +
+      this.state.completeStep.uuid;
     axios
       .get(url, null, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: localStorage.getItem(TOKEN_KEY)
-        }
+          Authorization: localStorage.getItem(TOKEN_KEY),
+        },
       })
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           console.log(response);
           this.setState({
-            data: response.data
-          })
+            data: response.data,
+          });
           this.filterStep(response.data);
           console.log(this.state.data);
         }
@@ -92,15 +95,15 @@ export default class Complete extends Component {
   }
 
   filterStep = (array) => {
-    array.forEach(element => {
+    array.forEach((element) => {
       if (element.stepID.toString() === localStorage.getItem('stepId')) {
         this.setState({
-          completeStep: element
-        })
+          completeStep: element,
+        });
         //displayData = element;
       }
     });
-  }
+  };
 
   markStepComplete() {
     const url =
@@ -110,10 +113,10 @@ export default class Complete extends Component {
     axios
       .put(url, null, {
         headers: {
-          Authorization: localStorage.getItem(TOKEN_KEY)
-        }
+          Authorization: localStorage.getItem(TOKEN_KEY),
+        },
       })
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           window.location.href = '/dashboard';
         }
@@ -124,15 +127,15 @@ export default class Complete extends Component {
   render() {
     return (
       <React.Fragment>
-      <Card title="Complete">
-        <h4>{"DESCRIPTION: " + this.state.completeStep.subtitle}</h4>
-      </Card>
-      <div className="approveButton">
-        <Button type="primary" onClick={this.markStepComplete}>
-          Complete
-        </Button>
-      </div>
+        <Card title="Complete">
+          <h4>{'DESCRIPTION: ' + this.state.completeStep.subtitle}</h4>
+        </Card>
+        <div className="approveButton">
+          <Button type="primary" onClick={this.markStepComplete}>
+            Complete
+          </Button>
+        </div>
       </React.Fragment>
-    )
+    );
   }
 }

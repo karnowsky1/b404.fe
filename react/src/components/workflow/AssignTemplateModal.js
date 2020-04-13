@@ -7,7 +7,7 @@ import { required } from '../../utils/validators';
 const { Option } = Select;
 
 const defaults = {
-  templateID: ''
+  templateID: '',
 };
 
 const AssignTemplateModalForm = ({
@@ -15,7 +15,7 @@ const AssignTemplateModalForm = ({
   templates,
   onSubmit,
   onCancel,
-  title
+  title,
 }) => {
   return (
     <Modal title={title} visible footer={[]} onCancel={onCancel}>
@@ -29,7 +29,7 @@ const AssignTemplateModalForm = ({
       >
         {({ handleSubmit }) => (
           <Form
-            onSubmit={e => {
+            onSubmit={(e) => {
               e.preventDefault();
               handleSubmit();
             }}
@@ -59,5 +59,5 @@ const AssignTemplateModalForm = ({
 };
 
 export const AssignTemplateModal = AntForm.create({
-  name: 'assign_template_modal'
+  name: 'assign_template_modal',
 })(AssignTemplateModalForm);

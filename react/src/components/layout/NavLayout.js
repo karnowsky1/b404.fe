@@ -13,12 +13,12 @@ const { SubMenu } = Menu;
 
 class NavLayout extends React.Component {
   state = {
-    collapsed: false
+    collapsed: false,
   };
 
   toggle = () => {
     this.setState({
-      collapsed: !this.state.collapsed
+      collapsed: !this.state.collapsed,
     });
   };
 
@@ -99,7 +99,7 @@ class NavLayout extends React.Component {
               padding: 0,
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'center'
+              alignItems: 'center',
             }}
           >
             <Icon
@@ -120,7 +120,7 @@ class NavLayout extends React.Component {
             style={{
               margin: '24px 16px',
               padding: 24,
-              background: '#fff'
+              background: '#fff',
             }}
           >
             {this.props.children}
@@ -134,5 +134,5 @@ class NavLayout extends React.Component {
 export default connect((state = {}) => ({
   authorization_level: state.user && state.user.accessLevelID,
   isAdmin: state.user && state.user.accessLevelID <= AUTH.ADMIN,
-  user_name: state.user.fName + ' ' + state.user.lName
+  user_name: state.user.fName + ' ' + state.user.lName,
 }))(NavLayout);

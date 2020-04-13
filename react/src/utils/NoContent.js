@@ -10,7 +10,7 @@ export class NoContent extends React.Component {
             padding: 11,
             backgroundColor: '#eee',
             border: '#eee solid',
-            borderRadius: 5
+            borderRadius: 5,
           }}
         >
           <Icon
@@ -21,7 +21,7 @@ export class NoContent extends React.Component {
               fontSize: '4.5em',
               width: '100%',
               marginBottom: 12,
-              opacity: 0.7
+              opacity: 0.7,
             }}
           />
           <p
@@ -29,7 +29,7 @@ export class NoContent extends React.Component {
               textAlign: 'center',
               fontSize: 14,
               marginBottom: 6,
-              fontWeight: 'bold'
+              fontWeight: 'bold',
             }}
           >
             {this.props.firstMessage}

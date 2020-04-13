@@ -2,7 +2,7 @@ export const DEFAULT_TREE = {
   title: 0,
   subtitle: '',
   asynchronous: false,
-  expanded: false
+  expanded: false,
 };
 
 export const ASSIGN_DEFAULT_TREE = {
@@ -13,7 +13,7 @@ export const ASSIGN_DEFAULT_TREE = {
   file: '',
   uuid: '',
   startDate: '',
-  deliveryDate: ''
+  deliveryDate: '',
 };
 
 export const SEND_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';

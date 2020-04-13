@@ -8,7 +8,7 @@ export class WorkflowDateRange extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      endOpen: false
+      endOpen: false,
     };
   }
 
@@ -23,7 +23,7 @@ export class WorkflowDateRange extends React.Component {
         value={this.props.defaultRange}
         ranges={{
           Today: [moment(), moment()],
-          'This Month': [moment().startOf('month'), moment().endOf('month')]
+          'This Month': [moment().startOf('month'), moment().endOf('month')],
         }}
         showTime
         separator="→"

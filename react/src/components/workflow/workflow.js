@@ -1,8 +1,8 @@
-import React from "react";
-import { Tabs } from "antd";
-import Templates from "./tabs/templates";
-import ActiveWorkflows from "./tabs/activeWorkflow";
-import ArchivedWorkflows from "./tabs/archivedWorkflows";
+import React from 'react';
+import { Tabs } from 'antd';
+import Templates from './tabs/templates';
+import ActiveWorkflows from './tabs/activeWorkflow';
+import ArchivedWorkflows from './tabs/archivedWorkflows';
 
 const { TabPane } = Tabs;
 
