@@ -67,8 +67,7 @@ class AssignTable extends React.Component {
         render: (file) => (
           <Tag
             color={this.color(
-              this.getMime(file.fileC) &&
-                this.getMime(file.fileC).split('/').shift()
+              file.fileC && this.getMime(file.fileC).split('/').shift()
             )}
           >
             {this.getMime(file.fileC) === null
@@ -139,8 +138,8 @@ class AssignTable extends React.Component {
   }
 
   dataURItoBlob(dataURI) {
-    var mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    var binary = atob(dataURI.split(',')[1]);
+    var mime = dataURI && dataURI.split(',')[0].split(':')[1].split(';')[0];
+    var binary = dataURI && atob(dataURI.split(',')[1]);
     var array = [];
     for (var i = 0; i < binary.length; i++) {
       array.push(binary.charCodeAt(i));
