@@ -65,7 +65,11 @@ class TemplateTable extends React.Component {
         dataIndex: this.state.data,
         key: 'y',
         render: (file) => (
-          <Tag color={this.color(this.getMime(file.fileC).split('/').shift())}>
+          <Tag
+            color={this.color(
+              file.fileC && this.getMime(file.fileC).split('/').shift()
+            )}
+          >
             {this.getMime(file.fileC) === null
               ? 'N/A'
               : this.getMime(file.fileC)}
@@ -88,7 +92,10 @@ class TemplateTable extends React.Component {
           <React.Fragment>
             <a
               style={{ color: '#f06f32' }}
-              href={URL.createObjectURL(this.dataURItoBlob(file.fileC))}
+              href={
+                file.fileC &&
+                URL.createObjectURL(this.dataURItoBlob(file.fileC))
+              }
               download={
                 file.name.includes('.')
                   ? file.name
@@ -131,8 +138,8 @@ class TemplateTable extends React.Component {
   }
 
   dataURItoBlob(dataURI) {
-    var mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    var binary = atob(dataURI.split(',')[1]);
+    var mime = dataURI && dataURI.split(',')[0].split(':')[1].split(';')[0];
+    var binary = dataURI && atob(dataURI.split(',')[1]);
     var array = [];
     for (var i = 0; i < binary.length; i++) {
       array.push(binary.charCodeAt(i));
@@ -141,7 +148,7 @@ class TemplateTable extends React.Component {
   }
 
   getMime(dataURI) {
-    var mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    var mime = dataURI && dataURI.split(',')[0].split(':')[1].split(';')[0];
     return mime;
   }
 
