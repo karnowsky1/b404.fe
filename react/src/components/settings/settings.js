@@ -28,6 +28,7 @@ class SettingsForm extends React.Component {
   }
 
   componentDidMount() {
+    SettingsInfoModal();
     currentComponent = this;
 
     this.setState({ loading: true });
@@ -389,7 +390,6 @@ class SettingsForm extends React.Component {
             </Spin>
           </div>
         </Card>
-        <SettingsInfoModal />
         <p id="API_URL">API URL: {window.__env__.API_URL}</p>
       </div>
     );

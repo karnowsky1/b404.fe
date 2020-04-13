@@ -21,3 +21,5 @@ export const noMilestoneUserMessageOne =
 
 export const noMilestoneUserMessageTwo =
   'Milestones that you are associated with will appear in this section on the dashboard';
+
+export const welcomeMessage = '';
