@@ -131,7 +131,7 @@ class AssignTable extends React.Component {
   }
 
   dataURItoBlob(dataURI) {
-    var mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    var mime = dataURI && dataURI.split(',')[0].split(':')[1].split(';')[0];
     var binary = atob(dataURI.split(',')[1]);
     var array = [];
     for (var i = 0; i < binary.length; i++) {
@@ -141,7 +141,7 @@ class AssignTable extends React.Component {
   }
 
   getMime(dataURI) {
-    var mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    var mime = dataURI && dataURI.split(',')[0].split(':')[1].split(';')[0];
     return mime;
   }
 
