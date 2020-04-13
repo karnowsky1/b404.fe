@@ -1,6 +1,6 @@
-import React from "react";
-import { Table, Progress, Icon, Button, Row, Col, Card } from "antd";
-import axios from "axios";
+import React from 'react';
+import { Table, Progress, Icon, Button, Row, Col, Card } from 'antd';
+import axios from 'axios';
 
 /*
 const menu = (
@@ -20,10 +20,10 @@ const menu = (
 
 const columns = [
   {
-    title: "Workflow Details",
-    dataIndex: "nameW",
-    key: "nameW",
-    render: nameW => (
+    title: 'Workflow Details',
+    dataIndex: 'nameW',
+    key: 'nameW',
+    render: (nameW) => (
       <React.Fragment>
         <Row>
           <Col span={3}>
@@ -37,59 +37,59 @@ const columns = [
           </Col>
         </Row>
       </React.Fragment>
-    )
+    ),
   },
   {
-    title: "Workflow Author",
-    dataIndex: "author",
-    key: "author",
-    render: author => (
+    title: 'Workflow Author',
+    dataIndex: 'author',
+    key: 'author',
+    render: (author) => (
       <React.Fragment>
         {author.name}
         <p>{author.createdA}</p>
       </React.Fragment>
-    )
+    ),
   },
   {
-    title: "Date Created",
-    dataIndex: "date",
-    key: "date",
-    render: date => (
+    title: 'Date Created',
+    dataIndex: 'date',
+    key: 'date',
+    render: (date) => (
       <React.Fragment>
         {date.createdD}
         <p>{date.time}</p>
       </React.Fragment>
-    )
+    ),
   },
   {
-    title: "Progress",
-    dataIndex: "progress",
-    key: "progress",
-    render: progress => (
+    title: 'Progress',
+    dataIndex: 'progress',
+    key: 'progress',
+    render: (progress) => (
       <Progress
         strokeColor={{
-          "0%": "#108ee9",
-          "100%": "#87d068"
+          '0%': '#108ee9',
+          '100%': '#87d068',
         }}
         percent={progress}
         size="small"
         status="active"
       />
-    )
+    ),
   },
   {
-    title: "More",
-    dataIndex: "more",
-    key: "more",
-    render: more => <Icon type="more" />
-  }
+    title: 'More',
+    dataIndex: 'more',
+    key: 'more',
+    render: (more) => <Icon type="more" />,
+  },
 ];
 
 class Tables extends React.Component {
   state = {
     data: [],
     loading: false,
-    pagination: {}
+    pagination: {},
   };
 
   componentDidMount() {
@@ -98,17 +98,17 @@ class Tables extends React.Component {
 
   fetch = (params = {}) => {
     axios({
-      method: "get",
+      method: 'get',
       //TODO:Change to API...............................................................................
-      url: "https://demo1986594.mockable.io",
+      url: 'https://demo1986594.mockable.io',
       //TODO:Change to API...............................................................................
       response: {
         results: 4,
-        params
+        params,
       },
-      type: "json"
+      type: 'json',
     })
-      .then(response => {
+      .then((response) => {
         let conf = [];
         for (let entry of response.data) {
           conf.push({
@@ -116,7 +116,7 @@ class Tables extends React.Component {
             nameW: { title: entry.title, updated: entry.updated },
             author: { name: entry.name, createdA: entry.createdA },
             date: { createdD: entry.createdD, time: entry.time },
-            progress: entry.progress
+            progress: entry.progress,
           });
         }
         const pagination = { ...this.state.pagination };
@@ -124,15 +124,15 @@ class Tables extends React.Component {
         this.setState({
           loading: false,
           data: conf,
-          pagination
+          pagination,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         let empty = [];
         console.log(error);
         if (error) {
           this.setState({
-            data: empty
+            data: empty,
           });
         }
       });

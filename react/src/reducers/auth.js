@@ -1,7 +1,7 @@
-import { LOGIN_ACTION } from '../actions/login'
+import { LOGIN_ACTION } from '../actions/login';
 
 function reducer(state, actions) {
-    switch (action.type) {
-        case LOGIN_ACTION:
-    }
+  switch (action.type) {
+    case LOGIN_ACTION:
+  }
 }

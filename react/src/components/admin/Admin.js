@@ -1,34 +1,45 @@
 import React from 'react';
-import { Table, Button, Row, Col, Card, Tag, Divider, Modal, Icon, message } from 'antd';
+import {
+  Table,
+  Button,
+  Row,
+  Col,
+  Card,
+  Tag,
+  Divider,
+  Modal,
+  message,
+} from 'antd';
 import axios from 'axios';
 import qs from 'qs';
 import { PeopleModal } from './PeopleModal';
 import { axiosError } from '../../utils/axiosError';
 import { getAllCompanies, getPerson } from '../../utils/api';
+import { hash } from './../../utils/hash';
 
 const { confirm } = Modal;
 
 const optionsR = [
   {
     value: 1,
-    label: 'Admin'
+    label: 'Admin',
   },
   {
     value: 2,
-    label: 'Coach'
+    label: 'Director',
   },
   {
     value: 3,
-    label: 'External'
+    label: 'Coach',
   },
   {
     value: 4,
-    label: 'Customer'
+    label: 'Customer',
   },
   {
     value: 5,
-    label: 'Provider'
-  }
+    label: 'Provider',
+  },
 ];
 
 class AdminTable extends React.Component {
@@ -38,12 +49,12 @@ class AdminTable extends React.Component {
     editingUser: undefined,
     editingUserCompanies: undefined,
     editingUserID: undefined,
-    pagination: {},
     addvisible: false,
     editvisible: false,
     companyOptions: [],
+    pagination: {},
   };
-  
+
   constructor(props) {
     super(props);
     this.columns = [
@@ -52,30 +63,30 @@ class AdminTable extends React.Component {
         title: 'Company',
         dataIndex: 'companies',
         key: 'companies',
-        ellipsis: true
+        ellipsis: true,
       },
       {
         title: 'Role',
         dataIndex: 'accessLevelID',
         key: 'accessLevelID',
-        render: accessLevelID => (
+        render: (accessLevelID) => (
           <React.Fragment>
             <Tag color={this.color(accessLevelID)}>
               {this.name(accessLevelID)}
             </Tag>
           </React.Fragment>
-        )
+        ),
       },
       {
         title: 'Actions',
         dataIndex: '',
         key: 'x',
-        render: record => (
+        render: (record) => (
           <React.Fragment>
             <Button
               type="link"
               size="small"
-              onClick={e => this.showEditModal(record)}
+              onClick={(e) => this.showEditModal(record)}
             >
               Edit
             </Button>
@@ -83,13 +94,13 @@ class AdminTable extends React.Component {
             <Button
               type="link"
               size="small"
-              onClick={e => this.showDeleteConfirm(e, record.id)}
+              onClick={(e) => this.showDeleteConfirm(e, record.id)}
             >
               Delete
             </Button>
           </React.Fragment>
-        )
-      }
+        ),
+      },
     ];
   }
 
@@ -144,111 +155,111 @@ class AdminTable extends React.Component {
   componentDidMount() {
     this.fetch();
     getAllCompanies()
-      .then(response => {
+      .then((response) => {
         this.setState({
-          companyOptions: response.data.map(company => {
-            return {
-              value: company.companyID,
-              label: company.companyName
-            };
-          })
+          companyOptions: response.data.map((company) => ({
+            value: company.companyID,
+            key: company.companyID,
+            label: company.companyName,
+          })),
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   }
 
   showAddModal = () => {
     this.setState({
-      addvisible: true
+      addvisible: true,
     });
   };
 
-  showEditModal = async record => {
+  showEditModal = async (record) => {
     await getPerson(record.id)
-      .then(response =>{
+      .then((response) => {
         // console.log(response.data)
         // console.log(response.data.companies)
         this.setState({
-          editingUserCompanies: response.data.companies.map(company =>{
-            return company.companyID
-          }) 
-        })
+          editingUserCompanies: response.data.companies.map((company) => {
+            return company.companyID;
+          }),
+        });
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
-    this.setState({      
-      editingUser: 
-      {
-        username: record.username, 
+    this.setState({
+      editingUser: {
+        username: record.username,
         fName: record.fName,
         lName: record.lName,
         email: record.email,
         title: record.title,
-        company: this.state.editingUserCompanies,
-        accessLevelID: record.accessLevelID
+        companies: this.state.editingUserCompanies,
+        accessLevelID: record.accessLevelID,
       },
       editingUserID: record.id,
-      previousJobIsEmpty: record.title === "",
-      editvisible: true
-
+      previousJobIsEmpty: record.title === '',
+      editvisible: true,
     });
     // console.log('this is the record')
     // console.log(record)
-    
   };
 
-  onAddSubmit = async values => {
-    if(!this.state.data.some(user =>
-      user.username === values.username
-    )){
-    await axios({
-      method: 'post',
-      url: window.__env__.API_URL + '/blink/api/person',
-      headers: {
-        Authorization: localStorage.getItem('token'),
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      data: qs.stringify(values),
-      // this is already a big object coming from formik
-      type: 'json'
-    })
-      .then(response => {  
-        // console.log(values.company)
-        if (response.status === 200 && values.company) {
-          // needed the response of the first call to make the second found
-          // grabbing ID from the first one to send into the next request 
-          for (let company of values.company) {
-            axios({
-              method: 'post',
-              url: window.__env__.API_URL + '/blink/api/company/person/add',
-              headers: {
-                Authorization: localStorage.getItem('token'),
-                'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              data: qs.stringify({companyID: company, personID: response.data.UUID}),
-              // making query string with key and value, that's why we're wrapping it in an object and using it this way 
-              // object names need to match variables from API endpoint 
-              type: 'json'
-            })
-            .then(()=>{
-              this.fetch();
-            })
-            .catch(axiosError);
-          }    
-        } else {
-          this.fetch()
-          // console.log(response);
-        }
+  onAddSubmit = async (values) => {
+    // console.log(values);
+    if (!this.state.data.some((user) => user.username === values.username)) {
+      await axios({
+        method: 'post',
+        url: window.__env__.API_URL + '/blink/api/person',
+        headers: {
+          Authorization: localStorage.getItem('token'),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: qs.stringify({
+          ...values,
+          // password: JSON.parse(sjcl.encrypt("password",values.password)).ct
+          password: hash(values.password),
+        }),
+        // this is already a big object coming from formik
+        type: 'json',
       })
-      .catch(axiosError);
+        .then((response) => {
+          // console.log(values.company)
+          this.fetch();
+          if (response.status === 200 && values.companies) {
+            // needed the response of the first call to make the second found
+            // grabbing ID from the first one to send into the next request
+            for (let company of values.companies) {
+              axios({
+                method: 'post',
+                url: window.__env__.API_URL + '/blink/api/company/person/add',
+                headers: {
+                  Authorization: localStorage.getItem('token'),
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                data: qs.stringify({
+                  companyID: company,
+                  personID: response.data.uuid,
+                }),
+                // making query string with key and value, that's why we're wrapping it in an object and using it this way
+                // object names need to match variables from API endpoint
+                type: 'json',
+              })
+                .then(() => {
+                  this.fetch();
+                })
+                .catch(axiosError);
+            }
+          }
+        })
+        .catch(axiosError);
       this.setState({
-        addvisible: false
+        addvisible: false,
       });
     } else {
-      message.destroy()
+      message.destroy();
       message.error(`Username ${values.username} is already taken`);
     }
   };
@@ -257,7 +268,7 @@ class AdminTable extends React.Component {
     const { fetch } = this;
     confirm({
       title: 'Are you sure delete this user?',
-      content: 'If you delete this user he will no longer be able to login!',
+      content: 'If you delete this user they will no longer be able to login!',
       okText: 'Yes',
       okType: 'danger',
       cancelText: 'No',
@@ -265,10 +276,10 @@ class AdminTable extends React.Component {
         axios
           .delete(window.__env__.API_URL + '/blink/api/person/id/' + id, {
             headers: {
-              Authorization: localStorage.getItem('token')
-            }
+              Authorization: localStorage.getItem('token'),
+            },
           })
-          .then(response => {
+          .then((response) => {
             if (response.status === 200) {
               // console.log('works');
               fetch();
@@ -279,36 +290,36 @@ class AdminTable extends React.Component {
       },
       onCancel() {
         // console.log('Cancel');
-      }
+      },
     });
   };
 
-  handleAddCancel = e => {
+  handleAddCancel = (e) => {
     // console.log(e);
     this.setState({
-      addvisible: false
+      addvisible: false,
     });
   };
 
-  handleEditCancel = e => {
+  handleEditCancel = (e) => {
     // console.log(e);
     this.setState({
-      editvisible: false
+      editvisible: false,
     });
   };
 
-  onEditSubmit = async values => {
+  onEditSubmit = async (values) => {
     // console.log("These are the values")
     // console.log(values)
-    if(!this.state.previousJobIsEmpty && values.title === ""){
-      values.title = ' '
+    if (!this.state.previousJobIsEmpty && values.title === '') {
+      values.title = ' ';
     }
     await axios({
       method: 'put',
       url: window.__env__.API_URL + '/blink/api/person',
       headers: {
         Authorization: localStorage.getItem('token'),
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       data: qs.stringify({
         id: this.state.editingUserID,
@@ -318,52 +329,57 @@ class AdminTable extends React.Component {
         lName: values.lName,
         email: values.email,
         title: values.title,
-        accessLevelID: values.accessLevelID
-      }), 
-      type: 'json'
-    })
-      .then(async response => {
-        for (let company of this.state.editingUserCompanies) {
-          await axios({
-            method: 'post',
-            url: window.__env__.API_URL + '/blink/api/company/person/delete',
-            headers: {
-              Authorization: localStorage.getItem('token'),
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            data: qs.stringify({companyID: company, personID: response.data.UUID}),
-            type: 'json'
-          })
-          .then(()=>{
+        accessLevelID: values.accessLevelID,
+      }),
+      type: 'json',
+    }).then(async (response) => {
+      for (let company of this.state.editingUserCompanies) {
+        await axios({
+          method: 'post',
+          url: window.__env__.API_URL + '/blink/api/company/person/delete',
+          headers: {
+            Authorization: localStorage.getItem('token'),
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          data: qs.stringify({
+            companyID: company,
+            personID: response.data.uuid,
+          }),
+          type: 'json',
+        })
+          .then(() => {
             this.fetch();
           })
           .catch(axiosError);
-        }    
-        for (let company of values.company) {
-          // console.log(company.toString())
-          if (response.status === 200 && values.company) {
-            await axios({
-              method: 'post',
-              url: window.__env__.API_URL + '/blink/api/company/person/add',
-              headers: {
-                Authorization: localStorage.getItem('token'),
-                'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              data: qs.stringify({companyID: company, personID: response.data.UUID}),
-              type: 'json'
-            })
-            .then(()=>{
+      }
+      if (response.status === 200 && values.companies) {
+        // console.log(company.toString())
+        for (let company of values.companies) {
+          await axios({
+            method: 'post',
+            url: window.__env__.API_URL + '/blink/api/company/person/add',
+            headers: {
+              Authorization: localStorage.getItem('token'),
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            data: qs.stringify({
+              companyID: company,
+              personID: response.data.uuid,
+            }),
+            type: 'json',
+          })
+            .then(() => {
               this.fetch();
             })
-            .catch(axiosError);    
-          } else {
-            this.fetch()
-            // console.log(response);
-          }
+            .catch(axiosError);
         }
-      })
+      } else {
+        this.fetch();
+        // console.log(response);
+      }
+    });
     this.setState({
-      editvisible: false
+      editvisible: false,
     });
     this.fetch();
   };
@@ -375,27 +391,27 @@ class AdminTable extends React.Component {
       headers: { Authorization: localStorage.getItem('token') },
       response: {
         results: 4,
-        params
+        params,
       },
-      type: 'json'
+      type: 'json',
     })
-      .then(response => {
+      .then((response) => {
         let conf = [];
         for (let entry of response.data) {
           conf.push({
-            id: entry.UUID,
+            key: entry.uuid,
+            id: entry.uuid,
             fName: entry.fName,
             lName: entry.lName,
             username: entry.username,
             nameW: entry.fName + ' ' + entry.lName,
             email: entry.email,
             title: entry.title,
-            companies:
-            entry.companies.map(company =>{
-              return company.companyName + '. '
-            }),
-              // entry.companies.length > 0 ? entry.companies[0].companyName : '',
-            accessLevelID: entry.accessLevelID
+            companies: entry.companies
+              .map((company) => company.companyName)
+              .join(', '),
+            // entry.companies.length > 0 ? entry.companies[0].companyName : '',
+            accessLevelID: entry.accessLevelID,
           });
         }
         const pagination = { ...this.state.pagination };
@@ -403,10 +419,10 @@ class AdminTable extends React.Component {
         this.setState({
           loading: false,
           data: conf,
-          pagination
+          pagination,
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   };
@@ -416,51 +432,47 @@ class AdminTable extends React.Component {
       <React.Fragment>
         <div>
           <Card>
-            <h1>Users</h1>
+            <h3 className="headers">Users</h3>
             <Table
               columns={this.columns}
-              rowKey={record => record.id}
-              expandedRowRender={record => (
-                <React.Fragment>
-                  <Row>
-                    <Col span={6}>
-                      <p>
-                        <b>Username: </b>
-                        {record.username}
-                      </p>
-                    </Col>
-                    <Col span={6}>
-                      <p>
-                        <b>Email: </b>
-                        {record.email}
-                      </p>
-                    </Col>
-                    <Col span={6}>
-                      <p>
-                        <b>Job Title: </b>
-                        {record.title}
-                      </p>
-                    </Col>
-                    <Col span={6}>
-                      <p>
-                        <b>Companies: </b>
-                        {record.companies}
-                      </p>
-                    </Col>
-                  </Row>
-                </React.Fragment>
+              rowKey={(record) => record.id}
+              expandedRowRender={(record) => (
+                <Row key={record.key}>
+                  <Col span={6}>
+                    <p>
+                      <b>Username: </b>
+                      {record.username}
+                    </p>
+                  </Col>
+                  <Col span={6}>
+                    <p>
+                      <b>Email: </b>
+                      {record.email}
+                    </p>
+                  </Col>
+                  <Col span={6}>
+                    <p>
+                      <b>Job Title: </b>
+                      {record.title}
+                    </p>
+                  </Col>
+                  <Col span={6}>
+                    <p>
+                      <b>Companies: </b>
+                      {record.companies}
+                    </p>
+                  </Col>
+                </Row>
               )}
               dataSource={this.state.data}
             />
             <Button
               type="primary"
-              shape="circle"
+              //shape="circle"
               size="default"
               onClick={this.showAddModal}
             >
-              <b>
-                <Icon type="plus" />
-              </b>
+              + Create
             </Button>
             {this.state.addvisible && (
               <PeopleModal

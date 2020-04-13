@@ -1,6 +1,7 @@
 import { message } from 'antd';
 
-export const axiosError = error => {
+export const axiosError = (error) => {
+  console.error(error);
   message.destroy();
   if (error.response) {
     // Request made and server responded

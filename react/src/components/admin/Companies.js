@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Button, Card, Divider, Icon, Modal} from 'antd';
+import { Table, Button, Card, Divider, Modal } from 'antd';
 import axios from 'axios';
 import qs from 'qs';
 import { CompanyModal } from './CompanyModal';
@@ -14,7 +14,7 @@ class Companies extends React.Component {
     editingCompany: undefined,
     pagination: {},
     addvisible: false,
-    editvisible: false
+    editvisible: false,
   };
 
   constructor(props) {
@@ -23,18 +23,18 @@ class Companies extends React.Component {
       {
         title: 'Company',
         dataIndex: 'companies',
-        key: 'companies'
+        key: 'companies',
       },
       {
         title: 'Actions',
         dataIndex: '',
         key: 'x',
-        render: record => (
+        render: (record) => (
           <React.Fragment>
             <Button
               type="link"
               size="small"
-              onClick={e => this.showEditModal(record)}
+              onClick={(e) => this.showEditModal(record)}
             >
               Edit
             </Button>
@@ -42,13 +42,13 @@ class Companies extends React.Component {
             <Button
               type="link"
               size="small"
-              onClick={e => this.showDeleteConfirm(e, record.id)}
+              onClick={(e) => this.showDeleteConfirm(e, record.id)}
             >
               Delete
             </Button>
           </React.Fragment>
-        )
-      }
+        ),
+      },
     ];
   }
 
@@ -59,16 +59,16 @@ class Companies extends React.Component {
       headers: { Authorization: localStorage.getItem('token') },
       response: {
         results: 4,
-        params
+        params,
       },
-      type: 'json'
+      type: 'json',
     })
-      .then(response => {
+      .then((response) => {
         let conf = [];
         for (let entry of response.data) {
           conf.push({
-            id: entry.companyID,            
-            companies: entry.companyName
+            id: entry.companyID,
+            companies: entry.companyName,
           });
         }
         const pagination = { ...this.state.pagination };
@@ -76,62 +76,62 @@ class Companies extends React.Component {
         this.setState({
           loading: false,
           data: conf,
-          pagination
+          pagination,
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   };
 
   componentDidMount() {
-    this.fetch()
+    this.fetch();
   }
 
   showAddModal = () => {
     this.setState({
-      addvisible: true
+      addvisible: true,
     });
   };
 
-  showEditModal = record => {
+  showEditModal = (record) => {
     this.setState({
       editingCompany: { id: record.id, name: record.companies },
-      editvisible: true
+      editvisible: true,
     });
   };
 
-  handleAddCancel = e => {
+  handleAddCancel = (e) => {
     console.log(e);
     this.setState({
-      addvisible: false
+      addvisible: false,
     });
   };
 
-  handleEditCancel = e => {
+  handleEditCancel = (e) => {
     console.log(e);
     this.setState({
-      editvisible: false
+      editvisible: false,
     });
   };
 
-  onAddSubmit = async values => {
+  onAddSubmit = async (values) => {
     // console.log("Valeus Resoponse " + values)
-    console.log(values.companyName)
+    console.log(values.companyName);
     await axios({
       method: 'post',
       url: window.__env__.API_URL + '/blink/api/company',
       headers: {
         Authorization: localStorage.getItem('token'),
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      // data: qs.stringify({name: values.companyName}), 
+      // data: qs.stringify({name: values.companyName}),
       // did it like this because the values in state didn't match the API
       // everything has to line up, endpoints, and state
       data: qs.stringify(values),
-      type: 'json'
+      type: 'json',
     })
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           this.fetch();
         } else {
@@ -141,30 +141,30 @@ class Companies extends React.Component {
       .catch(axiosError);
 
     this.setState({
-      addvisible: false
+      addvisible: false,
     });
   };
 
-  onEditSubmit = async values => {
+  onEditSubmit = async (values) => {
     await axios({
       method: 'put',
       url: window.__env__.API_URL + '/blink/api/company',
       headers: {
         Authorization: localStorage.getItem('token'),
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       // data: qs.stringify({id: values.id, name: values.companyName }),
       data: qs.stringify(values),
-      type: 'json'
+      type: 'json',
     })
-      .then(response => {
+      .then((response) => {
         console.log(response);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
     this.setState({
-      editvisible: false
+      editvisible: false,
     });
     this.fetch();
   };
@@ -173,19 +173,20 @@ class Companies extends React.Component {
     const { fetch } = this;
     confirm({
       title: 'Are you sure delete this Company?',
-      content: 'If you delete this Company users will no longer be assinged to that company!',
+      content:
+        'If you delete this Company users will no longer be assinged to that company!',
       okText: 'Yes',
       okType: 'danger',
       cancelText: 'No',
       onOk() {
-        console.log(id)
+        console.log(id);
         axios
           .delete(window.__env__.API_URL + '/blink/api/company/id/' + id, {
             headers: {
-              Authorization: localStorage.getItem('token')
-            }
+              Authorization: localStorage.getItem('token'),
+            },
           })
-          .then(response => {
+          .then((response) => {
             if (response.status === 200) {
               console.log('works');
               fetch();
@@ -196,7 +197,7 @@ class Companies extends React.Component {
       },
       onCancel() {
         console.log('Cancel');
-      }
+      },
     });
   };
 
@@ -204,45 +205,43 @@ class Companies extends React.Component {
     return (
       <div>
         <Card>
-            <h1>Companies</h1>
-            <Table
-              columns={this.columns}
-              rowKey={record => record.id}
-              dataSource={this.state.data}
+          <h3 className="headers">Companies</h3>
+          <Table
+            columns={this.columns}
+            rowKey={(record) => record.id}
+            dataSource={this.state.data}
+          />
+          <Button
+            type="primary"
+            //shape="circle"
+            size="default"
+            onClick={this.showAddModal}
+          >
+            + Create
+          </Button>
+          {this.state.addvisible && (
+            <CompanyModal
+              onSubmit={this.onAddSubmit}
+              // companies={this.state.companyOptions}
+              onCancel={this.handleAddCancel}
+              // roles={optionsR}
+              title="Add Company"
             />
-            <Button
-              type="primary"
-              shape="circle"
-              size="default"
-              onClick={this.showAddModal}
-            >
-              <b>
-                <Icon type="plus" />
-              </b>
-            </Button>
-            {this.state.addvisible && (
-              <CompanyModal
-                onSubmit={this.onAddSubmit}
-                // companies={this.state.companyOptions}
-                onCancel={this.handleAddCancel}
-                // roles={optionsR}
-                title="Add Company"
-              />
-            )}
-            {this.state.editvisible && (
-              <CompanyModal
-                initialValues={this.state.editingCompany}
-                onSubmit={this.onEditSubmit}
-                // companies={this.state.companyOptions}
-                onCancel={this.handleEditCancel}
-                // roles={optionsR}
-                title="Edit Company"
-              />
-            )}
-          </Card>
+          )}
+          {this.state.editvisible && (
+            <CompanyModal
+              initialValues={this.state.editingCompany}
+              onSubmit={this.onEditSubmit}
+              // companies={this.state.companyOptions}
+              onCancel={this.handleEditCancel}
+              // roles={optionsR}
+              title="Edit Company"
+            />
+          )}
+        </Card>
       </div>
-    )
+    );
   }
 }
 
-export default Companies
+export default Companies;
