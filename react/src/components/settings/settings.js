@@ -29,7 +29,8 @@ class SettingsForm extends React.Component {
 
   componentDidMount() {
     currentComponent = this;
-    !this.props.logged_in_user.signature && SettingsInfoModal();
+    !this.props.logged_in_user.signature &&
+      SettingsInfoModal(this.props.user_name);
     this.setState({ loading: true });
 
     const url =
