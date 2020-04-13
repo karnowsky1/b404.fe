@@ -6,7 +6,7 @@ import qs from 'qs';
 import { TOKEN_KEY, UUID_KEY } from '../../constants/auth';
 import { hash } from './../../utils/hash';
 import SignatureCanvas from 'react-signature-canvas';
-
+import { SettingsInfoModal } from './SettingsInfoModal';
 import { passwordRegex } from '../../utils/validators';
 import { setUser } from '../../actions/user';
 
@@ -29,7 +29,8 @@ class SettingsForm extends React.Component {
 
   componentDidMount() {
     currentComponent = this;
-
+    !this.props.logged_in_user.signature &&
+      SettingsInfoModal(this.props.user_name);
     this.setState({ loading: true });
 
     const url =
