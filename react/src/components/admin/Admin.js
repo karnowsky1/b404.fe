@@ -324,7 +324,7 @@ class AdminTable extends React.Component {
       data: qs.stringify({
         id: this.state.editingUserID,
         username: values.username,
-        password: values.password,
+        password: hash(values.password),
         fName: values.fName,
         lName: values.lName,
         email: values.email,
