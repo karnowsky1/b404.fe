@@ -8,8 +8,6 @@ import { hash } from './../../utils/hash';
 import SignatureCanvas from 'react-signature-canvas';
 
 import { passwordRegex } from '../../utils/validators';
-import { getSignature } from '../../utils/api';
-import { axiosError } from '../../utils/axiosError';
 import { setUser } from '../../actions/user';
 
 let currentComponent;
