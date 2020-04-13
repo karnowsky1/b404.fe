@@ -67,8 +67,7 @@ class AssignTable extends React.Component {
         render: (file) => (
           <Tag
             color={this.color(
-              this.getMime(file.fileC) &&
-                this.getMime(file.fileC).split('/').shift()
+              file.fileC && this.getMime(file.fileC).split('/').shift()
             )}
           >
             {this.getMime(file.fileC) === null
@@ -93,7 +92,10 @@ class AssignTable extends React.Component {
           <React.Fragment>
             <a
               style={{ color: '#f06f32' }}
-              href={URL.createObjectURL(this.dataURItoBlob(file.fileC))}
+              href={
+                file.fileC &&
+                URL.createObjectURL(this.dataURItoBlob(file.fileC))
+              }
               download={
                 file.name.includes('.')
                   ? file.name
