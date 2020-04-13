@@ -93,7 +93,10 @@ class AssignTable extends React.Component {
           <React.Fragment>
             <a
               style={{ color: '#f06f32' }}
-              href={URL.createObjectURL(this.dataURItoBlob(file.fileC))}
+              href={
+                file.fileC &&
+                URL.createObjectURL(this.dataURItoBlob(file.fileC))
+              }
               download={
                 file.name.includes('.')
                   ? file.name
@@ -136,8 +139,8 @@ class AssignTable extends React.Component {
   }
 
   dataURItoBlob(dataURI) {
-    var mime = dataURI && dataURI.split(',')[0].split(':')[1].split(';')[0];
-    var binary = dataURI && atob(dataURI.split(',')[1]);
+    var mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    var binary = atob(dataURI.split(',')[1]);
     var array = [];
     for (var i = 0; i < binary.length; i++) {
       array.push(binary.charCodeAt(i));
