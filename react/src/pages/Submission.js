@@ -85,7 +85,8 @@ export default class Submission extends Component {
       let requestObject = {
         fileID: this.state.fileId,
         name: this.state.fileName,
-        file: canvas.toDataURL()//.toString(),
+        file: canvas.toDataURL(),//.toString(),
+        form: false,
       };
 
       console.log(requestObject);
