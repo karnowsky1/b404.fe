@@ -229,3 +229,7 @@ code {
   display: flex;
   justify-content: center;
 }
+
+#nameInputForm {
+  width: 50%
+}
