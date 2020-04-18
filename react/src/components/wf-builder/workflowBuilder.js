@@ -384,9 +384,10 @@ export default class WorkflowBuilder extends Component {
       );
     });
     this.state.files.forEach((element) => {
-      files.push(<Option key={element.fileID}>{element.name}</Option>);
       if (element.form) {
         forms.push(<Option key={element.fileID}>{element.name}</Option>);
+      } else {
+        files.push(<Option key={element.fileID}>{element.name}</Option>);
       }
     });
     const nameValidation = this.state.wfNameEdited
@@ -528,7 +529,7 @@ export default class WorkflowBuilder extends Component {
                         treeData: state.treeData,
                         path,
                         getNodeKey,
-                        newNode: { ...rowInfo.node, title: title, form: true },
+                        newNode: { ...rowInfo.node, title: title, form: true, fileID: 0 },
                       }),
                     }));
                   } else {
@@ -537,7 +538,7 @@ export default class WorkflowBuilder extends Component {
                         treeData: state.treeData,
                         path,
                         getNodeKey,
-                        newNode: { ...rowInfo.node, title: title, form: false },
+                        newNode: { ...rowInfo.node, title: title, form: false, fileID: 0 },
                       }),
                     }));
                   }
