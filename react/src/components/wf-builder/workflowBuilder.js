@@ -522,14 +522,25 @@ export default class WorkflowBuilder extends Component {
                     console.log(rowInfo);
                     const { path } = rowInfo;
                     const title = parseInt(event);
+                    if (title === 4) {
                     this.setState((state) => ({
                       treeData: changeNodeAtPath({
                         treeData: state.treeData,
                         path,
                         getNodeKey,
-                        newNode: { ...rowInfo.node, title },
+                        newNode: { ...rowInfo.node, title: title, form: true },
                       }),
                     }));
+                  } else {
+                    this.setState((state) => ({
+                      treeData: changeNodeAtPath({
+                        treeData: state.treeData,
+                        path,
+                        getNodeKey,
+                        newNode: { ...rowInfo.node, title: title, form: false },
+                      }),
+                    }));
+                  }
                   }}
                 >
                   {children}

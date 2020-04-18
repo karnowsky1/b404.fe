@@ -239,6 +239,7 @@ class DocumentsTable extends React.Component {
 
   handlePluginOk = (e) => {
     console.log(e);
+    //this.onSubmit();
     this.setState({
       visible: false,
     });
@@ -424,8 +425,13 @@ class DocumentsTable extends React.Component {
           title="Create your document"
           width="80vw"
           visible={this.state.visible}
-          onOk={this.handlePluginOk}
+          //onOk={this.handlePluginOk}
           onCancel={this.handlePluginCancel}
+          footer={[
+            <Button key="back" onClick={this.handlePluginCancel}>
+              Cancel
+            </Button>
+          ]}
         >
           <Input
             id="nameInputForm"
