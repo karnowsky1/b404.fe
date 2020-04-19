@@ -14,6 +14,7 @@ import {
 import axios from 'axios';
 import { TOKEN_KEY /*, UUID_KEY*/ } from '../../constants/auth';
 import { axiosError } from '../../utils/axiosError';
+import { FETCH_REFRESH_TIME } from '../../constants';
 
 const { confirm } = Modal;
 
@@ -203,12 +204,17 @@ class TemplateTable extends React.Component {
 
   componentDidMount() {
     this.fetch();
+    this.intervalID = setInterval(this.fetch, FETCH_REFRESH_TIME);
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.changed !== prevState.changed) {
       this.fetch();
     }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
   }
 
   showDeleteConfirm = (e, id, state) => {
@@ -244,7 +250,7 @@ class TemplateTable extends React.Component {
 
   fetch = async (params = {}) => {
     this.setState({
-      loading: true,
+      loading: false,
       changed: false,
     });
     await axios({

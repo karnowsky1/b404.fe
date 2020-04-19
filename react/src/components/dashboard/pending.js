@@ -5,6 +5,7 @@ import { TOKEN_KEY /*, UUID_KEY*/ } from '../../constants/auth';
 import { Link } from 'react-router-dom';
 import { NoContent } from '../../utils/NoContent';
 import { noTasksMessageOne, noTasksMessageTwo } from '../../constants/messages';
+import { PENDING_TASKS_FETCH_REFRESH_TIME } from '../../constants';
 
 class Pending extends React.Component {
   constructor(props) {
@@ -22,6 +23,11 @@ class Pending extends React.Component {
       loading: true,
     });
     this.fetch();
+    this.intervalID = setInterval(this.fetch, PENDING_TASKS_FETCH_REFRESH_TIME);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
   }
 
   fetch = (params = {}) => {

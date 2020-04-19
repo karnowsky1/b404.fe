@@ -16,6 +16,7 @@ import { PeopleModal } from './PeopleModal';
 import { axiosError } from '../../utils/axiosError';
 import { getAllCompanies, getPerson } from '../../utils/api';
 import { hash } from './../../utils/hash';
+import { FETCH_REFRESH_TIME } from '../../constants/routes';
 
 const { confirm } = Modal;
 
@@ -154,6 +155,7 @@ class AdminTable extends React.Component {
 
   componentDidMount() {
     this.fetch();
+    this.intervalID = setInterval(this.fetch, FETCH_REFRESH_TIME);
     getAllCompanies()
       .then((response) => {
         this.setState({
@@ -167,6 +169,10 @@ class AdminTable extends React.Component {
       .catch((error) => {
         console.error(error);
       });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
   }
 
   showAddModal = () => {
