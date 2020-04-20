@@ -3,6 +3,7 @@ import { Table, Spin, message, Button, Divider, Modal } from 'antd';
 import axios from 'axios';
 import { TOKEN_KEY /*, UUID_KEY*/ } from '../../../constants/auth';
 import qs from 'qs';
+import { FETCH_REFRESH_TIME } from '../../../constants';
 
 let currentComponent;
 
@@ -97,6 +98,15 @@ class ArchivedWorkflows extends React.Component {
     this.getWorkflows();
     this.getAllCompanies();
     this.getAllPeople();
+    this.intervalID = setInterval(() => {
+      this.getWorkflows();
+      this.getAllCompanies();
+      this.getAllPeople();
+    }, FETCH_REFRESH_TIME);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
   }
 
   showCompanyModal = (workflow) => {

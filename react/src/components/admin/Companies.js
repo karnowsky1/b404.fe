@@ -4,6 +4,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { CompanyModal } from './CompanyModal';
 import { axiosError } from '../../utils/axiosError';
+import { FETCH_REFRESH_TIME } from '../../constants/routes';
 
 const { confirm } = Modal;
 
@@ -86,6 +87,11 @@ class Companies extends React.Component {
 
   componentDidMount() {
     this.fetch();
+    this.intervalID = setInterval(this.fetch, FETCH_REFRESH_TIME);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
   }
 
   showAddModal = () => {
