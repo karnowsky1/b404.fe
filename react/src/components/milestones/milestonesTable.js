@@ -9,6 +9,7 @@ import {
   getMilestone,
   getWorkflowTemplates,
   getWorkflow,
+  getZippedFilesByMilestone,
 } from '../../utils/api';
 import { axiosError } from '../../utils/axiosError';
 import { AssignTemplateModal } from '../workflow/AssignTemplateModal';
@@ -81,6 +82,14 @@ class MilestonesTable extends React.Component {
               }
             >
               Archive
+            </Button>
+            <Divider type="vertical" />
+            <Button
+              type="link"
+              size="small"
+              onClick={(e) => this.downloadFiles(record.id)}
+            >
+              Download Content
             </Button>
           </React.Fragment>
         ) : (
@@ -166,6 +175,21 @@ class MilestonesTable extends React.Component {
         editingMilestoneID: record.id,
         editvisible: true,
       });
+    });
+  };
+
+  getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  }
+
+  downloadFiles = async (id) => {
+    await getZippedFilesByMilestone(id).then((response) => {
+      this.getBase64(response.file);
     });
   };
 

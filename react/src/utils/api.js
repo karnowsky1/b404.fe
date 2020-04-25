@@ -88,6 +88,14 @@ export const getFileByID = (uuid) =>
     },
   });
 
+export const getZippedFilesByMilestone = (uuid) =>
+  axios.get(window.__env__.API_URL + `/blink/api/file/archive/${uuid}`, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: localStorage.getItem('token'),
+    },
+  });
+
 export const getWorkflow = (uuid) =>
   axios.get(
     window.__env__.API_URL + '/blink/api/workflow/' + (uuid ? `${uuid}` : ''),
