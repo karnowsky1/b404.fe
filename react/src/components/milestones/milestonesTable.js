@@ -178,19 +178,8 @@ class MilestonesTable extends React.Component {
     });
   };
 
-  getBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-  }
-
   downloadFiles = async (id) => {
-    await getZippedFilesByMilestone(id).then((response) => {
-      this.getBase64(response.file);
-    });
+    await getZippedFilesByMilestone(id).then((response) => {});
   };
 
   showWorkflowModal = (workflow) => {
