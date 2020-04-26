@@ -3,9 +3,11 @@ import { Layout, Menu, Icon } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { MAIN_ROUTES } from '../../constants/routes';
 import { connect } from 'react-redux';
+import { setTasks } from '../../actions/task';
 import Logout from './Logout';
 import mainLogo from '../../img/something.jpg';
 import { AUTH } from '../../constants';
+import { getPendingTasks } from '../../utils/api';
 
 const { Header, Sider, Content } = Layout;
 
@@ -19,6 +21,28 @@ class NavLayout extends React.Component {
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
+    });
+  };
+
+  componentDidMount() {
+    this.fetch();
+  }
+
+  fetch = async () => {
+    const { setTasks } = this.props;
+    // what about the first time this.fetch is called?
+    // this.fetch will be clean, then I'll have a second function that calls this.fetch() but with extras stuff
+    await getPendingTasks().then((response) => {
+      if (response.status === 200) {
+        if (this.props.pendingTasks !== response.data) {
+          // need to add null checks
+          // const newTasks = this.props.pendingTasks.filter(
+          //   ({ value: id1 }) =>
+          //     !response.data.some(({ value: id2 }) => id2 === id1)
+          // );
+          setTasks(response.data);
+        }
+      }
     });
   };
 
@@ -131,8 +155,12 @@ class NavLayout extends React.Component {
   }
 }
 
-export default connect((state = {}) => ({
-  authorization_level: state.user && state.user.accessLevelID,
-  isAdmin: state.user && state.user.accessLevelID <= AUTH.ADMIN,
-  user_name: state.user.fName + ' ' + state.user.lName,
-}))(NavLayout);
+export default connect(
+  (state = {}) => ({
+    authorization_level: state.user && state.user.accessLevelID,
+    isAdmin: state.user && state.user.accessLevelID <= AUTH.ADMIN,
+    user_name: state.user.fName + ' ' + state.user.lName,
+    pendingTasks: state.pendingTasks,
+  }),
+  { setTasks }
+)(NavLayout);
