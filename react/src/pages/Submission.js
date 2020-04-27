@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Card } from 'antd';
 import { TOKEN_KEY } from '../constants/auth';
 // import { InboxOutlined } from '@ant-design/icons';
+// import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { axiosError } from '../utils/axiosError';
 
@@ -57,6 +58,7 @@ export default class Submission extends Component {
   render() {
     return (
       <Card title="Form for Submission">
+        {/* <Link to="/dashboard">X</Link> */}
         <FormGenerator
           onSubmit={onSubmit}
           formData={[
