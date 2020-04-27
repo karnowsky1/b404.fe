@@ -428,9 +428,11 @@ class DocumentsTable extends React.Component {
           //onOk={this.handlePluginOk}
           onCancel={this.handlePluginCancel}
           footer={[
+            <div>
             <Button key="back" onClick={this.handlePluginCancel}>
               Cancel
             </Button>
+            </div>
           ]}
         >
           <Input

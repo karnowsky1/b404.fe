@@ -16,6 +16,8 @@ import * as jsPDF from 'jspdf';
 
 import * as html2canvas from 'html2canvas';
 
+const corruptForm = [{"id":"f6d6f8cb-5d69-4db7-813f-561bc9ea91ba","element":"Header","label":{"blocks":[{"key":"48b1d","text":"THIS FORM FILE IS CORRUPT, PLEASE CHANGE THE FILE ASSOCIATED WITH THIS STEP!","type":"unstyled","depth":0,"inlineStyleRanges":[{"offset":0,"length":76,"style":"BOLD"}],"entityRanges":[],"data":{"text-align":"center"}}],"entityMap":{}}}]
+
 function markStepComplete() {
   console.log('COMPLETE');
   const url =
@@ -60,12 +62,22 @@ export default class Submission extends Component {
     }
   }
 
+  checkParse(file) {
+    if(file) {
+      try {
+          return JSON.parse(atob(file.split(',')[1]));
+      } catch(e) {
+          return corruptForm;
+      }
+    }
+  }
+
   componentDidMount() {
     if (this.state.fileId) {
       getFileByID(this.state.fileId).then((result) => {
         this.setState({
           fileName: result.data.name,
-          file: JSON.parse(atob(result.data.file.split(',')[1])),
+          file: this.checkParse(result.data.file)
         });
       });
     }
