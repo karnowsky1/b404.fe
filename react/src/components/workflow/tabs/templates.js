@@ -80,7 +80,6 @@ class Templates extends React.Component {
           this.setState({
             loading: false,
           });
-          console.log(response);
           this.setState({
             data: response.data,
           });
@@ -125,7 +124,6 @@ class Templates extends React.Component {
   }
 
   showCompanyModal = (workflow) => {
-    console.log(workflow);
     this.setState({
       workflow: workflow,
       companyVisible: true,
@@ -133,14 +131,12 @@ class Templates extends React.Component {
   };
 
   handleCompanyOk = (e) => {
-    console.log(e);
     this.setState({
       companyVisible: false,
     });
   };
 
   handleCompanyCancel = (e) => {
-    console.log(e);
     this.setState({
       companyVisible: false,
     });
@@ -154,14 +150,12 @@ class Templates extends React.Component {
   };
 
   handlePersonOk = (e) => {
-    console.log(e);
     this.setState({
       personVisible: false,
     });
   };
 
   handlePersonCancel = (e) => {
-    console.log(e);
     this.setState({
       personVisible: false,
     });
@@ -227,16 +221,12 @@ class Templates extends React.Component {
           })
           .then((response) => {
             if (response.status === 200) {
-              // console.log('works');
               window.location.reload(false);
             } else {
-              // console.log(response);
             }
           });
       },
-      onCancel() {
-        // console.log('Cancel');
-      },
+      onCancel() {},
     });
   };
 
@@ -259,7 +249,6 @@ class Templates extends React.Component {
   }
 
   handleOk = (e) => {
-    console.log(e);
     this.setState({
       visible: false,
     });
@@ -267,7 +256,6 @@ class Templates extends React.Component {
   };
 
   handleCancel = (e) => {
-    console.log(e);
     this.setState({
       workflow: null,
       visible: false,

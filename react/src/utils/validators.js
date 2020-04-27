@@ -5,7 +5,6 @@ export const validateEmail = (email) => {
   if (!email) {
     return;
   } else if (!emailRegex.test(email)) {
-    console.log(email);
     return 'Invalid email address';
   }
 };

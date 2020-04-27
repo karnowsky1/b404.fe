@@ -108,22 +108,18 @@ class Companies extends React.Component {
   };
 
   handleAddCancel = (e) => {
-    console.log(e);
     this.setState({
       addvisible: false,
     });
   };
 
   handleEditCancel = (e) => {
-    console.log(e);
     this.setState({
       editvisible: false,
     });
   };
 
   onAddSubmit = async (values) => {
-    // console.log("Valeus Resoponse " + values)
-    console.log(values.companyName);
     await axios({
       method: 'post',
       url: window.__env__.API_URL + '/blink/api/company',
@@ -141,7 +137,6 @@ class Companies extends React.Component {
         if (response.status === 200) {
           this.fetch();
         } else {
-          console.log(response);
         }
       })
       .catch(axiosError);
@@ -163,9 +158,7 @@ class Companies extends React.Component {
       data: qs.stringify(values),
       type: 'json',
     })
-      .then((response) => {
-        console.log(response);
-      })
+      .then((response) => {})
       .catch((error) => {
         console.error(error);
       });
@@ -185,7 +178,6 @@ class Companies extends React.Component {
       okType: 'danger',
       cancelText: 'No',
       onOk() {
-        console.log(id);
         axios
           .delete(window.__env__.API_URL + '/blink/api/company/id/' + id, {
             headers: {
@@ -194,16 +186,11 @@ class Companies extends React.Component {
           })
           .then((response) => {
             if (response.status === 200) {
-              console.log('works');
               fetch();
-            } else {
-              console.log(response);
             }
           });
       },
-      onCancel() {
-        console.log('Cancel');
-      },
+      onCancel() {},
     });
   };
 

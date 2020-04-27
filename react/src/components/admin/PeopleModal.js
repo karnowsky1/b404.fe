@@ -79,7 +79,6 @@ const PeopleModalForm = ({
             </Form.Item>
             <p></p>
             <p>Company</p>
-            {/* //////////////////////////////////////////////////// */}
             <Select
               mode="multiple"
               name="companies"
@@ -95,7 +94,6 @@ const PeopleModalForm = ({
                 </Option>
               ))}
             </Select>
-            {/* //////////////////////////////////////////////////// */}
             <p></p>
             <p>Role *</p>
             <Form.Item name="accessLevelID" validate={required}>

@@ -92,7 +92,6 @@ class ActiveWorkflows extends React.Component {
           this.setState({
             loading: false,
           });
-          console.log(response);
           this.setState({
             data: response.data,
           });
@@ -127,7 +126,6 @@ class ActiveWorkflows extends React.Component {
   }
 
   showCompanyModal = (workflow) => {
-    console.log(workflow);
     this.setState({
       workflow: workflow,
       companyVisible: true,
@@ -182,9 +180,7 @@ class ActiveWorkflows extends React.Component {
           }),
         });
       })
-      .catch(function (error) {
-        console.log(error);
-      });
+      .catch(function (error) {});
   }
 
   getAllPeople() {
@@ -268,16 +264,12 @@ class ActiveWorkflows extends React.Component {
           )
           .then((response) => {
             if (response.status === 200) {
-              // console.log('works');
               window.location.reload(false);
             } else {
-              // console.log(response);
             }
           });
       },
-      onCancel() {
-        // console.log('Cancel');
-      },
+      onCancel() {},
     });
   };
 

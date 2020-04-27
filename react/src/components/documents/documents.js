@@ -163,25 +163,17 @@ class DocumentsTable extends React.Component {
   }
 
   onSubmit = (formData) => {
-    console.log(formData);
     var input = document.getElementById('nameInputForm').value;
     if (input === '' || null || undefined) {
       message.error('Please input the file name');
       return;
     }
 
-    //var str = JSON.stringify(formData);
-
-    //console.log(str);
-    
-    var blob = new Blob( [ formData ], {
-      type: 'application/json'
+    var blob = new Blob([formData], {
+      type: 'application/json',
     });
 
-    console.log(blob);
-
     getBase64(blob).then((data) => {
-      console.log(data);
       this.setState({
         fileBase64: data,
       });
@@ -238,15 +230,12 @@ class DocumentsTable extends React.Component {
   };
 
   handlePluginOk = (e) => {
-    console.log(e);
-    //this.onSubmit();
     this.setState({
       visible: false,
     });
   };
 
   handlePluginCancel = (e) => {
-    console.log(e);
     this.setState({
       visible: false,
     });
@@ -267,10 +256,8 @@ class DocumentsTable extends React.Component {
   };
 
   handleOk = (e) => {
-    console.log(e);
     let value = this.state.select;
     if (value === '') {
-      console.log('Please enter value');
     } else if (value === 'upload') {
       this.setState({
         documentVisible: false,
@@ -280,15 +267,11 @@ class DocumentsTable extends React.Component {
       this.setState({
         visible: false,
       });
-      console.log('This works');
       this.showPluginModal();
-      //Mislav add this pls
-      //this.showCreateModal();
     }
   };
 
   handleUploadOk = (e) => {
-    console.log(e);
     var input = document.getElementById('nameInput').value;
     if (input === '' || null || undefined) {
       message.error('Please input the file name');
@@ -315,14 +298,12 @@ class DocumentsTable extends React.Component {
   };
 
   onCancel = (e) => {
-    console.log(e);
     this.setState({
       documentVisible: false,
     });
   };
 
   onUploadCancel = (e) => {
-    console.log(e);
     this.setState({
       uploadVisible: false,
       fileName: '',
@@ -332,20 +313,21 @@ class DocumentsTable extends React.Component {
   };
 
   uploadFile(base64, file, form) {
-    console.log(base64);
     let requestObject = {
       name:
         this.state.extension === ''
-          ? document.getElementById('nameInput') ? document.getElementById('nameInput').value.replace(/ /gi, '') : document.getElementById('nameInputForm').value.replace(/ /gi, '')
-          : document.getElementById('nameInput') ? document.getElementById('nameInput').value.replace(/ /gi, '') : document.getElementById('nameInputForm').value.replace(/ /gi, '') +
+          ? document.getElementById('nameInput')
+            ? document.getElementById('nameInput').value.replace(/ /gi, '')
+            : document.getElementById('nameInputForm').value.replace(/ /gi, '')
+          : document.getElementById('nameInput')
+          ? document.getElementById('nameInput').value.replace(/ /gi, '')
+          : document.getElementById('nameInputForm').value.replace(/ /gi, '') +
             '.' +
             this.state.extension,
       file: base64,
       confidential: checked,
-      form: form ? true : false
+      form: form ? true : false,
     };
-
-    console.log(requestObject);
 
     const url = window.__env__.API_URL + '/blink/api/file';
     axios
@@ -429,10 +411,10 @@ class DocumentsTable extends React.Component {
           onCancel={this.handlePluginCancel}
           footer={[
             <div>
-            <Button key="back" onClick={this.handlePluginCancel}>
-              Cancel
-            </Button>
-            </div>
+              <Button key="back" onClick={this.handlePluginCancel}>
+                Cancel
+              </Button>
+            </div>,
           ]}
         >
           <Input
@@ -442,7 +424,9 @@ class DocumentsTable extends React.Component {
             onChange={this.handleChange}
           />
           <FormBuilder onSubmit={this.onSubmit} items={items} />
-          <Button type="primary" onClick={(e) => window.print()}>Print this out!</Button>
+          <Button type="primary" onClick={(e) => window.print()}>
+            Print this out!
+          </Button>
         </Modal>
         {this.state.uploadVisible && (
           <Modal
@@ -454,7 +438,11 @@ class DocumentsTable extends React.Component {
             <Card>
               <Input
                 id="nameInput"
-                value={this.state.fileName.split('.').slice(0, -1).toString().replace(/,/g, ".")}
+                value={this.state.fileName
+                  .split('.')
+                  .slice(0, -1)
+                  .toString()
+                  .replace(/,/g, '.')}
                 onChange={this.handleChange}
                 placeholder="Document name..."
               />

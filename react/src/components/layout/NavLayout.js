@@ -89,21 +89,12 @@ class NavLayout extends React.Component {
               </div>
             </div>
           )}
-          {console.log(` These are the paths:  ${this.props.path}`)}
 
           <Menu theme="dark" mode="inline" selectedKeys={[this.props.path]}>
             {MAIN_ROUTES.map(({ name, path, icon, auth }) => {
               return (
                 auth(this.props.authorization_level) && (
                   <Menu.Item key={path}>
-                    {/* {console.log(
-                      `this is the auth value ${auth(
-                        this.props.authorization_level
-                      )}`
-                    )} */}
-                    {/* {console.log(
-                      `this is the authorization level ${this.props.authorization_level}`
-                    )} */}
                     <NavLink to={path}>
                       <Icon type={icon} />
                       <span>{name}</span>

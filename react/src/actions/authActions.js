@@ -8,5 +8,3 @@ export function login(data) {
     });
   };
 }
-
-// completely wrong, I should never need to write dispatch

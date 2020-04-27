@@ -48,7 +48,6 @@ export default class Approve extends Component {
   };
 
   getApprovalDescription() {
-    console.log(localStorage.getItem(TOKEN_KEY));
     const url = window.__env__.API_URL + '/blink/api/workflow/pending';
     axios
       .get(url, null, {
@@ -59,12 +58,10 @@ export default class Approve extends Component {
       })
       .then((response) => {
         if (response.status === 200) {
-          console.log(response);
           this.setState({
             data: response.data,
           });
           this.filterStep(response.data);
-          console.log(this.state.data);
         }
       })
       .catch(axiosError);
@@ -84,12 +81,10 @@ export default class Approve extends Component {
       })
       .then((response) => {
         if (response.status === 200) {
-          console.log(response);
           this.setState({
             data: response.data,
           });
           this.filterStep(response.data);
-          console.log(this.state.data);
         }
       })
       .catch(axiosError);
@@ -133,18 +128,23 @@ export default class Approve extends Component {
     return (
       <React.Fragment>
         <Card title="Approve">
-          <h4>{'DESCRIPTION: ' + (this.state.approveStep.subtitle ? this.state.approveStep.subtitle : 'No data available')}</h4>
+          <h4>
+            {'DESCRIPTION: ' +
+              (this.state.approveStep.subtitle
+                ? this.state.approveStep.subtitle
+                : 'No data available')}
+          </h4>
         </Card>
         <div className="approveButton">
-          <div style={{paddingRight: '20px'}}>
-          <Button type="secondary" onClick={this.notApprove}>
-            Do Not Approve
-          </Button>
+          <div style={{ paddingRight: '20px' }}>
+            <Button type="secondary" onClick={this.notApprove}>
+              Do Not Approve
+            </Button>
           </div>
           <div>
-          <Button type="primary" onClick={this.markStepComplete}>
-            Approve
-          </Button>
+            <Button type="primary" onClick={this.markStepComplete}>
+              Approve
+            </Button>
           </div>
         </div>
       </React.Fragment>

@@ -22,8 +22,6 @@ class Logout extends React.Component {
     const LOG_OUT = '2';
 
     function handleMenuClick(e) {
-      console.log('click', e);
-      console.log(e.key);
       if (e.key === LOG_OUT) {
         localStorage.removeItem(TOKEN_KEY);
         localStorage.removeItem(UUID_KEY);

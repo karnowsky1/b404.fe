@@ -17,10 +17,29 @@ import * as jsPDF from 'jspdf';
 
 import * as html2canvas from 'html2canvas';
 
-const corruptForm = [{"id":"f6d6f8cb-5d69-4db7-813f-561bc9ea91ba","element":"Header","label":{"blocks":[{"key":"48b1d","text":"THIS FORM FILE IS CORRUPT, PLEASE CHANGE THE FILE ASSOCIATED WITH THIS STEP!","type":"unstyled","depth":0,"inlineStyleRanges":[{"offset":0,"length":76,"style":"BOLD"}],"entityRanges":[],"data":{"text-align":"center"}}],"entityMap":{}}}]
+const corruptForm = [
+  {
+    id: 'f6d6f8cb-5d69-4db7-813f-561bc9ea91ba',
+    element: 'Header',
+    label: {
+      blocks: [
+        {
+          key: '48b1d',
+          text:
+            'THIS FORM FILE IS CORRUPT OR MAY NOT BE OF ACTUAL FORM TYPE, PLEASE CHANGE THE FILE ASSOCIATED WITH THIS STEP!',
+          type: 'unstyled',
+          depth: 0,
+          inlineStyleRanges: [{ offset: 0, length: 76, style: 'BOLD' }],
+          entityRanges: [],
+          data: { 'text-align': 'center' },
+        },
+      ],
+      entityMap: {},
+    },
+  },
+];
 
 function markStepComplete() {
-  console.log('COMPLETE');
   const url =
     window.__env__.API_URL +
     '/blink/api/workflow/step/complete?id=' +
@@ -51,8 +70,6 @@ export default class Submission extends Component {
       };
       //localStorage.removeItem('stepId');
       //localStorage.removeItem('fileId');
-
-      console.log(this.state.fileId);
     } else {
       this.state = {
         fileName: '',
@@ -64,11 +81,11 @@ export default class Submission extends Component {
   }
 
   checkParse(file) {
-    if(file) {
+    if (file) {
       try {
-          return JSON.parse(atob(file.split(',')[1]));
-      } catch(e) {
-          return corruptForm;
+        return JSON.parse(atob(file.split(',')[1]));
+      } catch (e) {
+        return corruptForm;
       }
     }
   }
@@ -78,7 +95,7 @@ export default class Submission extends Component {
       getFileByID(this.state.fileId).then((result) => {
         this.setState({
           fileName: result.data.name,
-          file: this.checkParse(result.data.file)
+          file: this.checkParse(result.data.file),
         });
       });
     }
@@ -97,16 +114,12 @@ export default class Submission extends Component {
       pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 12, 0, 0, 0);
       pdf.save(filename);
 
-      console.log(canvas.toDataURL('image/png'));
-
       let requestObject = {
         fileID: this.state.fileId,
         name: this.state.fileName,
         file: canvas.toDataURL(), //.toString(),
         form: false,
       };
-
-      console.log(requestObject);
 
       const url = window.__env__.API_URL + '/blink/api/file';
       axios
