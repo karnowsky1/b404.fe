@@ -19,9 +19,6 @@ function getBase64(file) {
 }
 
 function uploadFile(base64, file) {
-  console.log(file);
-  console.log(base64);
-
   let requestObject = {
     name: document.getElementById('nameInput').value,
     file: base64,
@@ -59,9 +56,6 @@ const props = {
   },
   onChange(info) {
     const { status } = info.file;
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
     if (status === 'done') {
       message.success(`${info.file.name} file uploaded successfully.`);
     } else if (status === 'error') {

@@ -27,7 +27,7 @@ import {
 } from '../../constants/messages';
 import { showDeleteConfirmUtil } from '../../utils/showDeleteConfirmUtil';
 
-var downloadjs = require("downloadjs");
+var downloadjs = require('downloadjs');
 
 const { confirm } = Modal;
 
@@ -57,12 +57,13 @@ class MilestonesTable extends React.Component {
       title: 'Progress',
       dataIndex: '',
       key: 'y',
-      render: (record) =>
-      <Progress
-        //style={{ width: 310 }}
-        percent={Math.floor(record.percentComplete * 100)}
-        size="small"
-      /> 
+      render: (record) => (
+        <Progress
+          //style={{ width: 310 }}
+          percent={Math.floor(record.percentComplete * 100)}
+          size="small"
+        />
+      ),
     };
     const actions = {
       title: 'Actions',
@@ -127,7 +128,9 @@ class MilestonesTable extends React.Component {
           </React.Fragment>
         ),
     };
-    IS_INTERNAL(this.props.authorization_level) && this.columns.push(progress) && this.columns.push(actions);
+    IS_INTERNAL(this.props.authorization_level) &&
+      this.columns.push(progress) &&
+      this.columns.push(actions);
   }
 
   componentDidMount = async (e) => {
@@ -174,9 +177,7 @@ class MilestonesTable extends React.Component {
   };
 
   showEditModal = async (record) => {
-    // console.log(record)
     await getMilestone(record.id).then((response) => {
-      // console.log(response.data)
       this.setState({
         editingMilestone: {
           name: response.data.name,
@@ -192,12 +193,16 @@ class MilestonesTable extends React.Component {
   };
 
   downloadFiles = async (id) => {
-    await getZippedFilesByMilestone(id).then((response) => {
-      if (response.status === 200) {
-        var mime = response.data.file && response.data.file.split(',')[0].split(':')[1].split(';')[0];
-        downloadjs(response.data.file, response.data.name, mime)
-      }
-    }).catch(axiosError);
+    await getZippedFilesByMilestone(id)
+      .then((response) => {
+        if (response.status === 200) {
+          var mime =
+            response.data.file &&
+            response.data.file.split(',')[0].split(':')[1].split(';')[0];
+          downloadjs(response.data.file, response.data.name, mime);
+        }
+      })
+      .catch(axiosError);
   };
 
   showWorkflowModal = (workflow) => {
@@ -259,11 +264,6 @@ class MilestonesTable extends React.Component {
   };
 
   onEditSubmit = async (values) => {
-    // if (!this.state.previousJobIsEmpty && values.title === '') {
-    //   values.title = ' ';
-    // }
-    // may have to do this again
-    console.log(values);
     await axios({
       method: 'put',
       url: window.__env__.API_URL + '/blink/api/milestone',
@@ -290,7 +290,6 @@ class MilestonesTable extends React.Component {
   };
 
   onAssignSubmit = async (values) => {
-    console.log(values);
     await getWorkflow(values.templateID)
       .then((response) => {
         this.setState({
@@ -328,9 +327,7 @@ class MilestonesTable extends React.Component {
           })
           .catch(axiosError);
       },
-      onCancel() {
-        // console.log('Cancel');
-      },
+      onCancel() {},
     });
   };
 
@@ -363,8 +360,6 @@ class MilestonesTable extends React.Component {
               </Col>
               <Col span={12}>
                 <div>
-                  {/* <p> */}
-                  {/* {console.log(record)} */}
                   {record.workflows && record.workflows.length ? (
                     record.workflows.map(({ ...workflow }) => (
                       <div key={workflow.workflowID}>

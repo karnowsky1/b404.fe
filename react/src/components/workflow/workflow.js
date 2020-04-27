@@ -7,9 +7,7 @@ import ArchivedWorkflows from './tabs/archivedWorkflows';
 const { TabPane } = Tabs;
 
 class WorkflowTable extends React.Component {
-  callback(key) {
-    console.log(key);
-  }
+  callback(key) {}
 
   render() {
     return (

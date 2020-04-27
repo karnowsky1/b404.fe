@@ -71,21 +71,12 @@ export default class WorkflowBuilder extends Component {
   }
 
   componentDidMount() {
-    console.log(this.state.defaultTree);
     this.getAllVerbs();
-    console.log('this is the milestone ID');
-    console.log(this.props.workflow.milestoneID);
     var milestoneID = '';
-    console.log('this is the milestone ID from props');
-    console.log(this.props.milestoneID);
     this.props.isConcreteWorkflow && this.props.updateWorkflow
       ? (milestoneID = this.props.workflow.milestoneID)
       : (milestoneID = this.props.milestoneID);
 
-    console.log('this is the milestoneID im looking for ');
-    console.log(milestoneID);
-    console.log('this is the workflow im looking for ');
-    console.log(this.props.workflow);
     this.props.workflow &&
       this.setState({
         workflow: this.props.workflow,
@@ -95,8 +86,6 @@ export default class WorkflowBuilder extends Component {
     this.props.isConcreteWorkflow && this.getAllFiles();
 
     this.props.workflow && this.setWorkflowData();
-    console.log('this is the concrete workflow');
-    console.log(this.props.workflow.steps);
 
     // have to move all this stuff in a fetch method?
     // recall that fetch method whenever the workflow is changed
@@ -177,14 +166,11 @@ export default class WorkflowBuilder extends Component {
   }
 
   workflowConcreteStepConversion() {
-    console.log(this.props.workflow.steps);
     const concreteWorkflow = this.props.workflow.steps.map((obj) => ({
       ...obj,
       person: '',
       fileID: '',
     }));
-    console.log('this is the concrete workflow');
-    console.log(concreteWorkflow);
   }
 
   componentDidUpdate(prevProps) {
@@ -204,8 +190,6 @@ export default class WorkflowBuilder extends Component {
     const concreteWorkflowUrl =
       window.__env__.API_URL + '/blink/api/workflow/concrete';
 
-    console.log('this is the workflow ID');
-    console.log(this.props.workflow);
     const requestObject = this.props.isConcreteWorkflow
       ? {
           workflowID: this.state.workflow.workflowID,
@@ -241,7 +225,6 @@ export default class WorkflowBuilder extends Component {
           //this.setState({ loading: true });
           if (response.status === 200) {
             this.successfulResponseSubmission();
-            console.log('workflow template');
           }
         })
         .catch(axiosError);
@@ -321,7 +304,6 @@ export default class WorkflowBuilder extends Component {
   }
 
   removeNode(rowInfo) {
-    console.log(rowInfo);
     const { path } = rowInfo;
     const newTree = removeNodeAtPath({
       treeData: this.state.treeData,
@@ -358,16 +340,7 @@ export default class WorkflowBuilder extends Component {
     });
   };
 
-  handleDateChange = (e) => {
-    // this.setState({
-    //   defaultRange: e.target.value
-    // });
-    // console.log('This better work');
-    // console.log(e.target);
-    // console.log(e.target.format(SEND_DATE_FORMAT));
-    // console.log(e.target.value.dateStrings[0]);
-    // console.log(e.target.value.dateStrings[1]);
-  };
+  handleDateChange = (e) => {};
 
   render() {
     const getNodeKey = ({ treeIndex }) => treeIndex;
@@ -399,12 +372,6 @@ export default class WorkflowBuilder extends Component {
     const dateRangeValidation = this.state.defaultRangeEdited
       ? required(this.state.defaultRange)
       : '';
-
-    console.log(
-      this.state.defaultRange,
-      this.state.defaultRangeEdited,
-      dateRangeValidation
-    );
 
     return (
       <div
@@ -520,28 +487,37 @@ export default class WorkflowBuilder extends Component {
                   }
                   style={{ width: 120 }}
                   onChange={(event) => {
-                    console.log(rowInfo);
                     const { path } = rowInfo;
                     const title = parseInt(event);
                     if (title === 4) {
-                    this.setState((state) => ({
-                      treeData: changeNodeAtPath({
-                        treeData: state.treeData,
-                        path,
-                        getNodeKey,
-                        newNode: { ...rowInfo.node, title: title, form: true, fileID: 0 },
-                      }),
-                    }));
-                  } else {
-                    this.setState((state) => ({
-                      treeData: changeNodeAtPath({
-                        treeData: state.treeData,
-                        path,
-                        getNodeKey,
-                        newNode: { ...rowInfo.node, title: title, form: false, fileID: 0 },
-                      }),
-                    }));
-                  }
+                      this.setState((state) => ({
+                        treeData: changeNodeAtPath({
+                          treeData: state.treeData,
+                          path,
+                          getNodeKey,
+                          newNode: {
+                            ...rowInfo.node,
+                            title: title,
+                            form: true,
+                            fileID: 0,
+                          },
+                        }),
+                      }));
+                    } else {
+                      this.setState((state) => ({
+                        treeData: changeNodeAtPath({
+                          treeData: state.treeData,
+                          path,
+                          getNodeKey,
+                          newNode: {
+                            ...rowInfo.node,
+                            title: title,
+                            form: false,
+                            fileID: 0,
+                          },
+                        }),
+                      }));
+                    }
                   }}
                 >
                   {children}
@@ -559,7 +535,6 @@ export default class WorkflowBuilder extends Component {
                   value={rowInfo.node.subtitle}
                   size="small"
                   onChange={(event) => {
-                    console.log(rowInfo);
                     const { path } = rowInfo;
                     const subtitle = event.target.value;
 
@@ -606,11 +581,8 @@ export default class WorkflowBuilder extends Component {
                         }
                         style={{ width: 160 }}
                         onChange={(event) => {
-                          console.log(rowInfo);
                           const { path } = rowInfo;
                           const uuid = event;
-                          console.log('what is this parse int');
-                          console.log(uuid);
 
                           this.setState((state) => ({
                             treeData: changeNodeAtPath({
@@ -640,7 +612,6 @@ export default class WorkflowBuilder extends Component {
                         }
                         style={{ width: 160, marginTop: 9 }}
                         onChange={(event) => {
-                          console.log(rowInfo);
                           const { path } = rowInfo;
                           const fileID = parseInt(event);
                           this.setState((state) => ({
@@ -681,7 +652,6 @@ export default class WorkflowBuilder extends Component {
                       !(rowInfo.node.children && rowInfo.node.children.length)
                     }
                     onClick={(checked) => {
-                      console.log(rowInfo);
                       const { path } = rowInfo;
 
                       this.setState((state) => ({

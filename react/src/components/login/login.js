@@ -35,7 +35,6 @@ class LoginForm extends React.Component {
     const { username, password } = this.state;
     const url = window.__env__.API_URL + '/blink/api/login';
 
-    // console.log(JSON.parse(sjcl.encrypt("password",password)).ct)
     await axios
       .post(
         url,

@@ -66,7 +66,6 @@ class ArchivedWorkflows extends React.Component {
           this.setState({
             loading: false,
           });
-          console.log(response);
           this.setState({
             data: response.data,
           });
@@ -110,7 +109,6 @@ class ArchivedWorkflows extends React.Component {
   }
 
   showCompanyModal = (workflow) => {
-    console.log(workflow);
     this.setState({
       workflow: workflow,
       companyVisible: true,
@@ -118,14 +116,12 @@ class ArchivedWorkflows extends React.Component {
   };
 
   handleCompanyOk = (e) => {
-    console.log(e);
     this.setState({
       companyVisible: false,
     });
   };
 
   handleCompanyCancel = (e) => {
-    console.log(e);
     this.setState({
       companyVisible: false,
     });
@@ -139,14 +135,12 @@ class ArchivedWorkflows extends React.Component {
   };
 
   handlePersonOk = (e) => {
-    console.log(e);
     this.setState({
       personVisible: false,
     });
   };
 
   handlePersonCancel = (e) => {
-    console.log(e);
     this.setState({
       personVisible: false,
     });
@@ -169,9 +163,7 @@ class ArchivedWorkflows extends React.Component {
           }),
         });
       })
-      .catch(function (error) {
-        console.log(error);
-      });
+      .catch(function (error) {});
   }
 
   getAllPeople() {
@@ -214,16 +206,12 @@ class ArchivedWorkflows extends React.Component {
           })
           .then((response) => {
             if (response.status === 200) {
-              // console.log('works');
               window.location.reload(false);
             } else {
-              // console.log(response);
             }
           });
       },
-      onCancel() {
-        // console.log('Cancel');
-      },
+      onCancel() {},
     });
   };
 
@@ -249,16 +237,12 @@ class ArchivedWorkflows extends React.Component {
           )
           .then((response) => {
             if (response.status === 200) {
-              // console.log('works');
               window.location.reload(false);
             } else {
-              // console.log(response);
             }
           });
       },
-      onCancel() {
-        // console.log('Cancel');
-      },
+      onCancel() {},
     });
   };
 
@@ -270,7 +254,6 @@ class ArchivedWorkflows extends React.Component {
   };
 
   handleOk = (e) => {
-    console.log(e);
     this.setState({
       visible: false,
     });
@@ -278,7 +261,6 @@ class ArchivedWorkflows extends React.Component {
   };
 
   handleCancel = (e) => {
-    console.log(e);
     this.setState({
       visible: false,
     });

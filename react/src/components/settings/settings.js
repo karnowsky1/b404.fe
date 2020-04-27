@@ -86,7 +86,6 @@ class SettingsForm extends React.Component {
           title,
           signature,
         } = this.state.user;
-        //console.log(signature);
         const id = uuid;
         const url = window.__env__.API_URL + '/blink/api/person';
         axios
@@ -146,12 +145,10 @@ class SettingsForm extends React.Component {
 
   handleChange = (e) => {
     if (e.target.name === 'password') {
-      console.log(true);
     }
     this.setState({
       user: { ...this.state.user, [e.target.name]: e.target.value },
     });
-    //console.log(this.sigCanvas.toDataURL());
   };
 
   clearSignature = (e) => {
@@ -159,14 +156,12 @@ class SettingsForm extends React.Component {
     this.setState({
       user: { ...this.state.user, signature: this.sigCanvas.toDataURL() },
     });
-    //console.log(this.state.user.signature);
   };
 
   handleSignatureChange = (e) => {
     this.setState({
       user: { ...this.state.user, signature: this.sigCanvas.toDataURL() },
     });
-    //console.log(this.state.user.signature);
   };
 
   render() {

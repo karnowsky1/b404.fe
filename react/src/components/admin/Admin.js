@@ -185,8 +185,6 @@ class AdminTable extends React.Component {
   showEditModal = async (record) => {
     await getPerson(record.id)
       .then((response) => {
-        // console.log(response.data)
-        // console.log(response.data.companies)
         this.setState({
           editingUserCompanies: response.data.companies.map((company) => {
             return company.companyID;
@@ -210,12 +208,9 @@ class AdminTable extends React.Component {
       previousJobIsEmpty: record.title === '',
       editvisible: true,
     });
-    // console.log('this is the record')
-    // console.log(record)
   };
 
   onAddSubmit = async (values) => {
-    // console.log(values);
     if (!this.state.data.some((user) => user.username === values.username)) {
       await axios({
         method: 'post',
@@ -226,14 +221,11 @@ class AdminTable extends React.Component {
         },
         data: qs.stringify({
           ...values,
-          // password: JSON.parse(sjcl.encrypt("password",values.password)).ct
           password: hash(values.password),
         }),
-        // this is already a big object coming from formik
         type: 'json',
       })
         .then((response) => {
-          // console.log(values.company)
           this.fetch();
           if (response.status === 200 && values.companies) {
             // needed the response of the first call to make the second found
@@ -288,36 +280,28 @@ class AdminTable extends React.Component {
           })
           .then((response) => {
             if (response.status === 200) {
-              // console.log('works');
               fetch();
             } else {
-              // console.log(response);
             }
           });
       },
-      onCancel() {
-        // console.log('Cancel');
-      },
+      onCancel() {},
     });
   };
 
   handleAddCancel = (e) => {
-    // console.log(e);
     this.setState({
       addvisible: false,
     });
   };
 
   handleEditCancel = (e) => {
-    // console.log(e);
     this.setState({
       editvisible: false,
     });
   };
 
   onEditSubmit = async (values) => {
-    // console.log("These are the values")
-    // console.log(values)
     if (!this.state.previousJobIsEmpty && values.title === '') {
       values.title = ' ';
     }
@@ -360,7 +344,6 @@ class AdminTable extends React.Component {
           .catch(axiosError);
       }
       if (response.status === 200 && values.companies) {
-        // console.log(company.toString())
         for (let company of values.companies) {
           await axios({
             method: 'post',
@@ -382,7 +365,6 @@ class AdminTable extends React.Component {
         }
       } else {
         this.fetch();
-        // console.log(response);
       }
     });
     this.setState({
