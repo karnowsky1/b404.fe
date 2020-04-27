@@ -3,6 +3,7 @@ export const DEFAULT_TREE = {
   subtitle: '',
   asynchronous: false,
   expanded: false,
+  form: false
 };
 
 export const ASSIGN_DEFAULT_TREE = {
@@ -14,6 +15,7 @@ export const ASSIGN_DEFAULT_TREE = {
   uuid: '',
   startDate: '',
   deliveryDate: '',
+  form: false
 };
 
 export const SEND_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';

@@ -17,28 +17,29 @@ import { axiosError } from '../../utils/axiosError';
 import { getAllCompanies, getPerson } from '../../utils/api';
 import { hash } from './../../utils/hash';
 import { FETCH_REFRESH_TIME } from '../../constants/routes';
+import { AUTH } from '../../constants';
 
 const { confirm } = Modal;
 
 const optionsR = [
   {
-    value: 1,
+    value: AUTH.ADMIN,
     label: 'Admin',
   },
   {
-    value: 2,
+    value: AUTH.DIRECTOR,
     label: 'Director',
   },
   {
-    value: 3,
+    value: AUTH.COACH,
     label: 'Coach',
   },
   {
-    value: 4,
+    value: AUTH.CUSTOMER,
     label: 'Customer',
   },
   {
-    value: 5,
+    value: AUTH.PROVIDER,
     label: 'Provider',
   },
 ];
@@ -108,20 +109,20 @@ class AdminTable extends React.Component {
   name(dataN) {
     let name = '';
     switch (dataN) {
-      case 1:
-        name = 'admin';
+      case AUTH.ADMIN:
+        name = 'Admin';
         break;
-      case 2:
-        name = 'coach';
+      case AUTH.DIRECTOR:
+        name = 'Director';
         break;
-      case 3:
-        name = 'external';
+      case AUTH.COACH:
+        name = 'Coach';
         break;
-      case 4:
-        name = 'customer';
+      case AUTH.CUSTOMER:
+        name = 'Customer';
         break;
-      case 5:
-        name = 'provider';
+      case AUTH.PROVIDER:
+        name = 'Provider';
         break;
       default:
         return;
