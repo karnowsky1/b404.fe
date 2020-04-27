@@ -125,6 +125,10 @@ export default class Approve extends Component {
       .catch(axiosError);
   }
 
+  notApprove() {
+    window.location.href = '/dashboard';
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -132,6 +136,9 @@ export default class Approve extends Component {
           <h4>{'DESCRIPTION: ' + this.state.approveStep.subtitle}</h4>
         </Card>
         <div className="approveButton">
+          <Button type="secondary" onClick={this.notApprove}>
+            Do Not Approve
+          </Button>
           <Button type="primary" onClick={this.markStepComplete}>
             Approve
           </Button>
