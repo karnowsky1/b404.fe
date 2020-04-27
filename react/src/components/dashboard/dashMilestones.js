@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Button, Card } from 'antd';
+import { Button, Card, Progress } from 'antd';
 import { TOKEN_KEY /*, UUID_KEY*/ } from '../../constants/auth';
 import { Link } from 'react-router-dom';
 import { NoContent } from '../../utils/NoContent';
@@ -55,6 +55,7 @@ class DashMilestones extends React.Component {
             name: entry.name,
             date: entry.createdDate,
             company: entry.company.companyName,
+            percentComplete: entry.percentComplete
           });
         }
 
@@ -91,9 +92,14 @@ class DashMilestones extends React.Component {
             >
               <Card
                 title={record.name}
-                style={{ width: 265, height: 250 }}
+                style={{ width: 265, minHeight: 350 }}
                 key={record.id}
               >
+                <Progress
+                  style={{display: 'flex', justifyContent: 'center', paddingBottom: '12px'}}
+                  type="circle"
+                  percent={Math.floor(record.percentComplete * 100)}
+                />
                 <p>
                   <b>Company Name:</b>
                 </p>

@@ -462,7 +462,7 @@ class TemplateTable extends React.Component {
                 <Input
                   id="nameInput"
                   placeholder="Document name..."
-                  value={this.state.fileName.split('.').shift()}
+                  value={this.state.fileName.split('.').slice(0, -1).toString().replace(/,/g, ".")}
                   onChange={this.handleChange}
                 />
                 <Input

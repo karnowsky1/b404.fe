@@ -173,7 +173,8 @@ export default class Uploads extends Component {
         });
       },
       showUploadList: {
-        showDownloadIcon: false,
+        showDownloadIcon: true,
+        downloadIcon: 'Download',
         showRemoveIcon: false,
       },
       onChange: this.handleUploadChange,
@@ -214,12 +215,12 @@ export default class Uploads extends Component {
           style={{
             width: '60%',
             margin: 'auto',
-            height: '40vh',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
           }}
         >
+          <p style={{textAlign: 'center'}}>Attached is the file associated with this step. You can use the download link to inspect the file and, if needed, make modifications to it. When you are done, drag & drop/reupload the file to finish the step.</p>
           <Dragger
             {...this.returnUploadProps(this)}
             fileList={this.state.fileList}

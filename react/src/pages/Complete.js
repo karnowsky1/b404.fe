@@ -128,7 +128,7 @@ export default class Complete extends Component {
     return (
       <React.Fragment>
         <Card title="Complete">
-          <h4>{'DESCRIPTION: ' + this.state.completeStep.subtitle}</h4>
+          <h4>{'DESCRIPTION: ' + (this.state.completeStep.subtitle ? this.state.completeStep.subtitle : 'No data available')}</h4>
         </Card>
         <div className="approveButton">
           <Button type="primary" onClick={this.markStepComplete}>

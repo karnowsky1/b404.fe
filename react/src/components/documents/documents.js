@@ -294,7 +294,7 @@ class DocumentsTable extends React.Component {
       message.error('Please input the file name');
       return;
     }
-    if (input.includes('.')) {
+    if (e.target.value.includes('.')) {
       message.error(
         "Don't input extensions into the file name, the system does this automatically"
       );
@@ -454,7 +454,7 @@ class DocumentsTable extends React.Component {
             <Card>
               <Input
                 id="nameInput"
-                value={this.state.fileName.split('.').shift()}
+                value={this.state.fileName.split('.').slice(0, -1).toString().replace(/,/g, ".")}
                 onChange={this.handleChange}
                 placeholder="Document name..."
               />

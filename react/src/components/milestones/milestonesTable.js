@@ -53,6 +53,17 @@ class MilestonesTable extends React.Component {
       { title: 'Name', dataIndex: 'name', key: 'name' },
       { title: 'Company', dataIndex: 'company', key: 'company' },
     ];
+    const progress = {
+      title: 'Progress',
+      dataIndex: '',
+      key: 'y',
+      render: (record) =>
+      <Progress
+        //style={{ width: 310 }}
+        percent={Math.floor(record.percentComplete * 100)}
+        size="small"
+      /> 
+    };
     const actions = {
       title: 'Actions',
       dataIndex: '',
@@ -116,7 +127,7 @@ class MilestonesTable extends React.Component {
           </React.Fragment>
         ),
     };
-    IS_INTERNAL(this.props.authorization_level) && this.columns.push(actions);
+    IS_INTERNAL(this.props.authorization_level) && this.columns.push(progress) && this.columns.push(actions);
   }
 
   componentDidMount = async (e) => {
