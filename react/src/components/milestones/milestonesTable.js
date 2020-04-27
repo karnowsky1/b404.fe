@@ -14,7 +14,11 @@ import { axiosError } from '../../utils/axiosError';
 import { AssignTemplateModal } from '../workflow/AssignTemplateModal';
 import moment from 'moment';
 import WorkflowBuilder from '../wf-builder/workflowBuilder';
-import { RECEIVE_DATE_FORMAT, IS_INTERNAL } from '../../constants';
+import {
+  RECEIVE_DATE_FORMAT,
+  IS_INTERNAL,
+  FETCH_REFRESH_TIME,
+} from '../../constants';
 import { NoContent } from '../../utils/NoContent';
 import {
   noMilestonesMessageOne,
@@ -105,7 +109,9 @@ class MilestonesTable extends React.Component {
   }
 
   componentDidMount = async (e) => {
-    this.props.fetch();
+    const { fetch } = this.props;
+    fetch();
+    this.intervalID = setInterval(fetch, FETCH_REFRESH_TIME);
     await getAllCompanies()
       .then((response) => {
         this.setState({
@@ -118,6 +124,10 @@ class MilestonesTable extends React.Component {
       })
       .catch(axiosError);
   };
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
+  }
 
   showAddModal = () => {
     this.setState({

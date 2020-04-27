@@ -4,7 +4,11 @@ import axios from 'axios';
 import { AssignModal } from '../assignModal';
 import { AssignPeople } from '../assignModal';
 import WorkflowBuilder from '../../wf-builder/workflowBuilder';
-import { TOKEN_KEY, DEFAULT_TREE } from '../../../constants';
+import {
+  TOKEN_KEY,
+  DEFAULT_TREE,
+  FETCH_REFRESH_TIME,
+} from '../../../constants';
 import qs from 'qs';
 import { axiosError } from '../../../utils/axiosError';
 import { showDeleteConfirmUtil } from '../../../utils/showDeleteConfirmUtil';
@@ -111,6 +115,15 @@ class ActiveWorkflows extends React.Component {
     this.getWorkflows();
     this.getAllCompanies();
     this.getAllPeople();
+    this.intervalID = setInterval(() => {
+      this.getWorkflows();
+      this.getAllCompanies();
+      this.getAllPeople();
+    }, FETCH_REFRESH_TIME);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
   }
 
   showCompanyModal = (workflow) => {

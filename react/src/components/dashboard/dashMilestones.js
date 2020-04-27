@@ -8,6 +8,7 @@ import {
   noMilestoneUserMessageOne,
   noMilestoneUserMessageTwo,
 } from '../../constants/messages';
+import { FETCH_REFRESH_TIME } from '../../constants';
 
 class DashMilestones extends React.Component {
   constructor(props) {
@@ -25,6 +26,11 @@ class DashMilestones extends React.Component {
       loading: true,
     });
     this.fetch();
+    this.intervalID = setInterval(this.fetch, FETCH_REFRESH_TIME);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
   }
 
   fetch = async (params = {}) => {
