@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import qs from 'qs';
-import { Table, Progress, Row, Col, Button, Modal, Divider, message } from 'antd';
+import { Table, Progress, Row, Col, Button, Modal, Divider } from 'antd';
 import { MilestoneModal } from './MilestoneModal';
 import {
   getAllCompanies,
@@ -185,10 +185,8 @@ class MilestonesTable extends React.Component {
       if (response.status === 200) {
         var mime = response.data.file && response.data.file.split(',')[0].split(':')[1].split(';')[0];
         downloadjs(response.data.file, response.data.name, mime)
-      } else {
-        message.error(response.data.error)
       }
-    });
+    }).catch(axiosError);
   };
 
   showWorkflowModal = (workflow) => {
