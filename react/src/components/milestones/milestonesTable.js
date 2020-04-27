@@ -9,6 +9,7 @@ import {
   getMilestone,
   getWorkflowTemplates,
   getWorkflow,
+  getZippedFilesByMilestone,
 } from '../../utils/api';
 import { axiosError } from '../../utils/axiosError';
 import { AssignTemplateModal } from '../workflow/AssignTemplateModal';
@@ -25,6 +26,8 @@ import {
   noMilestonesMessageTwo,
 } from '../../constants/messages';
 import { showDeleteConfirmUtil } from '../../utils/showDeleteConfirmUtil';
+
+var downloadjs = require("downloadjs");
 
 const { confirm } = Modal;
 
@@ -81,6 +84,14 @@ class MilestonesTable extends React.Component {
               }
             >
               Archive
+            </Button>
+            <Divider type="vertical" />
+            <Button
+              type="link"
+              size="small"
+              onClick={(e) => this.downloadFiles(record.id)}
+            >
+              Download Content
             </Button>
           </React.Fragment>
         ) : (
@@ -167,6 +178,15 @@ class MilestonesTable extends React.Component {
         editvisible: true,
       });
     });
+  };
+
+  downloadFiles = async (id) => {
+    await getZippedFilesByMilestone(id).then((response) => {
+      if (response.status === 200) {
+        var mime = response.data.file && response.data.file.split(',')[0].split(':')[1].split(';')[0];
+        downloadjs(response.data.file, response.data.name, mime)
+      }
+    }).catch(axiosError);
   };
 
   showWorkflowModal = (workflow) => {
