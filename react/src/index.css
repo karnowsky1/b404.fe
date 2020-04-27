@@ -242,3 +242,7 @@ code {
   margin: 0;
   padding: 0;
 }
+
+.slick-dots li button {
+  background: rgb(240, 111, 50) !important;
+}
