@@ -51,6 +51,7 @@ class AssignTable extends React.Component {
       fileList: [],
       changed: false,
       extension: '',
+      form: false
     };
     this.onCheckboxChange = this.onCheckboxChange.bind(this);
     this.returnUploadProps = this.returnUploadProps.bind(this);
@@ -91,6 +92,7 @@ class AssignTable extends React.Component {
         key: 'x',
         render: (file) => (
           <React.Fragment>
+            {!file.form && (
             <a
               style={{ color: '#f06f32' }}
               href={
@@ -105,8 +107,10 @@ class AssignTable extends React.Component {
             >
               Download
             </a>
-            {this.props.buttonVisible && (
+            )}
               <React.Fragment>
+              {(this.props.buttonVisible && !file.form) && (
+                <React.Fragment>
                 <Divider type="vertical" />
                 <Button
                   type="link"
@@ -123,6 +127,8 @@ class AssignTable extends React.Component {
                   Update
                 </Button>
                 <Divider type="vertical" />
+                </React.Fragment>
+                )}
                 <Button
                   type="link"
                   size="small"
@@ -131,7 +137,6 @@ class AssignTable extends React.Component {
                   Delete
                 </Button>
               </React.Fragment>
-            )}
           </React.Fragment>
         ),
       },
@@ -279,6 +284,7 @@ class AssignTable extends React.Component {
             extension: entry.name.includes('.')
               ? entry.name.split('.').pop()
               : '',
+            form: entry.form  
           });
         }
         const pagination = { ...this.state.pagination };

@@ -1,11 +1,13 @@
 import React from 'react';
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon, notification } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { MAIN_ROUTES } from '../../constants/routes';
 import { connect } from 'react-redux';
+import { setTasks } from '../../actions/task';
 import Logout from './Logout';
 import mainLogo from '../../img/something.jpg';
-import { AUTH } from '../../constants';
+import { AUTH, PENDING_TASKS_FETCH_REFRESH_TIME } from '../../constants';
+import { getPendingTasks, getActiveWorkflows } from '../../utils/api';
 
 const { Header, Sider, Content } = Layout;
 
@@ -20,6 +22,52 @@ class NavLayout extends React.Component {
     this.setState({
       collapsed: !this.state.collapsed,
     });
+  };
+
+  componentDidMount() {
+    this.fetch();
+    this.intervalID = setInterval(this.fetch, PENDING_TASKS_FETCH_REFRESH_TIME);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
+  }
+
+  fetch = async () => {
+    const { setTasks } = this.props;
+    // what about the first time this.fetch is called?
+    // this.fetch will be clean, then I'll have a second function that calls this.fetch() but with extras stuff
+    const response = await getPendingTasks();
+    if (response.status === 200) {
+      if (this.props.pendingTasks) {
+        const currentIds = this.props.pendingTasks.map((task) => task.stepID);
+        const newIds = response.data.map((task) => task.stepID);
+        const updatedWorkflows = new Set();
+        newIds.forEach((newId) => {
+          if (!currentIds.includes(newId)) {
+            const task = response.data.find((task) => task.stepID === newId);
+            updatedWorkflows.add(task.workflowID);
+          }
+        });
+        if (updatedWorkflows.size > 0) {
+          const workflows = await getActiveWorkflows();
+          notification.open({
+            message: 'Tasks have been uploaded for the following workflows:',
+            description: Array.from(updatedWorkflows)
+              .map(
+                (workflowID) =>
+                  workflows.data.find(
+                    (workflow) => workflow.workflowID === workflowID
+                  ).name
+              )
+              .join(', '),
+          });
+          setTasks(response.data);
+        }
+      } else {
+        setTasks(response.data);
+      }
+    }
   };
 
   render() {
@@ -131,8 +179,12 @@ class NavLayout extends React.Component {
   }
 }
 
-export default connect((state = {}) => ({
-  authorization_level: state.user && state.user.accessLevelID,
-  isAdmin: state.user && state.user.accessLevelID <= AUTH.ADMIN,
-  user_name: state.user.fName + ' ' + state.user.lName,
-}))(NavLayout);
+export default connect(
+  (state = {}) => ({
+    authorization_level: state.user && state.user.accessLevelID,
+    isAdmin: state.user && state.user.accessLevelID <= AUTH.ADMIN,
+    user_name: state.user.fName + ' ' + state.user.lName,
+    pendingTasks: state.pendingTasks,
+  }),
+  { setTasks }
+)(NavLayout);
