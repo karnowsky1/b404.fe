@@ -165,14 +165,6 @@ export default class WorkflowBuilder extends Component {
     });
   }
 
-  workflowConcreteStepConversion() {
-    const concreteWorkflow = this.props.workflow.steps.map((obj) => ({
-      ...obj,
-      person: '',
-      fileID: '',
-    }));
-  }
-
   componentDidUpdate(prevProps) {
     if (this.props.workflow !== prevProps.workflow) {
       if (this.props.workflow !== null) {
