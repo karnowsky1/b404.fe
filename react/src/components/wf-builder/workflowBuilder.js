@@ -624,7 +624,7 @@ export default class WorkflowBuilder extends Component {
                           }));
                         }}
                       >
-                        {rowInfo.node.form ? forms : files}
+                        {rowInfo.node.title === 4 ? forms : files}
                       </Select>
                     </div>
                   </div>
