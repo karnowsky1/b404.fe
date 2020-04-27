@@ -231,5 +231,9 @@ code {
 }
 
 #nameInputForm {
-  width: 50%
+  width: 50%;
+}
+
+.demo-form {
+  background-color: rgba(0, 0, 0, 0.45) !important;
 }

@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { Card, message } from 'antd';
+import { NavLink } from 'react-router-dom';
+import { MAIN_ROUTES } from '../constants/routes';
+import { Card, message, Button, Icon } from 'antd';
 import { TOKEN_KEY } from '../constants/auth';
+
 // import { InboxOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { axiosError } from '../utils/axiosError';
@@ -11,7 +14,7 @@ import { getFileByID } from '../utils/api';
 
 import * as jsPDF from 'jspdf';
 
-import * as html2canvas from 'html2canvas'
+import * as html2canvas from 'html2canvas';
 
 function markStepComplete() {
   console.log('COMPLETE');
@@ -41,7 +44,7 @@ export default class Submission extends Component {
         fileName: '',
         stepId: localStorage.getItem('stepId'),
         fileId: localStorage.getItem('fileId'),
-        file: []
+        file: [],
       };
       //localStorage.removeItem('stepId');
       //localStorage.removeItem('fileId');
@@ -52,15 +55,18 @@ export default class Submission extends Component {
         fileName: '',
         stepId: null,
         fileId: null,
-        file: []
+        file: [],
       };
     }
   }
 
   componentDidMount() {
-    if(this.state.fileId) {
+    if (this.state.fileId) {
       getFileByID(this.state.fileId).then((result) => {
-        this.setState({ fileName: result.data.name, file: JSON.parse(atob(result.data.file.split(',')[1])) });
+        this.setState({
+          fileName: result.data.name,
+          file: JSON.parse(atob(result.data.file.split(',')[1])),
+        });
       });
     }
   }
@@ -71,11 +77,9 @@ export default class Submission extends Component {
   };
 
   print() {
-    const filename  = this.state.fileName;
-  
-    html2canvas(document.querySelector('.jumbotron'),{
-      
-    }).then(canvas => {
+    const filename = this.state.fileName;
+
+    html2canvas(document.querySelector('.jumbotron'), {}).then((canvas) => {
       let pdf = new jsPDF();
       pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 12, 0, 0, 0);
       pdf.save(filename);
@@ -85,27 +89,27 @@ export default class Submission extends Component {
       let requestObject = {
         fileID: this.state.fileId,
         name: this.state.fileName,
-        file: canvas.toDataURL(),//.toString(),
+        file: canvas.toDataURL(), //.toString(),
         form: false,
       };
 
       console.log(requestObject);
 
-    const url = window.__env__.API_URL + '/blink/api/file';
-    axios
-      .put(url, requestObject, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: localStorage.getItem(TOKEN_KEY),
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          message.success('Data saved successfully');
-          markStepComplete();
-        }
-      })
-      .catch(axiosError);
+      const url = window.__env__.API_URL + '/blink/api/file';
+      axios
+        .put(url, requestObject, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: localStorage.getItem(TOKEN_KEY),
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            message.success('Data saved successfully');
+            markStepComplete();
+          }
+        })
+        .catch(axiosError);
     });
   }
 
@@ -113,12 +117,35 @@ export default class Submission extends Component {
     return (
       <Card title="Form for Submission">
         <div id="form">
-        <div>
-        <FormGenerator
-          onSubmit={this.onSubmit}
-          formData={this.state.file}
-        />
-        </div>
+          <div>
+            <FormGenerator
+              onSubmit={this.onSubmit}
+              formData={this.state.file}
+            />
+            <Button
+              style={{
+                zIndex: '11',
+                backgroundColor: '#fafafa!important',
+                position: 'relative',
+                top: '-13em',
+                left: '-3em',
+              }}
+            >
+              <NavLink to={MAIN_ROUTES[0].path}>
+                <span>
+                  <Icon
+                    style={{
+                      position: 'relative',
+                      top: '-.2em',
+                      marginRight: '.5em',
+                    }}
+                    type={MAIN_ROUTES[0].icon}
+                  />
+                  {`Back to ${MAIN_ROUTES[0].name}`}
+                </span>
+              </NavLink>
+            </Button>
+          </div>
         </div>
       </Card>
     );
