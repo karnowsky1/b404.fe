@@ -16,28 +16,30 @@ import { PeopleModal } from './PeopleModal';
 import { axiosError } from '../../utils/axiosError';
 import { getAllCompanies, getPerson } from '../../utils/api';
 import { hash } from './../../utils/hash';
+import { FETCH_REFRESH_TIME } from '../../constants/routes';
+import { AUTH } from '../../constants';
 
 const { confirm } = Modal;
 
 const optionsR = [
   {
-    value: 1,
+    value: AUTH.ADMIN,
     label: 'Admin',
   },
   {
-    value: 2,
+    value: AUTH.DIRECTOR,
     label: 'Director',
   },
   {
-    value: 3,
+    value: AUTH.COACH,
     label: 'Coach',
   },
   {
-    value: 4,
+    value: AUTH.CUSTOMER,
     label: 'Customer',
   },
   {
-    value: 5,
+    value: AUTH.PROVIDER,
     label: 'Provider',
   },
 ];
@@ -107,20 +109,20 @@ class AdminTable extends React.Component {
   name(dataN) {
     let name = '';
     switch (dataN) {
-      case 1:
-        name = 'admin';
+      case AUTH.ADMIN:
+        name = 'Admin';
         break;
-      case 2:
-        name = 'coach';
+      case AUTH.DIRECTOR:
+        name = 'Director';
         break;
-      case 3:
-        name = 'external';
+      case AUTH.COACH:
+        name = 'Coach';
         break;
-      case 4:
-        name = 'customer';
+      case AUTH.CUSTOMER:
+        name = 'Customer';
         break;
-      case 5:
-        name = 'provider';
+      case AUTH.PROVIDER:
+        name = 'Provider';
         break;
       default:
         return;
@@ -154,6 +156,7 @@ class AdminTable extends React.Component {
 
   componentDidMount() {
     this.fetch();
+    this.intervalID = setInterval(this.fetch, FETCH_REFRESH_TIME);
     getAllCompanies()
       .then((response) => {
         this.setState({
@@ -169,6 +172,10 @@ class AdminTable extends React.Component {
       });
   }
 
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
+  }
+
   showAddModal = () => {
     this.setState({
       addvisible: true,
@@ -178,8 +185,6 @@ class AdminTable extends React.Component {
   showEditModal = async (record) => {
     await getPerson(record.id)
       .then((response) => {
-        // console.log(response.data)
-        // console.log(response.data.companies)
         this.setState({
           editingUserCompanies: response.data.companies.map((company) => {
             return company.companyID;
@@ -203,12 +208,9 @@ class AdminTable extends React.Component {
       previousJobIsEmpty: record.title === '',
       editvisible: true,
     });
-    // console.log('this is the record')
-    // console.log(record)
   };
 
   onAddSubmit = async (values) => {
-    // console.log(values);
     if (!this.state.data.some((user) => user.username === values.username)) {
       await axios({
         method: 'post',
@@ -219,14 +221,11 @@ class AdminTable extends React.Component {
         },
         data: qs.stringify({
           ...values,
-          // password: JSON.parse(sjcl.encrypt("password",values.password)).ct
           password: hash(values.password),
         }),
-        // this is already a big object coming from formik
         type: 'json',
       })
         .then((response) => {
-          // console.log(values.company)
           this.fetch();
           if (response.status === 200 && values.companies) {
             // needed the response of the first call to make the second found
@@ -281,36 +280,28 @@ class AdminTable extends React.Component {
           })
           .then((response) => {
             if (response.status === 200) {
-              // console.log('works');
               fetch();
             } else {
-              // console.log(response);
             }
           });
       },
-      onCancel() {
-        // console.log('Cancel');
-      },
+      onCancel() {},
     });
   };
 
   handleAddCancel = (e) => {
-    // console.log(e);
     this.setState({
       addvisible: false,
     });
   };
 
   handleEditCancel = (e) => {
-    // console.log(e);
     this.setState({
       editvisible: false,
     });
   };
 
   onEditSubmit = async (values) => {
-    // console.log("These are the values")
-    // console.log(values)
     if (!this.state.previousJobIsEmpty && values.title === '') {
       values.title = ' ';
     }
@@ -353,7 +344,6 @@ class AdminTable extends React.Component {
           .catch(axiosError);
       }
       if (response.status === 200 && values.companies) {
-        // console.log(company.toString())
         for (let company of values.companies) {
           await axios({
             method: 'post',
@@ -375,7 +365,6 @@ class AdminTable extends React.Component {
         }
       } else {
         this.fetch();
-        // console.log(response);
       }
     });
     this.setState({

@@ -14,6 +14,7 @@ import {
 import axios from 'axios';
 import { TOKEN_KEY /*, UUID_KEY*/ } from '../../constants/auth';
 import { axiosError } from '../../utils/axiosError';
+import { FETCH_REFRESH_TIME } from '../../constants';
 
 const { confirm } = Modal;
 
@@ -50,6 +51,7 @@ class AssignTable extends React.Component {
       fileList: [],
       changed: false,
       extension: '',
+      form: false,
     };
     this.onCheckboxChange = this.onCheckboxChange.bind(this);
     this.returnUploadProps = this.returnUploadProps.bind(this);
@@ -90,47 +92,51 @@ class AssignTable extends React.Component {
         key: 'x',
         render: (file) => (
           <React.Fragment>
-            <a
-              style={{ color: '#f06f32' }}
-              href={
-                file.fileC &&
-                URL.createObjectURL(this.dataURItoBlob(file.fileC))
-              }
-              download={
-                file.name.includes('.')
-                  ? file.name
-                  : file.name + '.' + file.extension
-              }
-            >
-              Download
-            </a>
-            {this.props.buttonVisible && (
-              <React.Fragment>
-                <Divider type="vertical" />
-                <Button
-                  type="link"
-                  size="small"
-                  onClick={(e) => {
-                    this.showModal(
-                      file.name,
-                      file.confidental,
-                      file.id,
-                      file.fileC
-                    );
-                  }}
-                >
-                  Update
-                </Button>
-                <Divider type="vertical" />
-                <Button
-                  type="link"
-                  size="small"
-                  onClick={(e) => this.showDeleteConfirm(e, file.id, this)}
-                >
-                  Delete
-                </Button>
-              </React.Fragment>
+            {!file.form && (
+              <a
+                style={{ color: '#f06f32' }}
+                href={
+                  file.fileC &&
+                  URL.createObjectURL(this.dataURItoBlob(file.fileC))
+                }
+                download={
+                  file.name.includes('.')
+                    ? file.name
+                    : file.name + '.' + file.extension
+                }
+              >
+                Download
+              </a>
             )}
+            <React.Fragment>
+              {this.props.buttonVisible && !file.form && (
+                <React.Fragment>
+                  <Divider type="vertical" />
+                  <Button
+                    type="link"
+                    size="small"
+                    onClick={(e) => {
+                      this.showModal(
+                        file.name,
+                        file.confidental,
+                        file.id,
+                        file.fileC
+                      );
+                    }}
+                  >
+                    Update
+                  </Button>
+                  <Divider type="vertical" />
+                </React.Fragment>
+              )}
+              <Button
+                type="link"
+                size="small"
+                onClick={(e) => this.showDeleteConfirm(e, file.id, this)}
+              >
+                Delete
+              </Button>
+            </React.Fragment>
           </React.Fragment>
         ),
       },
@@ -203,12 +209,17 @@ class AssignTable extends React.Component {
 
   componentDidMount() {
     this.fetch();
+    this.intervalID = setInterval(this.fetch, FETCH_REFRESH_TIME);
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.changed !== prevState.changed) {
       this.fetch();
     }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
   }
 
   showDeleteConfirm = (e, id, state) => {
@@ -227,24 +238,20 @@ class AssignTable extends React.Component {
           })
           .then((response) => {
             if (response.status === 200) {
-              // console.log('works');
               state.setState({
                 changed: true,
               });
             } else {
-              // console.log(response);
             }
           });
       },
-      onCancel() {
-        // console.log('Cancel');
-      },
+      onCancel() {},
     });
   };
 
   fetch = async (params = {}) => {
     this.setState({
-      loading: true,
+      loading: false,
       changed: false,
     });
     await axios({
@@ -261,7 +268,6 @@ class AssignTable extends React.Component {
       type: 'json',
     })
       .then((response) => {
-        console.log(response.data);
         let conf = [];
         for (let entry of response.data) {
           conf.push({
@@ -273,6 +279,7 @@ class AssignTable extends React.Component {
             extension: entry.name.includes('.')
               ? entry.name.split('.').pop()
               : '',
+            form: entry.form,
           });
         }
         const pagination = { ...this.state.pagination };
@@ -282,7 +289,6 @@ class AssignTable extends React.Component {
           data: conf,
           pagination,
         });
-        console.log(this.state.data);
       })
       .catch(function (error) {
         console.log(error);
@@ -324,9 +330,6 @@ class AssignTable extends React.Component {
   };
 
   handleUploadOk = (e) => {
-    console.log(this.state.fileBase64);
-    console.log(saveFile);
-    console.log(e);
     var input = document.getElementById('nameInput').value;
     if (input === '' || null || undefined) {
       message.error('Please input the file name');
@@ -344,14 +347,12 @@ class AssignTable extends React.Component {
   };
 
   onUploadCancel = (e) => {
-    console.log(e);
     this.setState({
       uploadVisible: false,
     });
   };
 
   uploadFile(base64, file) {
-    console.log(base64);
     let requestObject = {
       fileID: this.state.fileId,
       name: document.getElementById('nameInput').value.includes('.')
@@ -362,7 +363,6 @@ class AssignTable extends React.Component {
       confidential: this.state.checked,
     };
 
-    console.log(requestObject);
     const url = window.__env__.API_URL + '/blink/api/file';
     axios
       .put(url, requestObject, {
@@ -385,12 +385,10 @@ class AssignTable extends React.Component {
       multiple: false,
       action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
       beforeUpload(file) {
-        console.log(file);
         state.setState({
           fileName: file.name,
           extension: file.name.includes('.') ? file.name.split('.').pop() : '',
         });
-        console.log(state);
         getBase64(file).then((data) => {
           if (document.getElementById('nameInput').value === '') {
             message.error('Please provide file name');
@@ -412,7 +410,6 @@ class AssignTable extends React.Component {
       },
       onChange: this.handleUploadChange,
     };
-    console.log(this.state);
     return propsUpload;
   }
 
@@ -450,7 +447,11 @@ class AssignTable extends React.Component {
                 <Input
                   id="nameInput"
                   placeholder="Document name..."
-                  value={this.state.fileName.split('.').shift()}
+                  value={this.state.fileName
+                    .split('.')
+                    .slice(0, -1)
+                    .toString()
+                    .replace(/,/g, '.')}
                   onChange={this.handleChange}
                 />
                 <Input

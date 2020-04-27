@@ -18,7 +18,6 @@ import TemplateTable from './templateDoc';
 import AssignTable from './assignedDoc';
 import { FormBuilder } from 'cb-react-forms';
 //import { FormGenerator } from 'cb-react-forms';
-import ReactToPrint from 'react-to-print';
 import { getUser } from '../../utils/api';
 import { axiosError } from '../../utils/axiosError';
 
@@ -129,8 +128,6 @@ const items = [
   },
 ];
 
-const onSubmit = (formData) => console.log(formData);
-
 message.config({
   maxCount: 1,
 });
@@ -164,6 +161,25 @@ class DocumentsTable extends React.Component {
     if (this.state.changed !== prevState.changed) {
     }
   }
+
+  onSubmit = (formData) => {
+    var input = document.getElementById('nameInputForm').value;
+    if (input === '' || null || undefined) {
+      message.error('Please input the file name');
+      return;
+    }
+
+    var blob = new Blob([formData], {
+      type: 'application/json',
+    });
+
+    getBase64(blob).then((data) => {
+      this.setState({
+        fileBase64: data,
+      });
+      this.uploadFile(data, saveFile, true);
+    });
+  };
 
   returnUploadProps(state) {
     var propsUpload = {
@@ -214,14 +230,12 @@ class DocumentsTable extends React.Component {
   };
 
   handlePluginOk = (e) => {
-    console.log(e);
     this.setState({
       visible: false,
     });
   };
 
   handlePluginCancel = (e) => {
-    console.log(e);
     this.setState({
       visible: false,
     });
@@ -242,10 +256,8 @@ class DocumentsTable extends React.Component {
   };
 
   handleOk = (e) => {
-    console.log(e);
     let value = this.state.select;
     if (value === '') {
-      console.log('Please enter value');
     } else if (value === 'upload') {
       this.setState({
         documentVisible: false,
@@ -255,21 +267,17 @@ class DocumentsTable extends React.Component {
       this.setState({
         visible: false,
       });
-      console.log('This works');
       this.showPluginModal();
-      //Mislav add this pls
-      //this.showCreateModal();
     }
   };
 
   handleUploadOk = (e) => {
-    console.log(e);
     var input = document.getElementById('nameInput').value;
     if (input === '' || null || undefined) {
       message.error('Please input the file name');
       return;
     }
-    if (input.includes('.')) {
+    if (e.target.value.includes('.')) {
       message.error(
         "Don't input extensions into the file name, the system does this automatically"
       );
@@ -290,14 +298,12 @@ class DocumentsTable extends React.Component {
   };
 
   onCancel = (e) => {
-    console.log(e);
     this.setState({
       documentVisible: false,
     });
   };
 
   onUploadCancel = (e) => {
-    console.log(e);
     this.setState({
       uploadVisible: false,
       fileName: '',
@@ -306,19 +312,22 @@ class DocumentsTable extends React.Component {
     });
   };
 
-  uploadFile(base64, file) {
+  uploadFile(base64, file, form) {
     let requestObject = {
       name:
         this.state.extension === ''
+          ? document.getElementById('nameInput')
+            ? document.getElementById('nameInput').value.replace(/ /gi, '')
+            : document.getElementById('nameInputForm').value.replace(/ /gi, '')
+          : document.getElementById('nameInput')
           ? document.getElementById('nameInput').value.replace(/ /gi, '')
-          : document.getElementById('nameInput').value.replace(/ /gi, '') +
+          : document.getElementById('nameInputForm').value.replace(/ /gi, '') +
             '.' +
             this.state.extension,
       file: base64,
       confidential: checked,
+      form: form ? true : false,
     };
-
-    console.log(requestObject);
 
     const url = window.__env__.API_URL + '/blink/api/file';
     axios
@@ -398,14 +407,26 @@ class DocumentsTable extends React.Component {
           title="Create your document"
           width="80vw"
           visible={this.state.visible}
-          onOk={this.handlePluginOk}
+          //onOk={this.handlePluginOk}
           onCancel={this.handlePluginCancel}
+          footer={[
+            <div>
+              <Button key="back" onClick={this.handlePluginCancel}>
+                Cancel
+              </Button>
+            </div>,
+          ]}
         >
-          <FormBuilder onSubmit={onSubmit} items={items} />
-          <ReactToPrint
-            trigger={() => <Button>Print this out!</Button>}
-            content={() => this.componentRef}
+          <Input
+            id="nameInputForm"
+            placeholder="Form name..."
+            value={this.state.fileName.split('.').shift()}
+            onChange={this.handleChange}
           />
+          <FormBuilder onSubmit={this.onSubmit} items={items} />
+          <Button type="primary" onClick={(e) => window.print()}>
+            Print this out!
+          </Button>
         </Modal>
         {this.state.uploadVisible && (
           <Modal
@@ -417,7 +438,11 @@ class DocumentsTable extends React.Component {
             <Card>
               <Input
                 id="nameInput"
-                value={this.state.fileName.split('.').shift()}
+                value={this.state.fileName
+                  .split('.')
+                  .slice(0, -1)
+                  .toString()
+                  .replace(/,/g, '.')}
                 onChange={this.handleChange}
                 placeholder="Document name..."
               />

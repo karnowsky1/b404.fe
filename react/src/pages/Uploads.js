@@ -58,17 +58,12 @@ export default class Uploads extends Component {
   }
 
   uploadFile(base64, file) {
-    console.log(file);
-    console.log(base64);
-
     let requestObject = {
       fileID: parseInt(localStorage.getItem('fileId')),
       stepID: parseInt(localStorage.getItem('stepId')),
       name: file.name,
       file: base64,
     };
-
-    console.log(requestObject);
 
     const url = window.__env__.API_URL + '/blink/api/file';
     axios
@@ -105,7 +100,6 @@ export default class Uploads extends Component {
       type: 'json',
     })
       .then((response) => {
-        console.log(response);
         this.setState({
           file: response.data,
           fileList: [
@@ -121,7 +115,6 @@ export default class Uploads extends Component {
             : '',
           fileBase64: response.data.file,
         });
-        console.log(this.state);
       })
       .catch(function (error) {
         console.log(error);
@@ -142,12 +135,10 @@ export default class Uploads extends Component {
       })
       .then((response) => {
         if (response.status === 200) {
-          console.log(response);
           this.setState({
             file: response.data,
             fileList: [response.data],
           });
-          console.log(this.state.file);
         }
       })
       .catch(axiosError);
@@ -159,12 +150,10 @@ export default class Uploads extends Component {
       multiple: false,
       action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
       beforeUpload(file) {
-        console.log(file);
         state.setState({
           fileName: file.name,
           extension: file.name.includes('.') ? file.name.split('.').pop() : '',
         });
-        console.log(state);
         getBase64(file).then((data) => {
           state.setState({
             fileBase64: data,
@@ -173,7 +162,8 @@ export default class Uploads extends Component {
         });
       },
       showUploadList: {
-        showDownloadIcon: false,
+        showDownloadIcon: true,
+        downloadIcon: 'Download',
         showRemoveIcon: false,
       },
       onChange: this.handleUploadChange,
@@ -187,12 +177,10 @@ export default class Uploads extends Component {
       this.setState({
         downloadHidden: false,
       });
-      console.log(this.state.downloadHidden);
     } else {
       this.setState({
         downloadHidden: true,
       });
-      console.log(this.state.downloadHidden);
     }
     this.setState({ fileList: fileList });
   };
@@ -214,12 +202,17 @@ export default class Uploads extends Component {
           style={{
             width: '60%',
             margin: 'auto',
-            height: '40vh',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
           }}
         >
+          <p style={{ textAlign: 'center' }}>
+            Attached is the file associated with this step. You can use the
+            download link to inspect the file and, if needed, make modifications
+            to it. When you are done, drag & drop/reupload the file to finish
+            the step.
+          </p>
           <Dragger
             {...this.returnUploadProps(this)}
             fileList={this.state.fileList}

@@ -196,7 +196,7 @@ code {
 .dashboard_no_content {
   display: 'inline-block';
   padding: '2em';
-  width: 35%;
+  width: 35% !important;
 }
 
 .signatureContainer {
@@ -228,4 +228,21 @@ code {
   margin-top: 8px;
   display: flex;
   justify-content: center;
+}
+
+#nameInputForm {
+  width: 50%;
+}
+
+.demo-form {
+  background-color: rgba(0, 0, 0, 0.45) !important;
+}
+
+.ant-modal-body .container {
+  margin: 0;
+  padding: 0;
+}
+
+.slick-dots li button {
+  background: rgb(240, 111, 50) !important;
 }

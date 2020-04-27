@@ -25,6 +25,20 @@ export const getSignature = (uuid) =>
     },
   });
 
+export const getPendingTasks = () =>
+  axios.get(window.__env__.API_URL + '/blink/api/workflow/pending', {
+    headers: {
+      Authorization: localStorage.getItem('token'),
+    },
+  });
+
+export const getActiveWorkflows = () =>
+  axios.get(window.__env__.API_URL + '/blink/api/workflow/active', {
+    headers: {
+      Authorization: localStorage.getItem('token'),
+    },
+  });
+
 export const getPeopleByCompany = (uuid) =>
   axios.get(window.__env__.API_URL + `/blink/api/company/people/${uuid}`, {
     headers: {
@@ -82,6 +96,14 @@ export const getTemplateFiles = () =>
 
 export const getFileByID = (uuid) =>
   axios.get(window.__env__.API_URL + `/blink/api/file/id/${uuid}`, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: localStorage.getItem('token'),
+    },
+  });
+
+export const getZippedFilesByMilestone = (uuid) =>
+  axios.get(window.__env__.API_URL + `/blink/api/file/archive/${uuid}`, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       Authorization: localStorage.getItem('token'),

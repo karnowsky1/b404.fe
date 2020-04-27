@@ -4,7 +4,11 @@ import axios from 'axios';
 import { AssignModal } from '../assignModal';
 import { AssignPeople } from '../assignModal';
 import WorkflowBuilder from '../../wf-builder/workflowBuilder';
-import { TOKEN_KEY, DEFAULT_TREE } from '../../../constants';
+import {
+  TOKEN_KEY,
+  DEFAULT_TREE,
+  FETCH_REFRESH_TIME,
+} from '../../../constants';
 
 let currentComponent;
 
@@ -76,7 +80,6 @@ class Templates extends React.Component {
           this.setState({
             loading: false,
           });
-          console.log(response);
           this.setState({
             data: response.data,
           });
@@ -109,10 +112,18 @@ class Templates extends React.Component {
     this.getWorkflows();
     this.getAllCompanies();
     this.getAllPeople();
+    this.intervalID = setInterval(() => {
+      this.getWorkflows();
+      this.getAllCompanies();
+      this.getAllPeople();
+    }, FETCH_REFRESH_TIME);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
   }
 
   showCompanyModal = (workflow) => {
-    console.log(workflow);
     this.setState({
       workflow: workflow,
       companyVisible: true,
@@ -120,14 +131,12 @@ class Templates extends React.Component {
   };
 
   handleCompanyOk = (e) => {
-    console.log(e);
     this.setState({
       companyVisible: false,
     });
   };
 
   handleCompanyCancel = (e) => {
-    console.log(e);
     this.setState({
       companyVisible: false,
     });
@@ -141,14 +150,12 @@ class Templates extends React.Component {
   };
 
   handlePersonOk = (e) => {
-    console.log(e);
     this.setState({
       personVisible: false,
     });
   };
 
   handlePersonCancel = (e) => {
-    console.log(e);
     this.setState({
       personVisible: false,
     });
@@ -214,16 +221,12 @@ class Templates extends React.Component {
           })
           .then((response) => {
             if (response.status === 200) {
-              // console.log('works');
               window.location.reload(false);
             } else {
-              // console.log(response);
             }
           });
       },
-      onCancel() {
-        // console.log('Cancel');
-      },
+      onCancel() {},
     });
   };
 
@@ -246,7 +249,6 @@ class Templates extends React.Component {
   }
 
   handleOk = (e) => {
-    console.log(e);
     this.setState({
       visible: false,
     });
@@ -254,7 +256,6 @@ class Templates extends React.Component {
   };
 
   handleCancel = (e) => {
-    console.log(e);
     this.setState({
       workflow: null,
       visible: false,

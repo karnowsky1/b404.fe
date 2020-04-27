@@ -9,18 +9,25 @@ import {
   getMilestone,
   getWorkflowTemplates,
   getWorkflow,
+  getZippedFilesByMilestone,
 } from '../../utils/api';
 import { axiosError } from '../../utils/axiosError';
 import { AssignTemplateModal } from '../workflow/AssignTemplateModal';
 import moment from 'moment';
 import WorkflowBuilder from '../wf-builder/workflowBuilder';
-import { RECEIVE_DATE_FORMAT, IS_INTERNAL } from '../../constants';
+import {
+  RECEIVE_DATE_FORMAT,
+  IS_INTERNAL,
+  FETCH_REFRESH_TIME,
+} from '../../constants';
 import { NoContent } from '../../utils/NoContent';
 import {
   noMilestonesMessageOne,
   noMilestonesMessageTwo,
 } from '../../constants/messages';
 import { showDeleteConfirmUtil } from '../../utils/showDeleteConfirmUtil';
+
+var downloadjs = require('downloadjs');
 
 const { confirm } = Modal;
 
@@ -46,6 +53,18 @@ class MilestonesTable extends React.Component {
       { title: 'Name', dataIndex: 'name', key: 'name' },
       { title: 'Company', dataIndex: 'company', key: 'company' },
     ];
+    const progress = {
+      title: 'Progress',
+      dataIndex: '',
+      key: 'y',
+      render: (record) => (
+        <Progress
+          //style={{ width: 310 }}
+          percent={Math.floor(record.percentComplete * 100)}
+          size="small"
+        />
+      ),
+    };
     const actions = {
       title: 'Actions',
       dataIndex: '',
@@ -78,6 +97,14 @@ class MilestonesTable extends React.Component {
             >
               Archive
             </Button>
+            <Divider type="vertical" />
+            <Button
+              type="link"
+              size="small"
+              onClick={(e) => this.downloadFiles(record.id)}
+            >
+              Download Content
+            </Button>
           </React.Fragment>
         ) : (
           <React.Fragment>
@@ -101,11 +128,15 @@ class MilestonesTable extends React.Component {
           </React.Fragment>
         ),
     };
-    IS_INTERNAL(this.props.authorization_level) && this.columns.push(actions);
+    IS_INTERNAL(this.props.authorization_level) &&
+      this.columns.push(progress) &&
+      this.columns.push(actions);
   }
 
   componentDidMount = async (e) => {
-    this.props.fetch();
+    const { fetch } = this.props;
+    fetch();
+    this.intervalID = setInterval(fetch, FETCH_REFRESH_TIME);
     await getAllCompanies()
       .then((response) => {
         this.setState({
@@ -118,6 +149,10 @@ class MilestonesTable extends React.Component {
       })
       .catch(axiosError);
   };
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
+  }
 
   showAddModal = () => {
     this.setState({
@@ -142,9 +177,7 @@ class MilestonesTable extends React.Component {
   };
 
   showEditModal = async (record) => {
-    // console.log(record)
     await getMilestone(record.id).then((response) => {
-      // console.log(response.data)
       this.setState({
         editingMilestone: {
           name: response.data.name,
@@ -157,6 +190,19 @@ class MilestonesTable extends React.Component {
         editvisible: true,
       });
     });
+  };
+
+  downloadFiles = async (id) => {
+    await getZippedFilesByMilestone(id)
+      .then((response) => {
+        if (response.status === 200) {
+          var mime =
+            response.data.file &&
+            response.data.file.split(',')[0].split(':')[1].split(';')[0];
+          downloadjs(response.data.file, response.data.name, mime);
+        }
+      })
+      .catch(axiosError);
   };
 
   showWorkflowModal = (workflow) => {
@@ -218,11 +264,6 @@ class MilestonesTable extends React.Component {
   };
 
   onEditSubmit = async (values) => {
-    // if (!this.state.previousJobIsEmpty && values.title === '') {
-    //   values.title = ' ';
-    // }
-    // may have to do this again
-    console.log(values);
     await axios({
       method: 'put',
       url: window.__env__.API_URL + '/blink/api/milestone',
@@ -249,7 +290,6 @@ class MilestonesTable extends React.Component {
   };
 
   onAssignSubmit = async (values) => {
-    console.log(values);
     await getWorkflow(values.templateID)
       .then((response) => {
         this.setState({
@@ -287,9 +327,7 @@ class MilestonesTable extends React.Component {
           })
           .catch(axiosError);
       },
-      onCancel() {
-        // console.log('Cancel');
-      },
+      onCancel() {},
     });
   };
 
@@ -322,8 +360,6 @@ class MilestonesTable extends React.Component {
               </Col>
               <Col span={12}>
                 <div>
-                  {/* <p> */}
-                  {/* {console.log(record)} */}
                   {record.workflows && record.workflows.length ? (
                     record.workflows.map(({ ...workflow }) => (
                       <div key={workflow.workflowID}>

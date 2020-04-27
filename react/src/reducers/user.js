@@ -1,4 +1,5 @@
 import { SET_USER, SET_IS_LOGGED_IN } from '../actions/user';
+import { SET_TASKS } from '../actions/task';
 
 export function userReducer(state, action) {
   switch (action.type) {
@@ -6,6 +7,8 @@ export function userReducer(state, action) {
       return { ...state, user: action.payload };
     case SET_IS_LOGGED_IN:
       return { ...state, isLoggedIn: action.payload };
+    case SET_TASKS:
+      return { ...state, pendingTasks: action.payload };
     default:
       return state;
   }

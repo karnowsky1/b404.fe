@@ -1,8 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Menu, Icon, Button, Dropdown } from 'antd';
-import { setUser, setIsLoggedIn } from '../../actions/user';
 import { connect } from 'react-redux';
+import { setUser, setIsLoggedIn } from '../../actions/user';
+import { setTasks } from '../../actions/task';
 import { TOKEN_KEY, UUID_KEY } from '../../constants/auth';
 
 class Logout extends React.Component {
@@ -15,16 +16,18 @@ class Logout extends React.Component {
 
   render() {
     const { setIsLoggedIn } = this.props;
+    const { setUser } = this.props;
+    const { setTasks } = this.props;
     const profile_icon = 'user';
     const LOG_OUT = '2';
 
     function handleMenuClick(e) {
-      console.log('click', e);
-      console.log(e.key);
       if (e.key === LOG_OUT) {
         localStorage.removeItem(TOKEN_KEY);
         localStorage.removeItem(UUID_KEY);
         setIsLoggedIn(false);
+        setUser(null);
+        setTasks(null);
       }
     }
 
@@ -56,4 +59,5 @@ class Logout extends React.Component {
 export default connect((state = {}) => ({ authed: state.isLoggedIn }), {
   setUser,
   setIsLoggedIn,
+  setTasks,
 })(Logout);

@@ -72,7 +72,6 @@ const MilestoneModalForm = ({
             </Form.Item>
             <p></p>
             <p>Company *</p>
-            {/* //////////////////////////////////////////////////// */}
             <Form.Item name="companyID" validate={required}>
               <Select
                 name="companyID"
@@ -80,9 +79,6 @@ const MilestoneModalForm = ({
                 placeholder="Select Company"
                 defaultValue={initialValues.company}
               >
-                {/* { console.log(companies)} */}
-                {/* {console.log(initialValues.company)} */}
-
                 {companies.map(({ value, label }) => (
                   <Option value={value} key={value}>
                     {label}
@@ -90,7 +86,6 @@ const MilestoneModalForm = ({
                 ))}
               </Select>
             </Form.Item>
-            {/* //////////////////////////////////////////////////// */}
             <p></p>
             <DateRange
               startDate={startDate}

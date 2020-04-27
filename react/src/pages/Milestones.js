@@ -30,6 +30,7 @@ export default class Milestones extends Component {
         id: entry.mileStoneID,
         key: entry.mileStoneID,
         name: entry.name,
+        percentComplete: entry.percentComplete,
         company: entry.company.companyName,
         startDate: entry.startDate,
         completedDate: entry.completedDate,

@@ -24,3 +24,13 @@ export const SETTINGS_ROUTES = [
 ];
 
 export const ROUTES = [...MAIN_ROUTES, ...SETTINGS_ROUTES];
+
+export const THIRTY_SECONDS = 30000;
+
+export const TEN_SECONDS = 10000;
+
+export const ONE_SECOND = 1000;
+
+export const FETCH_REFRESH_TIME = THIRTY_SECONDS;
+
+export const PENDING_TASKS_FETCH_REFRESH_TIME = TEN_SECONDS;
