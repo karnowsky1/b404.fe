@@ -55,6 +55,7 @@ class DashMilestones extends React.Component {
             name: entry.name,
             date: entry.createdDate,
             company: entry.company.companyName,
+            percentComplete: entry.percentComplete
           });
         }
 
