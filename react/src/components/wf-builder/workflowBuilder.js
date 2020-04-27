@@ -362,7 +362,7 @@ export default class WorkflowBuilder extends Component {
     // this.setState({
     //   defaultRange: e.target.value
     // });
-    // console.log('This better fucking work');
+    // console.log('This better work');
     // console.log(e.target);
     // console.log(e.target.format(SEND_DATE_FORMAT));
     // console.log(e.target.value.dateStrings[0]);
@@ -374,6 +374,7 @@ export default class WorkflowBuilder extends Component {
     const children = [];
     const people = [];
     const files = [];
+    const forms = [];
     this.state.verbs.forEach((element) => {
       children.push(<Option key={element.verbID}>{element.name}</Option>);
     });
@@ -383,7 +384,11 @@ export default class WorkflowBuilder extends Component {
       );
     });
     this.state.files.forEach((element) => {
-      files.push(<Option key={element.fileID}>{element.name}</Option>);
+      if (element.form) {
+        forms.push(<Option key={element.fileID}>{element.name}</Option>);
+      } else {
+        files.push(<Option key={element.fileID}>{element.name}</Option>);
+      }
     });
     const nameValidation = this.state.wfNameEdited
       ? required(this.state.wfName)
@@ -518,14 +523,25 @@ export default class WorkflowBuilder extends Component {
                     console.log(rowInfo);
                     const { path } = rowInfo;
                     const title = parseInt(event);
+                    if (title === 4) {
                     this.setState((state) => ({
                       treeData: changeNodeAtPath({
                         treeData: state.treeData,
                         path,
                         getNodeKey,
-                        newNode: { ...rowInfo.node, title },
+                        newNode: { ...rowInfo.node, title: title, form: true, fileID: 0 },
                       }),
                     }));
+                  } else {
+                    this.setState((state) => ({
+                      treeData: changeNodeAtPath({
+                        treeData: state.treeData,
+                        path,
+                        getNodeKey,
+                        newNode: { ...rowInfo.node, title: title, form: false, fileID: 0 },
+                      }),
+                    }));
+                  }
                   }}
                 >
                   {children}
@@ -637,7 +653,7 @@ export default class WorkflowBuilder extends Component {
                           }));
                         }}
                       >
-                        {files}
+                        {rowInfo.node.form ? forms : files}
                       </Select>
                     </div>
                   </div>
