@@ -229,3 +229,7 @@ code {
   display: flex;
   justify-content: center;
 }
+
+.slick-dots li button {
+  background: rgb(240, 111, 50) !important;
+}

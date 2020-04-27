@@ -32,6 +32,13 @@ export const getPendingTasks = () =>
     },
   });
 
+export const getActiveWorkflows = () =>
+  axios.get(window.__env__.API_URL + '/blink/api/workflow/active', {
+    headers: {
+      Authorization: localStorage.getItem('token'),
+    },
+  });
+
 export const getPeopleByCompany = (uuid) =>
   axios.get(window.__env__.API_URL + `/blink/api/company/people/${uuid}`, {
     headers: {
