@@ -43,20 +43,14 @@ export const updateCompany = async (
   return response.data;
 };
 
-export const getCompany = async (
-  id: number,
-  name: string
-): Promise<Company> => {
+export const getCompany = async (id: number): Promise<Company> => {
   const response = await request<Company>({
     route: `/company/id/${id}`,
   });
   return response.data;
 };
 
-export const deleteCompany = async (
-  id: number,
-  name: string
-): Promise<Company> => {
+export const deleteCompany = async (id: number): Promise<Company> => {
   const response = await request<Company>({
     method: 'DELETE',
     route: `/company/id/${id}`,
