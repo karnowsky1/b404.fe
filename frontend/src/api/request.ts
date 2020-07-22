@@ -11,6 +11,11 @@ export const setAuthToken = (token: string) => {
   localStorage.setItem(AUTH_TOKEN_KEY, token);
 };
 
+export const clearAuthToken = () => {
+  authToken = undefined;
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+};
+
 export interface RequestOptions {
   method?: Method;
   route: string;

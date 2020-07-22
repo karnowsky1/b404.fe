@@ -4,6 +4,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { login as loginAction } from '../actions';
+import { selectIsAuthenticated } from '../selectors';
+import { State } from '../reducers';
+import { Redirect } from 'react-router';
+import { MAIN_ROUTES } from '../utils';
 
 const useStyles = makeStyles({
   container: {
@@ -24,12 +28,18 @@ const useStyles = makeStyles({
   },
 });
 
-const connector = connect(undefined, {
-  login: loginAction,
-});
+const connector = connect(
+  (state: State) => ({
+    isAuthenticated: selectIsAuthenticated(state),
+  }),
+  {
+    login: loginAction,
+  }
+);
 
 export const LoginComponent: React.FC<ConnectedProps<typeof connector>> = ({
   login,
+  isAuthenticated,
 }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -41,7 +51,9 @@ export const LoginComponent: React.FC<ConnectedProps<typeof connector>> = ({
     },
     [login, username, password]
   );
-  return (
+  return isAuthenticated ? (
+    <Redirect to={MAIN_ROUTES.dashboard.path} />
+  ) : (
     <Paper className={classes.container}>
       <Typography variant="h5">Login</Typography>
       <form

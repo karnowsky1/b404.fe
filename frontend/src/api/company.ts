@@ -1,21 +1,5 @@
 import { request } from './request';
-
-export interface Company {
-  companyID: number;
-  companyName: string;
-}
-
-export interface Person {
-  uuid: string;
-  username: string;
-  fName: string;
-  lName: string;
-  email: string;
-  title: string;
-  companies: Array<Company>;
-  accessLevelID: number;
-  signature: string | null;
-}
+import { Company, Person } from './types';
 
 export const getCompanies = async (): Promise<Array<Company>> => {
   const response = await request<Array<Company>>({ route: '/company' });

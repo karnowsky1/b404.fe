@@ -9,6 +9,8 @@ import { App } from './App';
 import { main } from './sagas';
 import { rootReducer } from './reducers';
 import * as serviceWorker from './serviceWorker';
+import { AUTH_TOKEN_KEY } from './utils';
+import { setAuthToken } from './api';
 
 declare global {
   interface Window {
@@ -16,7 +18,24 @@ declare global {
   }
 }
 
-const theme = createMuiTheme({});
+const storedToken = localStorage.getItem(AUTH_TOKEN_KEY);
+if (storedToken) {
+  setAuthToken(storedToken);
+}
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#409ADF',
+    },
+    secondary: {
+      light: '#2B3648',
+      contrastText: '#7486A9',
+      main: '#1B212A',
+    },
+    divider: '#313C4E',
+  },
+});
 
 const composeEnhancers =
   (typeof window === 'object' &&
@@ -24,7 +43,11 @@ const composeEnhancers =
   compose;
 const sagaMiddleware = createSagaMiddleware();
 const enhancers = composeEnhancers(applyMiddleware(sagaMiddleware));
-const store = createStore(rootReducer, enhancers);
+const store = createStore(
+  rootReducer,
+  { login: { isAuthenticated: !!storedToken } } as any,
+  enhancers
+);
 sagaMiddleware.run(main);
 
 ReactDOM.render(

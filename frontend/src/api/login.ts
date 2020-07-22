@@ -23,9 +23,9 @@ export const login = async (
     body: { username, password: hash(password) },
     unprotected: true,
   });
-  const { Authorization } = response.headers;
-  if (Authorization) {
-    setAuthToken(Authorization);
+  const { authorization } = response.headers;
+  if (authorization) {
+    setAuthToken(authorization);
   }
   return response.data;
 };

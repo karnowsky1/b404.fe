@@ -1,10 +1,10 @@
-import { request, setAuthToken } from './request';
+import { request, clearAuthToken, setAuthToken } from './request';
 import { AUTH_TOKEN_KEY } from '../utils';
 
 const tokenValue = 'token';
 
 beforeEach(() => {
-  setAuthToken(undefined);
+  clearAuthToken();
 });
 
 test('setAuthToken saves token to localStorage', () => {
