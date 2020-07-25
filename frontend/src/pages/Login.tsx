@@ -7,7 +7,7 @@ import { login as loginAction } from '../actions';
 import { selectIsAuthenticated } from '../selectors';
 import { State } from '../reducers';
 import { Redirect } from 'react-router';
-import { MAIN_ROUTES } from '../utils';
+import { DEFAULT_PATH } from '../utils';
 
 const useStyles = makeStyles({
   container: {
@@ -52,7 +52,7 @@ export const LoginComponent: React.FC<ConnectedProps<typeof connector>> = ({
     [login, username, password]
   );
   return isAuthenticated ? (
-    <Redirect to={MAIN_ROUTES.dashboard.path} />
+    <Redirect to={DEFAULT_PATH} />
   ) : (
     <Paper className={classes.container}>
       <Typography variant="h5">Login</Typography>

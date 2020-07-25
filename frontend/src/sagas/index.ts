@@ -1,7 +1,8 @@
 import { LOGIN } from '../actions';
-import { takeLatest } from 'redux-saga/effects';
-import { login } from './login';
+import { takeLatest, call } from 'redux-saga/effects';
+import { login, getCurrentUser } from './login';
 
-export function* main() {
+export function* rootSaga() {
   yield takeLatest(LOGIN, login);
+  yield call(getCurrentUser);
 }

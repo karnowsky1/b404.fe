@@ -31,11 +31,11 @@ export const updatePerson = async (
   return response.data;
 };
 
-export const getPerson = async (id: number): Promise<Person> => {
+export const getPerson = async (id: string): Promise<Person> => {
   const response = await request<Person>({ route: `/person/id/${id}` });
   return response.data;
 };
 
-export const deletePerson = async (id: number): Promise<void> => {
+export const deletePerson = async (id: string): Promise<void> => {
   await request<Person>({ method: 'DELETE', route: `/person/id/${id}` });
 };

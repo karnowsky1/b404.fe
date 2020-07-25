@@ -6,7 +6,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { ThemeProvider, createMuiTheme, CssBaseline } from '@material-ui/core';
 
 import { App } from './App';
-import { main } from './sagas';
+import { rootSaga } from './sagas';
 import { rootReducer } from './reducers';
 import * as serviceWorker from './serviceWorker';
 import { AUTH_TOKEN_KEY } from './utils';
@@ -48,7 +48,7 @@ const store = createStore(
   { login: { isAuthenticated: !!storedToken } } as any,
   enhancers
 );
-sagaMiddleware.run(main);
+sagaMiddleware.run(rootSaga);
 
 ReactDOM.render(
   <React.StrictMode>

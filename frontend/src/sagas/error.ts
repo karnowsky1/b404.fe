@@ -9,6 +9,7 @@ export function* errorHandler(error: AxiosError) {
     clearAuthToken();
     yield put(setAuthenticated(false));
   } else {
+    console.error(error.message);
     // TODO Set some error in redux state to display error notification
   }
 }

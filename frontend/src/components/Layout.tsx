@@ -7,15 +7,15 @@ import {
   Typography,
   makeStyles,
   List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Divider,
+  Button,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import { Link } from 'react-router-dom';
+import { connect, ConnectedProps } from 'react-redux';
 
-import { MAIN_ROUTES, SETTINGS_ROUTES } from '../utils';
+import { ROUTES, isPageRoute } from '../utils';
+import { RouteLink } from './RouteLink';
+import { logout as logoutAction } from '../actions';
 
 const useStyles = makeStyles((theme) => ({
   drawerContainer: {
@@ -24,28 +24,27 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     color: theme.palette.secondary.contrastText,
   },
-  iconStyle: {
-    color: 'inherit',
-  },
-  navLink: {
-    color: theme.palette.secondary.contrastText,
-  },
-  navLinkActive: {
-    backgroundColor: theme.palette.secondary.light,
-    color: theme.palette.primary.main,
-  },
-  settingsStyle: {
-    paddingLeft: 10,
-    opacity: 0.5,
+  titleStyle: {
+    flexGrow: 1,
   },
 }));
 
-export interface LayoutProps {
+const connector = connect(undefined, {
+  logout: logoutAction,
+});
+
+export interface LayoutProps extends ConnectedProps<typeof connector> {
   title: string;
   currentPath: string;
+  children: JSX.Element; // Not sure why, but there is an error without this
 }
 
-export const Layout: React.FC<LayoutProps> = ({ title, currentPath }) => {
+const LayoutComponent: React.FC<LayoutProps> = ({
+  title,
+  currentPath,
+  children,
+  logout,
+}) => {
   const [openNav, setOpenNav] = useState(false);
 
   const classes = useStyles();
@@ -57,57 +56,37 @@ export const Layout: React.FC<LayoutProps> = ({ title, currentPath }) => {
           <IconButton edge="start" color="inherit" aria-label="menu">
             <MenuIcon onClick={() => setOpenNav(true)} />
           </IconButton>
-          <Typography variant="h6">{title}</Typography>
+          <Typography variant="h6" className={classes.titleStyle}>
+            {title}
+          </Typography>
+          <Button onClick={logout} variant="contained">
+            Logout
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer anchor="left" open={openNav} onClose={() => setOpenNav(false)}>
         <div className={classes.drawerContainer}>
-          <List>
-            {Object.values(MAIN_ROUTES).map(({ name, path, Icon }) => (
-              <ListItem
-                button
-                className={classes.navLink}
-                key={name}
-                component={Link}
-                to={path}
-                selected={path === currentPath}
-                classes={{
-                  selected: classes.navLinkActive,
-                }}
-              >
-                <ListItemIcon className={classes.iconStyle}>
-                  <Icon />
-                </ListItemIcon>
-                <ListItemText primary={name} />
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-          <List>
-            <Typography className={classes.settingsStyle} variant="caption">
-              Settings
-            </Typography>
-            {Object.values(SETTINGS_ROUTES).map(({ name, path, Icon }) => (
-              <ListItem
-                button
-                className={classes.navLink}
-                key={name}
-                component={Link}
-                to={path}
-                selected={path === currentPath}
-                classes={{
-                  selected: classes.navLinkActive,
-                }}
-              >
-                <ListItemIcon className={classes.iconStyle}>
-                  <Icon />
-                </ListItemIcon>
-                <ListItemText primary={name} />
-              </ListItem>
-            ))}
-          </List>
+          {ROUTES.map((routes, index) => (
+            <React.Fragment key={routes.toString()}>
+              <List>
+                {routes
+                  .filter((route) => !isPageRoute(route) || !route.hide)
+                  .map((route) => (
+                    <RouteLink
+                      key={route.title}
+                      route={route}
+                      currentPath={currentPath}
+                    />
+                  ))}
+              </List>
+              {index < ROUTES.length - 1 && <Divider />}
+            </React.Fragment>
+          ))}
         </div>
       </Drawer>
+      {children}
     </>
   );
 };
+
+export const Layout = connector(LayoutComponent);

@@ -1,7 +1,11 @@
 import { Action } from './types';
-import { User } from '../api';
+import { Person } from '../api';
 
-export type LoginActions = LoginAction | SetUserAction | SetAuthenticatedAction;
+export type LoginActions =
+  | LoginAction
+  | SetUserAction
+  | SetAuthenticatedAction
+  | LogoutAction;
 
 export const LOGIN = 'LOGIN';
 export interface LoginPayload {
@@ -17,9 +21,16 @@ export const login = (username: string, password: string): LoginAction => ({
   },
 });
 
+export const LOGOUT = 'LOGOUT';
+export type LogoutAction = Action<typeof LOGOUT>;
+export const logout = (): LogoutAction => ({
+  type: LOGOUT,
+  payload: {},
+});
+
 export const SET_USER = 'SET_USER';
-export type SetUserAction = Action<typeof SET_USER, User>;
-export const setUser = (user: User): SetUserAction => ({
+export type SetUserAction = Action<typeof SET_USER, Person>;
+export const setUser = (user: Person): SetUserAction => ({
   type: SET_USER,
   payload: user,
 });
