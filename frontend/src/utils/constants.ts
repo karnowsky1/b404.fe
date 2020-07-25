@@ -1,7 +1,9 @@
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import DescriptionIcon from '@material-ui/icons/Description';
-import EditIcon from '@material-ui/icons/Edit';
+import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import SettingsIcon from '@material-ui/icons/Settings';
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 
 import { PageRoute, MultiRoute, isPageRoute } from './routes';
 import { AccessLevel } from './accessLevels';
@@ -15,16 +17,8 @@ export const LOGIN_PATH = '/login';
 export const ROUTES: Array<Array<PageRoute | MultiRoute>> = [
   [
     {
-      title: 'Dashboard',
-      path: DEFAULT_PATH,
-      Icon: DashboardIcon,
-      Page: Dashboard,
-      accessLevel: AccessLevel.Provider,
-    },
-    {
       title: 'Login',
       path: LOGIN_PATH,
-      Icon: DescriptionIcon,
       Page: Login,
       hide: true,
       noLayout: true,
@@ -32,23 +26,30 @@ export const ROUTES: Array<Array<PageRoute | MultiRoute>> = [
       accessLevel: AccessLevel.Customer,
     },
     {
-      title: 'Milestones',
-      path: '/milestones',
-      Icon: DescriptionIcon,
+      title: 'Dashboard',
+      path: DEFAULT_PATH,
+      Icon: DashboardIcon,
       Page: Dashboard,
-      accessLevel: AccessLevel.Customer,
-    },
-    {
-      title: 'Workflow',
-      path: '/workflow',
-      Icon: EditIcon,
-      Page: Milestones,
-      accessLevel: AccessLevel.Customer,
+      accessLevel: AccessLevel.Provider,
     },
     {
       title: 'Documents',
       path: '/documents',
-      Icon: EditIcon,
+      Icon: DescriptionOutlinedIcon,
+      Page: Dashboard,
+      accessLevel: AccessLevel.Customer,
+    },
+    {
+      title: 'Workflows',
+      path: '/workflows',
+      Icon: AssignmentIcon,
+      Page: Milestones,
+      accessLevel: AccessLevel.Customer,
+    },
+    {
+      title: 'Signatures',
+      path: '/signatures',
+      Icon: EditOutlinedIcon,
       Page: Milestones,
       accessLevel: AccessLevel.Customer,
     },
@@ -63,20 +64,18 @@ export const ROUTES: Array<Array<PageRoute | MultiRoute>> = [
     },
     {
       title: 'Admin',
-      Icon: DashboardIcon,
+      Icon: AddBoxIcon,
       accessLevel: AccessLevel.Admin,
       children: [
         {
           title: 'Company',
           path: '/company',
-          Icon: EditIcon,
           Page: Milestones,
           accessLevel: AccessLevel.Admin,
         },
         {
           title: 'People',
           path: '/people',
-          Icon: EditIcon,
           Page: Milestones,
           accessLevel: AccessLevel.Admin,
         },

@@ -4,7 +4,13 @@ import {
   ListItemIcon,
   ListItemText,
   makeStyles,
+  Accordion,
+  AccordionSummary,
+  Typography,
+  AccordionDetails,
+  List,
 } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { PageRoute, MultiRoute, isPageRoute } from '../utils';
 import { Link } from 'react-router-dom';
@@ -24,6 +30,37 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 10,
     opacity: 0.5,
   },
+  multiLink: {
+    padding: 0,
+  },
+  accordion: {
+    flexGrow: 1,
+    background: 'none',
+    boxShadow: 'none',
+  },
+  iconContainer: {
+    minWidth: 56,
+    color: theme.palette.secondary.contrastText,
+  },
+  listRoot: {
+    padding: 0,
+    width: '100%',
+  },
+  summaryRoot: {
+    lineHeight: 0,
+    '&$expanded': {
+      minHeight: 48,
+    },
+  },
+  content: {
+    '&$expanded': {
+      margin: '12px 0',
+    },
+  },
+  details: {
+    padding: '0px 16px 16px',
+  },
+  expanded: {},
 }));
 
 export interface RouteLinkProps {
@@ -47,13 +84,54 @@ export const RouteLink: React.FC<RouteLinkProps> = ({ route, currentPath }) => {
           selected: classes.navLinkActive,
         }}
       >
-        <ListItemIcon className={classes.iconStyle}>
-          <Icon />
-        </ListItemIcon>
+        {Icon && (
+          <ListItemIcon className={classes.iconStyle}>
+            <Icon />
+          </ListItemIcon>
+        )}
         <ListItemText primary={title} />
       </ListItem>
     );
   } else {
-    return <></>; // TODO Add nested route link
+    const { title, Icon, children } = route;
+    return (
+      <ListItem
+        classes={{
+          root: classes.multiLink,
+        }}
+      >
+        <Accordion
+          classes={{ root: classes.accordion }}
+          defaultExpanded={children.some(({ path }) => currentPath === path)}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon className={classes.navLink} />}
+            classes={{
+              root: classes.summaryRoot,
+              content: classes.content,
+              expanded: classes.expanded,
+            }}
+          >
+            {Icon && (
+              <div className={classes.iconContainer}>
+                <Icon />
+              </div>
+            )}
+            <Typography className={classes.navLink}>{title}</Typography>
+          </AccordionSummary>
+          <AccordionDetails classes={{ root: classes.details }}>
+            <List classes={{ root: classes.listRoot }}>
+              {children.map((child) => (
+                <RouteLink
+                  key={child.title}
+                  route={child}
+                  currentPath={currentPath}
+                />
+              ))}
+            </List>
+          </AccordionDetails>
+        </Accordion>
+      </ListItem>
+    );
   }
 };

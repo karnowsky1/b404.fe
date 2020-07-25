@@ -4,7 +4,7 @@ import { AccessLevel } from './accessLevels';
 
 export interface Route {
   title: string;
-  Icon: SvgIconComponent;
+  Icon?: SvgIconComponent;
   accessLevel: AccessLevel;
 }
 
