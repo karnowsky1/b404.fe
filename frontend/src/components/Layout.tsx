@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Drawer,
   AppBar,
@@ -11,6 +11,7 @@ import {
   Button,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
+import CloseIcon from '@material-ui/icons/Close';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { ROUTES, isPageRoute } from '../utils';
@@ -26,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
   },
   titleStyle: {
     flexGrow: 1,
+  },
+  iconButton: {
+    color: theme.palette.common.white,
   },
 }));
 
@@ -45,16 +49,18 @@ const LayoutComponent: React.FC<LayoutProps> = ({
   children,
   logout,
 }) => {
-  const [openNav, setOpenNav] = useState(false);
-
+  const [isNavOpen, setIsNavOpen] = useState(false);
   const classes = useStyles();
+
+  const openNav = useCallback(() => setIsNavOpen(true), [setIsNavOpen]);
+  const closeNav = useCallback(() => setIsNavOpen(false), [setIsNavOpen]);
 
   return (
     <>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu">
-            <MenuIcon onClick={() => setOpenNav(true)} />
+          <IconButton edge="start" color="inherit" onClick={openNav}>
+            <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.titleStyle}>
             {title}
@@ -64,10 +70,20 @@ const LayoutComponent: React.FC<LayoutProps> = ({
           </Button>
         </Toolbar>
       </AppBar>
-      <Drawer anchor="left" open={openNav} onClose={() => setOpenNav(false)}>
+      <Drawer anchor="left" open={isNavOpen} onClose={closeNav}>
         <div className={classes.drawerContainer}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              className={classes.iconButton}
+              onClick={closeNav}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Toolbar>
+          <Divider />
           {ROUTES.map((routes, index) => (
-            <React.Fragment key={routes.toString()}>
+            <React.Fragment key={routes.map(({ title }) => title).toString()}>
               <List>
                 {routes
                   .filter((route) => !isPageRoute(route) || !route.hide)

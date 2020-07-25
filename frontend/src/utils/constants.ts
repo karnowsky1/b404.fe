@@ -12,8 +12,15 @@ import { flatten } from 'lodash';
 
 export const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 export const AUTH_TOKEN_KEY = 'AUTH_TOKEN_KEY';
-export const DEFAULT_PATH = '/dashboard';
+export const DASHBOARD_PATH = '/dashboard';
 export const LOGIN_PATH = '/login';
+export const DOCUMENTS_PATH = '/documents';
+export const WORKFLOWS_PATH = '/workflows';
+export const SIGNATURES_PATH = '/signatures';
+export const MAIN_SETTINGS_PATH = '/main-settings';
+export const COMPANY_PATH = '/company';
+export const PEOPLE_PATH = '/people';
+export const DEFAULT_PATH = DASHBOARD_PATH;
 export const ROUTES: Array<Array<PageRoute | MultiRoute>> = [
   [
     {
@@ -27,28 +34,28 @@ export const ROUTES: Array<Array<PageRoute | MultiRoute>> = [
     },
     {
       title: 'Dashboard',
-      path: DEFAULT_PATH,
+      path: DASHBOARD_PATH,
       Icon: DashboardIcon,
       Page: Dashboard,
       accessLevel: AccessLevel.Provider,
     },
     {
       title: 'Documents',
-      path: '/documents',
+      path: DOCUMENTS_PATH,
       Icon: DescriptionOutlinedIcon,
-      Page: Dashboard,
+      Page: Milestones,
       accessLevel: AccessLevel.Customer,
     },
     {
       title: 'Workflows',
-      path: '/workflows',
+      path: WORKFLOWS_PATH,
       Icon: AssignmentIcon,
       Page: Milestones,
       accessLevel: AccessLevel.Customer,
     },
     {
       title: 'Signatures',
-      path: '/signatures',
+      path: SIGNATURES_PATH,
       Icon: EditOutlinedIcon,
       Page: Milestones,
       accessLevel: AccessLevel.Customer,
@@ -57,7 +64,7 @@ export const ROUTES: Array<Array<PageRoute | MultiRoute>> = [
   [
     {
       title: 'Main Settings',
-      path: '/main-settings',
+      path: MAIN_SETTINGS_PATH,
       Icon: SettingsIcon,
       Page: Milestones,
       accessLevel: AccessLevel.Provider,
@@ -69,13 +76,13 @@ export const ROUTES: Array<Array<PageRoute | MultiRoute>> = [
       children: [
         {
           title: 'Company',
-          path: '/company',
+          path: COMPANY_PATH,
           Page: Milestones,
           accessLevel: AccessLevel.Admin,
         },
         {
           title: 'People',
-          path: '/people',
+          path: PEOPLE_PATH,
           Page: Milestones,
           accessLevel: AccessLevel.Admin,
         },
